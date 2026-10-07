@@ -3,6 +3,11 @@
  * Button handlers
  *****************************************************************************/
 function uiUndo(event) {
+    /* Ignore during solve animation */
+    if (globals.animating) {
+        return false;
+    }
+
     /* Make undo if possible */
     globals.game.undoMove()
 
@@ -11,6 +16,11 @@ function uiUndo(event) {
 }
 
 function uiRestart(event) {
+    /* Ignore during solve animation */
+    if (globals.animating) {
+        return false;
+    }
+
     /* Undo all moves back */
     while (true) {
         if (globals.game.undoMove() == false) {
@@ -31,6 +41,11 @@ function uiMouseUp(event) {
 }
 
 function uiMouseDown(event) {
+    /* Ignore during solve animation */
+    if (globals.animating) {
+        return false;
+    }
+
     restartTimer = setInterval(
                         function() {
                             if (globals.game.level == 0) {
