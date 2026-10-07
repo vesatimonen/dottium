@@ -22,10 +22,7 @@ function uiRestart(event) {
     }
 
     /* Undo all moves back */
-    while (true) {
-        if (globals.game.undoMove() == false) {
-            break;
-        }
+    while (globals.game.undoMove()) {
     }
 
     /* Redraw UI */

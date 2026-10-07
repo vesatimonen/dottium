@@ -285,7 +285,7 @@ class Game {
                 this.board.toggleHorizontalWall(move.x, move.y);
                 break;
             default:
-                return;
+                return false;
         }
 
         return true;
