@@ -49,10 +49,10 @@ function uiElementsRedraw(board) {
     var context = elements.canvas.getContext('2d');
 
     /* Set canvas size and clear it */
-    const pixelRation = 2.0;
-    elements.canvas.width = elements.grid.clientWidth * pixelRation;
-    elements.canvas.height = elements.grid.clientHeight * pixelRation;
-    context.scale(pixelRation, pixelRation);
+    const pixelRatio = window.devicePixelRatio || 1;
+    elements.canvas.width = elements.grid.clientWidth * pixelRatio;
+    elements.canvas.height = elements.grid.clientHeight * pixelRatio;
+    context.scale(pixelRatio, pixelRatio);
     context.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
 
     /* Draw dots */
@@ -130,7 +130,7 @@ function uiBoardSetup(board) {
 
     /* Center the board */
     elements.board.style.width = globals.cellSize * board.width + "px";
-    elements.board.style.left  = Math.floor((globals.cellSize * (9 - board.width)) / 2) + "px";
+    elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
     /* Create grid and add cells */
     for (let y = 0; y < board.height; y++) {
