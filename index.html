@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <!-- HEAD -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="apple-mobile-web-app-capable" content="no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="shortcut icon" href="images/icon.png"/>
+        <link rel="apple-touch-icon-precomposed" href="images/icon.png" />
+
+        <link rel="stylesheet" href="css/styles.css">
+
+        <title>DIVISIUM</title>
+
+    </head>
+
+    <!-- BODY -->
+    <body id="game-screen">
+        <!-- TITLE -->
+        <div id="game-title">
+            DIVISIUM
+        </div>
+
+
+        <!-- GAME BOARD -->
+        <div id="game-board">
+            <div id="game-over-modal">
+                Game&nbsp;solved!
+            </div>
+            <canvas id="game-canvas"></canvas>
+            <div id="game-grid">
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div id="game-controls">
+          <button id="button-restart" class="button" style="float:left;">|<<</button>
+          <a id="game-info"></a>
+          <button id="button-undo" class="button" style="float:right;"><<</button>
+        </div>
+
+        <!-- INSTRUCTIONS -->
+        <div id="game-instructions">
+            Divide the grid into 3-cell regions, so that the digits in each region <b>sum to <span id="divisium-sum">4</span></b>. The solution is unique.
+        </div>
+
+        <!-- COPYRIGHT -->
+        <div id="game-copyright">
+            &copy; vesa.timonen at kolumbus.fi
+        </div>
+
+        <div id="debug-text"></div>
+
+        <!-- SCRIPTS -->
+        <script src="js/globals.js"></script>
+        <script src="js/UI.js"></script>
+        <script src="js/UI_window.js"></script>
+        <script src="js/UI_move.js"></script>
+        <script src="js/UI_buttons.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
