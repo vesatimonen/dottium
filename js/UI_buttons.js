@@ -73,10 +73,3 @@ elements.buttonRestart.addEventListener("mouseleave", uiMouseUp);
 elements.buttonRestart.addEventListener("mousedown",  uiMouseDown);
 elements.buttonRestart.addEventListener("touchend",   uiMouseUp);
 elements.buttonRestart.addEventListener("touchstart", uiMouseDown, {passive: true});
-
-function preventZoom(event) {
-    /* Disable double click zoom */
-    event.preventDefault();
-}
-
-elements.screen.addEventListener("click", preventZoom);
