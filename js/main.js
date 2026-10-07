@@ -82,7 +82,7 @@ elements.gameOver.addEventListener("touchend",   modalClick, {passive: true});
  *****************************************************************************/
 function gameStart(level) {
     /* Check level value */
-    if (level == undefined || level < 0) {
+    if (level == undefined || isNaN(level) || level < 0) {
         level = 0;
     }
     if (level >= options.challenges.length) {
