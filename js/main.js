@@ -90,8 +90,10 @@ function gameStart(level) {
     }
 
     /* Initialize game */
-    document.getElementById("dottium-sum").innerHTML = "4";
     globals.game.init(level, options.challenges[level].info);
+
+    /* Show target sum */
+    document.getElementById("dottium-sum").innerHTML = globals.game.board.targetSum;
 
     /* Save game point */
     localStorage.setItem(globals.storage, JSON.stringify(globals.game.level));
