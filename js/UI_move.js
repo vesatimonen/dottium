@@ -34,17 +34,17 @@ function uiClick(event) {
     }
 
     /* Get clock position */
-    move = uiMovePosition(event);
-    X = move.X;
-    Y = move.Y;
+    let move = uiMovePosition(event);
+    let X = move.X;
+    let Y = move.Y;
 
     /* Closest wall */
-    Xwall = Math.round(X);
-    Ywall = Math.round(Y);
+    let Xwall = Math.round(X);
+    let Ywall = Math.round(Y);
 
     /* Current cell */
-    Xcell = Math.floor(X);
-    Ycell = Math.floor(Y);
+    let Xcell = Math.floor(X);
+    let Ycell = Math.floor(Y);
 
     /* Check limits */
     if (Ycell < 0 || Ycell >= globals.game.board.height ||
@@ -53,8 +53,8 @@ function uiClick(event) {
     }
 
     /* Direction from wall */
-    Xdelta = Math.abs(X - Xwall);
-    Ydelta = Math.abs(Y - Ywall);
+    let Xdelta = Math.abs(X - Xwall);
+    let Ydelta = Math.abs(Y - Ywall);
     if (Xdelta < Ydelta) {
         if (Ydelta - Xdelta > 0.0) {
             /* Vertical wall */
