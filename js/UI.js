@@ -164,6 +164,7 @@ function uiBoardSetup(board) {
  *****************************************************************************/
 function uiGridAnimationEnd(event) {
     event.stopPropagation();
+    globals.animating = false;
 
     if (globals.game.level + 1 >= options.challenges.length) {
         /* Show game over modal */
@@ -186,6 +187,7 @@ function uiRedraw() {
     /* Check if end of level */
     if (globals.game.board.solved()) {
         /* Start animation */
+        globals.animating = true;
         elements.board.addEventListener("animationend", uiGridAnimationEnd);
         elements.board.style.animation = "none";
         elements.board.offsetHeight; /* trigger reflow */

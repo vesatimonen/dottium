@@ -28,6 +28,11 @@ function uiMovePosition(event) {
  * Event handlers
  *****************************************************************************/
 function uiClick(event) {
+    /* Ignore clicks during solve animation */
+    if (globals.animating) {
+        return false;
+    }
+
     /* Get clock position */
     move = uiMovePosition(event);
     X = move.X;

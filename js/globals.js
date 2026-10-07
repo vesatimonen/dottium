@@ -5,6 +5,7 @@ var globals = {
     game:         undefined,
     boardMaxSize: 9,
     cellSize:     undefined,
+    animating:    false,
 };
 
 /*****************************************************************************
