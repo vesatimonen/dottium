@@ -78,7 +78,6 @@ function modalClick(event) {
 }
 
 elements.gameOver.addEventListener("click",      modalClick);
-elements.gameOver.addEventListener("touchend",   modalClick, {passive: true});
 
 
 /*****************************************************************************

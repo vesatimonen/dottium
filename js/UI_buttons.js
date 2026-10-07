@@ -43,6 +43,9 @@ function uiMouseDown(event) {
         return false;
     }
 
+    /* Stop any old timer first */
+    clearInterval(restartTimer);
+
     restartTimer = setInterval(
                         function() {
                             if (globals.game.level == 0) {
