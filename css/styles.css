@@ -58,6 +58,8 @@
     touch-action:   pinch-zoom;
 
     font-size:      calc(0.08 * var(--game-screen-max-width)); /* 8vm of max-width */
+
+    font-family:    'Oswald', sans-serif;
 }
 
 @media screen and (max-width: 640px) {
@@ -110,7 +112,7 @@
     margin:         0 auto;
     float:          left;
 
-    font-family:    Courier New, monospace;
+    font-family:    'Oswald', sans-serif;
 
     background:     none;
 }
