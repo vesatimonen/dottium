@@ -90,7 +90,7 @@ function gameStart(level) {
     }
 
     /* Initialize game */
-    document.getElementById("divisium-sum").innerHTML = "4";
+    document.getElementById("dottium-sum").innerHTML = "4";
     globals.game.init(level, options.challenges[level].info);
 
     /* Save game point */
@@ -109,7 +109,7 @@ function gameStart(level) {
 
 window.onload = function () {
     options.challenges = defaultChallengeSet;
-    globals.storage = "divisium-4/game-level";
+    globals.storage = "dottium/game-level";
 
     /* Parse options */
     parseOptions();
