@@ -34,7 +34,11 @@ function parseOptions() {
     const levelOption = url.searchParams.get("level");
     if (levelOption == null) {
         /* Read from storage */
-        options.level = JSON.parse(localStorage.getItem(globals.storage));
+        try {
+            options.level = JSON.parse(localStorage.getItem(globals.storage));
+        } catch (error) {
+            options.level = 0; /* Bad or blocked storage */
+        }
     } else {
         options.level = Number(levelOption - 1);
     }
@@ -96,7 +100,11 @@ function gameStart(level) {
     document.getElementById("dottium-sum").innerHTML = globals.game.board.targetSum;
 
     /* Save game point */
-    localStorage.setItem(globals.storage, JSON.stringify(globals.game.level));
+    try {
+        localStorage.setItem(globals.storage, JSON.stringify(globals.game.level));
+    } catch (error) {
+        /* Storage blocked, skip save */
+    }
 
     /* Debug text */
     if (options.challenges == debugChallengeSet) {
