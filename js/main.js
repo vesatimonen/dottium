@@ -45,21 +45,28 @@ function parseOptions() {
 
     /* Challenge option */
     var challengeOption = url.searchParams.getAll("challenge");
-    if (challengeOption.length == 0) {
-    } else {
-        if (challengeOption.length > 0) {
-            options.challenges = [];
-            for (let index = 0; index < challengeOption.length; index++) {
-                /* Convert URL special characters */
-                challengeOption[index] = challengeOption[index].replace("%3E",'>');
+    if (challengeOption.length > 0) {
+        options.challenges = [];
+        for (let index = 0; index < challengeOption.length; index++) {
+            /* Convert URL special characters */
+            challengeOption[index] = challengeOption[index].replace("%3E",'>');
 
-                /* Insert it to manual challenges table */
-                options.challenges.push({info: challengeOption[index]});
-            }
+            /* Insert it to manual challenges table */
+            options.challenges.push({info: challengeOption[index]});
+        }
 
-            /* Set manual challenges to be played */
-            globals.storage = globals.storage + "-manual";
-            options.level   = 0;
+        /* Set manual challenges to be played */
+        globals.storage = globals.storage + "-manual";
+        options.level   = 0;
+    }
+
+    var languageOption = url.searchParams.get("language");
+    if (languageOption.length > 0) {
+        switch (languageOption) {
+            case "FIN":
+                options.language = languageOption;
+                elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään.";
+                break;
         }
     }
 }
@@ -94,9 +101,6 @@ function gameStart(level) {
 
     /* Initialize game */
     globals.game.init(level, options.challenges[level].info);
-
-    /* Show target sum */
-    document.getElementById("dottium-sum").innerHTML = globals.game.board.targetSum;
 
     /* Save game point */
     try {

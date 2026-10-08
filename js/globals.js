@@ -13,7 +13,8 @@ var globals = {
  *****************************************************************************/
 var options = {
     challenges: [],
-    level:      0
+    level:      0,
+    language:   "ENG"
 };
 
 /*****************************************************************************
@@ -22,12 +23,15 @@ var options = {
 const elements = {
     screen:         document.getElementById("game-screen"),
     board:          document.getElementById("game-board"),
+    canvas:         document.getElementById('game-canvas'),
     grid:           document.getElementById("game-grid"),
 
-    canvas:         document.getElementById('game-canvas'),
-    gameOver:       document.getElementById("game-over-modal"),
+    instructions:   document.getElementById("game-instructions"),
+
     buttonRestart:  document.getElementById("button-restart"),
     buttonUndo:     document.getElementById("button-undo"),
+
+    gameOver:       document.getElementById("game-over-modal"),
 
     debug:          document.getElementById("debug-text")
 };
