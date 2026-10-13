@@ -28,6 +28,13 @@ function parseOptions() {
     /* Create URL */
     const url = new URL(newUrl);
 
+    /* Set option, before level so storage key is right */
+    const setOption = url.searchParams.get("set");
+    if (setOption == "debug") {
+        options.challenges = debugChallengeSet;
+        globals.storage    = globals.storage + "-debug";
+    }
+
     /* Level option */
     const levelOption = url.searchParams.get("level");
     if (levelOption == null) {
@@ -110,7 +117,7 @@ function gameStart(level) {
 
     /* Debug text */
     if (options.challenges == debugChallengeSet) {
-        elements.debug.innerHTML = options.challenges[level].info.split("#")[0];
+//        elements.debug.innerHTML = options.challenges[level].info.split(/[>$#]/)[0];
     }
 
     /* Setup board */
