@@ -209,7 +209,7 @@ class Board {
 
     resolved(x, y) {
         return false; // ???
-        var roomId = this.roomId[x][y];
+        let roomId = this.roomId[x][y];
 
         if (roomId == undefined) {
             return false;
@@ -228,11 +228,11 @@ class Board {
     /* Initialize game */
     init(info) {
         /* Parse board size */
-        var boardInfo   = info.split(/[>$#]/)[1];
-        var boardSize   = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
+        const boardInfo = info.split(/[>$#]/)[1];
+        const boardSize = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
+        const infoParts = boardInfo.split('.'); /* size.cols.rows.walls.rooms */
         this.width      = parseInt(boardSize[1]);
         this.height     = parseInt(boardSize[2]);
-        var infoParts  = boardInfo.split('.'); /* size.cols.rows.walls.rooms */
 
         /* Parse col hints */
         this.colHints = parseHints(infoParts[1]);
@@ -243,8 +243,8 @@ class Board {
         /* Parse walls, one hex digit per checkered cell */
         this.verticalWalls   = array2D(this.width + 1, this.height, 0);
         this.horizontalWalls = array2D(this.width, this.height + 1, 0);
-        var wallText  = infoParts[3];
-        var wallIndex = 0;
+        const wallText = infoParts[3];
+        let wallIndex  = 0;
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
                 if ((x + y) % 2 == 0) {
@@ -295,7 +295,7 @@ class Game {
     }
 
     makeMove(x, y) {
-        var polarity = this.board.toggleHorizontalWall(x, y);
+        let polarity = this.board.toggleHorizontalWall(x, y);
 
         /* Save move */
         this.moves.push({x: x, y: y});
