@@ -84,14 +84,11 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
-/* Hint color by status: dark open, grey done, orange over */
+/* Hint color by status: dark open and over, grey done */
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
             context.fillStyle = "#7A8C99";
-            break;
-        case HINT_OVER:
-            context.fillStyle = "#E06A00";
             break;
         default:
             context.fillStyle = "#202020";
