@@ -48,15 +48,21 @@ function uiCellRedraw(board, x, y) {
 function uiElementsRedraw(board) {
     const context = elements.canvas.getContext('2d');
 
-    /* Set canvas size and clear it */
+    /* Line style for walls and frame */
+    const lineWidth   = 2.0;
+
+    /* Grid size in pixels */
+    const gridWidth  = globals.cellSize * board.width;
+    const gridHeight = globals.cellSize * board.height;
+
+    /* Canvas fills board, setting size also clears it */
     const pixelRatio = window.devicePixelRatio || 1;
-    elements.canvas.width = elements.grid.clientWidth * pixelRatio;
-    elements.canvas.height = elements.grid.clientHeight * pixelRatio;
+    elements.canvas.width  = elements.canvas.clientWidth  * pixelRatio;
+    elements.canvas.height = elements.canvas.clientHeight * pixelRatio;
     context.scale(pixelRatio, pixelRatio);
-    context.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
 
     /* Draw dots in cell centers */
-    const dotRadius = 2.0;
+    const dotRadius = 1.5;
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
             context.beginPath();
@@ -67,7 +73,6 @@ function uiElementsRedraw(board) {
     }
 
     /* Draw walls */
-    const lineWidth = 3;
     context.beginPath();
     context.lineWidth = lineWidth;
     context.lineCap = "round"; /* Smooth wall ends and corners */
@@ -93,6 +98,12 @@ function uiElementsRedraw(board) {
         }
     }
 
+    context.stroke();
+
+    /* Draw frame inset half a line so it fits in canvas */
+    const inset = lineWidth / 2;
+    context.beginPath();
+    context.rect(inset, inset, gridWidth - lineWidth, gridHeight - lineWidth);
     context.stroke();
 }
 
