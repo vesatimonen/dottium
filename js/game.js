@@ -228,7 +228,8 @@ class Board {
     /* Initialize game */
     init(info) {
         /* Parse board size */
-        const boardInfo = info.split(/[>$#]/)[1];
+        const infoSplit = info.split(/[>$#]/);
+        const boardInfo = infoSplit[infoSplit.length - 1]; /* Part after '>', or all if no prefix */
         const boardSize = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
         const infoParts = boardInfo.split('.'); /* size.cols.rows.walls.rooms */
         this.width      = parseInt(boardSize[1]);
