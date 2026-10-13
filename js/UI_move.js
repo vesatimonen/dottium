@@ -86,22 +86,14 @@ function uiPointerDown(event) {
     const move = uiMovePosition(event);
     const board = globals.game.board;
 
-    /* Closest cell center */
-    let Xcell = Math.floor(move.X);
-    let Ycell = Math.floor(move.Y);
+    /* Cell under pointer */
+    const Xcell = Math.floor(move.X);
+    const Ycell = Math.floor(move.Y);
 
-    /* Clamp to board, border clicks go to edge cell */
-    if (Xcell < 0) {
-        Xcell = 0;
-    }
-    if (Xcell > board.width - 1) {
-        Xcell = board.width - 1;
-    }
-    if (Ycell < 0) {
-        Ycell = 0;
-    }
-    if (Ycell > board.height - 1) {
-        Ycell = board.height - 1;
+    /* Ignore presses in hint margin */
+    if (Xcell < 0 || Xcell > board.width - 1 ||
+        Ycell < 0 || Ycell > board.height - 1) {
+        return false;
     }
 
     /* Toggle cell, new item is used for painting */
