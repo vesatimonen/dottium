@@ -172,8 +172,10 @@ class Board {
 
         /* Parse room hints */
 
-        /* Initialize board items */
+        /* Initialize board content */
         this.items = array2D(this.width, this.height, 0);
+
+        return; // ???
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 this.items[x][y] = parseInt(boardItems[y * this.width + x]);
