@@ -106,7 +106,7 @@ function uiColHintsDraw(context, board) {
     const gridHeight = globals.cellSize * board.height;
 
     const fontYShift  = 0.24 * globals.cellSize;
-    const placeYShift = 0.10 * globals.cellSize;
+    const placeYShift = 0.08 * globals.cellSize;
 
     uiHintStyleSet(context);
 
@@ -128,7 +128,7 @@ function uiRowHintsDraw(context, board) {
     const gridWidth = globals.cellSize * board.width;
 
     const fontYShift  = 0.24 * globals.cellSize;
-    const placeXShift = 0.20 * globals.cellSize;
+    const placeXShift = 0.18 * globals.cellSize;
 
     uiHintStyleSet(context);
 
