@@ -17,6 +17,12 @@ function array2D(width, height, value) {
     return arr;
 }
 
+/* Wall mask bits, same as dottium-ai */
+const WALL_MASK_UP    = 0x01;
+const WALL_MASK_RIGHT = 0x02;
+const WALL_MASK_DOWN  = 0x04;
+const WALL_MASK_LEFT  = 0x08;
+
 /* Parse hint string, '-' means no hint */
 function parseHints(text) {
     let hints = [];
@@ -67,15 +73,27 @@ class Board {
         return this.horizontalWalls[x][y];
     }
 
-    setHorizontalWall(x, y, value) {
-        this.horizontalWalls[x][y] = value;
+    /* Set walls using mask */
+    setWall(x, y, mask) {
+        if ((mask & WALL_MASK_UP) > 0 && y > 0) {
+            this.horizontalWalls[x][y] = 1;
+        }
+        if ((mask & WALL_MASK_RIGHT) > 0 && x < this.width - 1) {
+            this.verticalWalls[x + 1][y] = 1;
+        }
+        if ((mask & WALL_MASK_DOWN) > 0 && y < this.height - 1) {
+            this.horizontalWalls[x][y + 1] = 1;
+        }
+        if ((mask & WALL_MASK_LEFT) > 0 && x > 0) {
+            this.verticalWalls[x][y] = 1;
+        }
     }
 
     toggleHorizontalWall(x, y) {
         if (this.getHorizontalWall(x, y) == 1) {
-            this.setHorizontalWall(x, y, 0);
+            this.horizontalWalls[x][y] = 0;
         } else {
-            this.setHorizontalWall(x, y, 1);
+            this.horizontalWalls[x][y] = 1;
         }
 
         this.updateRoomStatistics();
@@ -189,9 +207,19 @@ class Board {
         /* Parse row hints */
         this.rowHints = parseHints(boardParts[2]);
 
-        /* Parse walls */
+        /* Parse walls, one hex digit per checkered cell */
         this.verticalWalls   = array2D(this.width + 1, this.height, 0);
         this.horizontalWalls = array2D(this.width, this.height + 1, 0);
+        var wallText  = boardParts[3];
+        var wallIndex = 0;
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                if ((x + y) % 2 == 0) {
+                    this.setWall(x, y, parseInt(wallText[wallIndex], 16));
+                    wallIndex++;
+                }
+            }
+        }
 
         /* Parse room hints */
 
