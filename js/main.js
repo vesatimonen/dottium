@@ -77,6 +77,7 @@ function parseOptions() {
  *****************************************************************************/
 function modalClick(event) {
     event.preventDefault();
+    event.stopPropagation(); /* Keep click off the board */
 
     elements.gameOver.style.visibility = "hidden";
     elements.board.style.visibility     = "visible";
