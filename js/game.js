@@ -67,6 +67,11 @@ class Board {
         /* Board content */
         this.items = [[undefined]];
 
+        /* Dot counts */
+        this.roomDotCount = [undefined];
+        this.rowDotCount  = [undefined];
+        this.colDotCount  = [undefined];
+
         /* Misc ??? */
         this.roomResolved = 0;
     }
@@ -94,7 +99,24 @@ class Board {
             return false;
         }
 
+        const roomId = this.roomId[x][y];
+
+        /* Remove old dot from counts */
+        if (this.items[x][y] == ITEM_DOT) {
+            this.roomDotCount[roomId]--;
+            this.rowDotCount[y]--;
+            this.colDotCount[x]--;
+        }
+
         this.items[x][y] = item;
+
+        /* Add new dot to counts */
+        if (item == ITEM_DOT) {
+            this.roomDotCount[roomId]++;
+            this.rowDotCount[y]++;
+            this.colDotCount[x]++;
+        }
+
         return true;
     }
 
@@ -190,14 +212,11 @@ class Board {
         return false; // ???
         /* Initialize room statistics */
         this.roomResolved = 0;
-        this.roomCount    = 0;
 
         /* Find first free and fill */
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 if (this.roomId[x][y] == 0) {
-                    this.roomCount++;
-
                     if (this.resolved(x, y)) {
                         this.roomResolved++;
                     }
@@ -263,6 +282,11 @@ class Board {
 
         /* Initialize board content */
         this.items = array2D(this.width, this.height, ITEM_NONE);
+
+        /* Clear dot counts, board is empty */
+        this.roomDotCount = new Array(this.roomCount).fill(0);
+        this.rowDotCount  = new Array(this.height).fill(0);
+        this.colDotCount  = new Array(this.width).fill(0);
 
         return; // ???
 
