@@ -1,4 +1,21 @@
 
+/*** Oswald font, self-hosted, license in fonts/OFL.txt ***/
+@font-face {
+    font-family:    'Oswald';
+    font-style:     normal;
+    font-weight:    400;
+    font-display:   swap;
+    src:            url('../fonts/oswald-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+    font-family:    'Oswald';
+    font-style:     normal;
+    font-weight:    700;
+    font-display:   swap;
+    src:            url('../fonts/oswald-latin-700-normal.woff2') format('woff2');
+}
+
 :root {
     --game-screen-max-width: 640px;
     --game-screen-min-width: 320px;
