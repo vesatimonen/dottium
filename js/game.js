@@ -156,16 +156,21 @@ class Board {
 
     /* Initialize game */
     init(info) {
-        /* Parse board configuration */
+        /* Parse board size */
         var boardInfo   = info.split(/[>$#]/)[1];
         var boardSize   = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
         this.width      = parseInt(boardSize[1]);
         this.height     = parseInt(boardSize[2]);
         var boardItems = boardInfo.split('-')[1];
 
-        /* Initialize walls, one more line than cells */
+        /* Parse col hints */
+        /* Parse row hints */
+
+        /* Parse walls */
         this.verticalWalls   = array2D(this.width + 1, this.height, 0);
         this.horizontalWalls = array2D(this.width, this.height + 1, 0);
+
+        /* Parse room hints */
 
         /* Initialize board items */
         this.items = array2D(this.width, this.height, 0);
