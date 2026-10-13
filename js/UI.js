@@ -63,10 +63,10 @@ function uiDotsDraw(context, board) {
     }
 }
 
-/* Draw blocks as short line in cell center, same as code_svg.c */
+/* Draw blocks as dash in cell center, sized to match dot */
 function uiBlocksDraw(context, board) {
     context.beginPath();
-    context.lineWidth   = 0.07 * globals.cellSize;
+    context.lineWidth   = 0.06 * globals.cellSize; /* Same as dot ring */
     context.lineCap     = "round";
     context.strokeStyle = "#202020";
 
@@ -76,8 +76,8 @@ function uiBlocksDraw(context, board) {
                 continue;
             }
 
-            context.moveTo(globals.cellSize * (x + 0.4), globals.cellSize * (y + 0.5));
-            context.lineTo(globals.cellSize * (x + 0.6), globals.cellSize * (y + 0.5));
+            context.moveTo(globals.cellSize * (x + 0.35), globals.cellSize * (y + 0.5));
+            context.lineTo(globals.cellSize * (x + 0.65), globals.cellSize * (y + 0.5));
         }
     }
 
