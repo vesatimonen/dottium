@@ -88,7 +88,7 @@ function uiHintStyleSet(context) {
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
-            context.fillStyle = "#7A8C99";
+            context.fillStyle = "rgba(32, 32, 32, 0.25)"; /* Faded dark, takes tint from background */
             break;
         case HINT_OVER:
             context.fillStyle = "#C81E1E";
