@@ -28,12 +28,8 @@ function uiCellRedraw(board, x, y) {
     /* Get DOM element for counter */
     let cell = document.getElementById("cell-" + x + "-" + y);
 
-    /* Set value on board */
-    if (board.items[x][y] != 0) {
-        cell.innerHTML = board.items[x][y];
-    } else {
-        cell.innerHTML = '';
-    }
+    /* No text in cell, items drawn on canvas */
+    cell.innerHTML = '';
 
     /* Set background */
     if (board.resolved(x, y)) {
@@ -44,6 +40,49 @@ function uiCellRedraw(board, x, y) {
 
 }
 
+
+/* Draw dots as white circle with dark ring, same as code_svg.c */
+function uiDotsDraw(context, board) {
+    const dotRadius = 0.22 * globals.cellSize;
+
+    context.lineWidth   = 0.05 * globals.cellSize;
+    context.strokeStyle = "#202020";
+    context.fillStyle   = "#FFFFFF";
+
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            if (board.getItem(x, y) != ITEM_DOT) {
+                continue;
+            }
+
+            context.beginPath();
+            context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), dotRadius, 0, 2 * Math.PI, false);
+            context.fill();
+            context.stroke();
+        }
+    }
+}
+
+/* Draw blocks as short line in cell center, same as code_svg.c */
+function uiBlocksDraw(context, board) {
+    context.beginPath();
+    context.lineWidth   = 0.07 * globals.cellSize;
+    context.lineCap     = "round";
+    context.strokeStyle = "#202020";
+
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            if (board.getItem(x, y) != ITEM_BLOCK) {
+                continue;
+            }
+
+            context.moveTo(globals.cellSize * (x + 0.4), globals.cellSize * (y + 0.5));
+            context.lineTo(globals.cellSize * (x + 0.6), globals.cellSize * (y + 0.5));
+        }
+    }
+
+    context.stroke();
+}
 
 /* Set text style for hints */
 function uiHintStyleSet(context) {
@@ -153,6 +192,12 @@ function uiElementsRedraw(board) {
             context.fill();
         }
     }
+
+    /* Draw blocks */
+    uiBlocksDraw(context, board);
+
+    /* Draw dots */
+    uiDotsDraw(context, board);
 
     /* Draw walls */
     context.beginPath();
