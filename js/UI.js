@@ -84,14 +84,14 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
-/* Hint color by status: dark open, grey done, red over */
+/* Hint color by status: dark open, grey done, yellow over */
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
             context.fillStyle = "rgba(32, 32, 32, 0.25)"; /* Faded dark, takes tint from background */
             break;
         case HINT_OVER:
-            context.fillStyle = "rgba(200, 30, 30, 1.0)";
+            context.fillStyle = "rgba(240, 0, 0, 1.0)";
             break;
         default:
             context.fillStyle = "rgba(32, 32, 32, 1.0)";
