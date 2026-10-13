@@ -4,6 +4,7 @@
 const globals = {
     game:         undefined,
     boardMaxSize: 9,
+    boardMargin:  1, /* Hint margin around board, in cells */
     cellSize:     undefined,
     animating:    false,
 };

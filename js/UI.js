@@ -55,11 +55,15 @@ function uiElementsRedraw(board) {
     const gridWidth  = globals.cellSize * board.width;
     const gridHeight = globals.cellSize * board.height;
 
-    /* Canvas fills board, setting size also clears it */
+    /* Canvas fills board with margin, setting size also clears it */
     const pixelRatio = window.devicePixelRatio || 1;
     elements.canvas.width  = elements.canvas.clientWidth  * pixelRatio;
     elements.canvas.height = elements.canvas.clientHeight * pixelRatio;
     context.scale(pixelRatio, pixelRatio);
+
+    /* Grid 0,0 after margin, margin is at negative coordinates */
+    const margin = globals.cellSize * globals.boardMargin;
+    context.translate(margin, margin);
 
     /* Draw dots in cell centers */
     const dotRadius = 1.5;
@@ -100,10 +104,9 @@ function uiElementsRedraw(board) {
 
     context.stroke();
 
-    /* Draw frame inset half a line so it fits in canvas */
-    const inset = lineWidth / 2;
+    /* Draw frame on grid edge */
     context.beginPath();
-    context.rect(inset, inset, gridWidth - lineWidth, gridHeight - lineWidth);
+    context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
 }
 
@@ -132,15 +135,16 @@ function uiBoardRedraw(board) {
  *****************************************************************************/
 function uiBoardSetup(board) {
 
-    /* Calculate board grid size */
-    globals.cellSize = Math.floor((elements.screen.clientWidth) / globals.boardMaxSize); /* 9 = Maximum board X-size */
+    /* Calculate board grid size, margin on both sides takes room too */
+    globals.cellSize = Math.floor((elements.screen.clientWidth) / (globals.boardMaxSize + 2 * globals.boardMargin));
 
     /* Clear elements in board */
     while (elements.grid.firstChild) {
         elements.grid.removeChild(elements.grid.firstChild);
     }
 
-    /* Center the board */
+    /* Center the board, margin as padding so canvas covers it */
+    elements.board.style.padding = globals.cellSize * globals.boardMargin + "px";
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 

@@ -93,7 +93,7 @@
 }
 
 #game-canvas {
-    position: absolute; /* Fills board, same size as grid */
+    position: absolute; /* Fills board incl. hint margin */
     left: 0;
     top: 0;
     width: 100%;
