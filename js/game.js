@@ -20,12 +20,11 @@ function array2D(width, height, value) {
 /* Visible board state */
 class Board {
     constructor() {
-        /* Board configuration */
+        /* Board size */
         this.width     = undefined;
         this.height    = undefined;
-        this.values    = [[undefined]];
 
-        /* Board walls, [x][y] */
+        /* Board walls */
         this.horizontalWalls = [[undefined]];
         this.verticalWalls   = [[undefined]];
 
@@ -35,6 +34,9 @@ class Board {
         this.roomArea     = [undefined];
         this.roomResolved = 0;
         this.roomCount    = 0;
+
+        /* Board content */
+        this.items = [[undefined]];
     }
 
     /* Wall methods */
@@ -78,7 +80,7 @@ class Board {
 
         /* Fill this cell */
         this.roomId[x][y] = id;
-        this.roomSum[id] += this.values[x][y];
+        this.roomSum[id] += this.items[x][y];
         this.roomArea[id]++;
 
         /* Fill left */
@@ -159,17 +161,17 @@ class Board {
         var boardSize   = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
         this.width      = parseInt(boardSize[1]);
         this.height     = parseInt(boardSize[2]);
-        var boardValues = boardInfo.split('-')[1];
+        var boardItems = boardInfo.split('-')[1];
 
         /* Initialize walls, one more line than cells */
         this.verticalWalls   = array2D(this.width + 1, this.height, 0);
         this.horizontalWalls = array2D(this.width, this.height + 1, 0);
 
-        /* Initialize board values */
-        this.values = array2D(this.width, this.height, 0);
+        /* Initialize board items */
+        this.items = array2D(this.width, this.height, 0);
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                this.values[x][y] = parseInt(boardValues[y * this.width + x]);
+                this.items[x][y] = parseInt(boardItems[y * this.width + x]);
             }
         }
 
