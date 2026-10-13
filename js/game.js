@@ -23,6 +23,11 @@ const WALL_MASK_RIGHT = 0x02;
 const WALL_MASK_DOWN  = 0x04;
 const WALL_MASK_LEFT  = 0x08;
 
+/* Cell items, same as dottium-ai */
+const ITEM_NONE  = 0;
+const ITEM_DOT   = 1;
+const ITEM_BLOCK = 2;
+
 /* Parse hint string, '-' means no hint */
 function parseHints(text) {
     let hints = [];
@@ -64,6 +69,33 @@ class Board {
 
         /* Misc ??? */
         this.roomResolved = 0;
+    }
+
+    /* Item methods */
+    getItem(x, y) {
+        /* Check limits */
+        if (x < 0 || x >= this.width ||
+            y < 0 || y >= this.height) {
+            return undefined;
+        }
+
+        return this.items[x][y];
+    }
+
+    setItem(x, y, item) {
+        /* Check limits */
+        if (x < 0 || x >= this.width ||
+            y < 0 || y >= this.height) {
+            return false;
+        }
+
+        /* Check item value */
+        if (item != ITEM_NONE && item != ITEM_DOT && item != ITEM_BLOCK) {
+            return false;
+        }
+
+        this.items[x][y] = item;
+        return true;
     }
 
     /* Wall methods */
@@ -229,7 +261,7 @@ class Board {
         this.roomHints = parseHints(infoParts[4]);
 
         /* Initialize board content */
-        this.items = array2D(this.width, this.height, 0);
+        this.items = array2D(this.width, this.height, ITEM_NONE);
 
         return; // ???
 
