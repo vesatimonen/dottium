@@ -94,6 +94,35 @@ function uiRowHintsDraw(context, board) {
     }
 }
 
+/* Draw room hints in top-left corner of room's first cell, same as code_svg.c */
+function uiRoomHintsDraw(context, board) {
+    const fontYShift = 0.23 * globals.cellSize;
+    let roomHintDrawn = [];
+
+    uiHintStyleSet(context);
+    context.font = (0.4 * globals.cellSize) + "px Oswald, sans-serif";
+
+    /* Row by row, so first cell is top-left of room */
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            const roomId = board.roomId[x][y];
+
+            /* Hint already drawn for this room */
+            if (roomHintDrawn[roomId]) {
+                continue;
+            }
+            roomHintDrawn[roomId] = true;
+
+            /* No hint, nothing to draw */
+            if (board.roomHints[roomId] == undefined) {
+                continue;
+            }
+
+            context.fillText(board.roomHints[roomId], globals.cellSize * (x + 1 / 6), globals.cellSize * (y + 1 / 6) + fontYShift);
+        }
+    }
+}
+
 function uiElementsRedraw(board) {
     const context = elements.canvas.getContext('2d');
 
@@ -161,6 +190,7 @@ function uiElementsRedraw(board) {
     /* Draw hints in margin */
     uiColHintsDraw(context, board);
     uiRowHintsDraw(context, board);
+    uiRoomHintsDraw(context, board);
 }
 
 /* Redraw when Oswald is loaded, canvas does not do it itself */
