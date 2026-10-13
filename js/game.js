@@ -53,15 +53,18 @@ class Board {
         this.horizontalWalls = [[undefined]];
         this.verticalWalls   = [[undefined]];
 
-        /* Room statistics */
-        this.roomId       = [[undefined]];
-        this.roomSum      = [undefined];
-        this.roomArea     = [undefined];
-        this.roomResolved = 0;
+        /* Rooms info */
         this.roomCount    = 0;
+        this.roomId       = [[undefined]];
+        this.roomHints    = [undefined];
 
         /* Board content */
         this.items = [[undefined]];
+
+        /* Misc ??? */
+        this.roomSum      = [undefined];
+        this.roomArea     = [undefined];
+        this.roomResolved = 0;
     }
 
     /* Wall methods */
