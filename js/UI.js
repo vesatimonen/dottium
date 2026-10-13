@@ -113,13 +113,7 @@ function uiColHintsDraw(context, board) {
             continue;
         }
 
-        /* Over col is shaded, so keep its hint dark */
-        let status = board.colStatus(x);
-        if (status == HINT_OVER) {
-            status = HINT_OPEN;
-        }
-
-        uiHintStatusSet(context, status, 0.6 * globals.cellSize);
+        uiHintStatusSet(context, board.colStatus(x), 0.6 * globals.cellSize);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
     }
@@ -141,13 +135,7 @@ function uiRowHintsDraw(context, board) {
             continue;
         }
 
-        /* Over row is shaded, so keep its hint dark */
-        let status = board.rowStatus(y);
-        if (status == HINT_OVER) {
-            status = HINT_OPEN;
-        }
-
-        uiHintStatusSet(context, status, 0.6 * globals.cellSize);
+        uiHintStatusSet(context, board.rowStatus(y), 0.6 * globals.cellSize);
         context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
         context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
     }
@@ -195,31 +183,45 @@ function uiRoomHintsDraw(context, board) {
                 continue;
             }
 
-            /* Over room is shaded, so keep its hint dark */
-            let status = board.roomStatus(roomId);
-            if (status == HINT_OVER) {
-                status = HINT_OPEN;
-            }
-
-            uiHintStatusSet(context, status, 0.4 * globals.cellSize);
+            uiHintStatusSet(context, board.roomStatus(roomId), 0.4 * globals.cellSize);
             context.fillText(board.roomHints[roomId], globals.cellSize * (x + 1 / 6), globals.cellSize * (y + 1 / 6) + fontYShift);
         }
     }
 }
 
-/* Fill cells of rooms, rows and cols with more dots than hint */
+/* Stripe cells of rooms, rows and cols with more dots than hint */
 function uiOverDraw(context, board) {
-    context.fillStyle = "#FF8A8A";
+    const gridWidth  = globals.cellSize * board.width;
+    const gridHeight = globals.cellSize * board.height;
+    const stripeGap  = 0.25 * globals.cellSize;
+
+    /* Collect over cells as clip area */
+    context.save();
+    context.beginPath();
 
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
             if (board.roomStatus(board.roomId[x][y]) == HINT_OVER ||
                 board.rowStatus(y) == HINT_OVER ||
                 board.colStatus(x) == HINT_OVER) {
-                context.fillRect(globals.cellSize * x, globals.cellSize * y, globals.cellSize, globals.cellSize);
+                context.rect(globals.cellSize * x, globals.cellSize * y, globals.cellSize, globals.cellSize);
             }
         }
     }
+
+    context.clip();
+
+    /* Diagonal lines over whole grid, clip keeps them in over cells */
+    context.beginPath();
+    for (let start = -gridHeight; start < gridWidth; start += stripeGap) {
+        context.moveTo(start, gridHeight);
+        context.lineTo(start + gridHeight, 0);
+    }
+    context.lineWidth   = 1.0;
+    context.strokeStyle = "rgba(32, 32, 32, 0.4)"; /* Light, so dots stay clear */
+    context.stroke();
+
+    context.restore();
 }
 
 function uiElementsRedraw(board) {
@@ -242,7 +244,7 @@ function uiElementsRedraw(board) {
     const margin = globals.cellSize * globals.boardMargin;
     context.translate(margin, margin);
 
-    /* Shade rooms, rows and cols with too many dots, under everything else */
+    /* Stripe rooms, rows and cols with too many dots, under everything else */
     uiOverDraw(context, board);
 
     /* Draw dots in cell centers */
