@@ -146,7 +146,7 @@ function uiCopyrightDraw(context, board) {
     context.textBaseline = "alphabetic";
 
     /* Turn text to read bottom to top */
-    context.translate(gridWidth + margin - 1.0, gridHeight / 2);
+    context.translate(gridWidth + margin * 0.95, gridHeight / 2); /* Small gap to canvas edge */
     context.rotate(-Math.PI / 2);
     context.fillText("© Vesa Timonen", 0, 0);
     context.restore();
