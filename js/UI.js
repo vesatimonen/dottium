@@ -46,7 +46,7 @@ function uiCellRedraw(board, x, y) {
 
 
 function uiElementsRedraw(board) {
-    var context = elements.canvas.getContext('2d');
+    const context = elements.canvas.getContext('2d');
 
     /* Set canvas size and clear it */
     const pixelRatio = window.devicePixelRatio || 1;
@@ -56,7 +56,7 @@ function uiElementsRedraw(board) {
     context.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
 
     /* Draw dots */
-    var dotRadius = 3;
+    const dotRadius = 3;
     for (let y = 0; y <= board.height; y++) {
         for (let x = 0; x <= board.width; x++) {
             context.beginPath();
@@ -67,7 +67,7 @@ function uiElementsRedraw(board) {
     }
 
     /* Draw walls */
-    var lineWidth = 3;
+    const lineWidth = 3;
     context.beginPath();
     context.lineWidth = lineWidth;
     context.strokeStyle = "#202020";

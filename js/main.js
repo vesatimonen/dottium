@@ -2,13 +2,13 @@
 /*****************************************************************************
  * Game levels
  *****************************************************************************/
-var defaultChallengeSet = [
+const defaultChallengeSet = [
     {info: "INFO: R21 S3-6 T011324 D999999939199911111911111129111119991111299991199939119922222199991111222211111121 M4.2 >9x9.58623134-.342--6577.462205cb7633717cd4657b11b6c4db4c7d9e20a20.----2--3---3---51-132"},
     {info: "INFO: R21 S3-6 T011324 D999999939199911111911111129111119991111299991199939119922222199991111222211111121 M4.2 >9x9.58623134-.342--6577.462205cb7633717cd4657b11b6c4db4c7d9e20a20.----2--3---3---51-132"},
     {info: "INFO: R21 S3-6 T011324 D999999939199911111911111129111119991111299991199939119922222199991111222211111121 M4.2 >9x9.58623134-.342--6577.462205cb7633717cd4657b11b6c4db4c7d9e20a20.----2--3---3---51-132"},
 ];
 
-var debugChallengeSet = [
+const debugChallengeSet = [
     {info: "INFO: V20-29-19-11-02 C00-00-90 D0000000000000000000000000000 T000001 E135 S00.947 >9x9=4-312431322110003120011020003130321021201000130133143112221101122110102221122211101"},
     {info: "INFO: V36-21-12-12 C00-43-90 D0000010000000000000000000000 T000001 >9x9=3-000103000130322001221021132010130100223100110000100213100103010302031130012102030"},
 ];
@@ -19,7 +19,7 @@ var debugChallengeSet = [
  *****************************************************************************/
 function parseOptions() {
     /* Replace special characters in url */
-    var newUrl = window.location.href;
+    let newUrl = window.location.href;
     newUrl = newUrl.replace("%3E", '>'); /* Replace "%3E" -> '>' */
 
     /* Create URL */
@@ -46,7 +46,7 @@ function parseOptions() {
     }
 
     /* Challenge option */
-    var challengeOption = url.searchParams.getAll("challenge");
+    const challengeOption = url.searchParams.getAll("challenge");
     if (challengeOption.length > 0) {
         options.challenges = [];
         for (let index = 0; index < challengeOption.length; index++) {
@@ -62,7 +62,7 @@ function parseOptions() {
         options.level   = 0;
     }
 
-    var languageOption = url.searchParams.get("language");
+    const languageOption = url.searchParams.get("language");
     if (languageOption != null) {
         switch (languageOption) {
             case "FIN":
