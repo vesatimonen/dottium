@@ -43,6 +43,27 @@ function parseHints(text) {
     return hints;
 }
 
+/* Dot count matches hint, no hint matches any count */
+function hintMatch(count, hint) {
+    return hint == undefined || count == hint;
+}
+
+/* Hint status for drawing */
+const HINT_OPEN = 0; /* Fewer dots than hint, or no hint */
+const HINT_DONE = 1; /* Dots match hint */
+const HINT_OVER = 2; /* More dots than hint */
+
+/* Compare dot count to hint */
+function hintStatus(count, hint) {
+    if (hint == undefined || count < hint) {
+        return HINT_OPEN;
+    }
+    if (count == hint) {
+        return HINT_DONE;
+    }
+    return HINT_OVER;
+}
+
 /* Visible board state */
 class Board {
     constructor() {
@@ -235,13 +256,40 @@ class Board {
         }
     }
 
+    /* Hint status of row, col and room */
+    rowStatus(y) {
+        return hintStatus(this.rowDotCount[y], this.rowHints[y]);
+    }
+
+    colStatus(x) {
+        return hintStatus(this.colDotCount[x], this.colHints[x]);
+    }
+
+    roomStatus(roomId) {
+        return hintStatus(this.roomDotCount[roomId], this.roomHints[roomId]);
+    }
+
+    /* Solved when every row, col and room matches its hint */
     solved() {
-        return false; // ???
-        if (this.roomResolved == this.width * this.height / 3) {
-            return true;
-        } else {
-            return false;
+        for (let y = 0; y < this.height; y++) {
+            if (!hintMatch(this.rowDotCount[y], this.rowHints[y])) {
+                return false;
+            }
         }
+
+        for (let x = 0; x < this.width; x++) {
+            if (!hintMatch(this.colDotCount[x], this.colHints[x])) {
+                return false;
+            }
+        }
+
+        for (let roomId = 0; roomId < this.roomCount; roomId++) {
+            if (!hintMatch(this.roomDotCount[roomId], this.roomHints[roomId])) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /* Initialize game */

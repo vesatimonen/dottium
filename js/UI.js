@@ -91,6 +91,18 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
+/* Hint color by status: dark open, grey done, red over */
+function uiHintColor(status) {
+    switch (status) {
+        case HINT_DONE:
+            return "#7A8C99";
+        case HINT_OVER:
+            return "#D02020";
+        default:
+            return "#202020";
+    }
+}
+
 /* Draw col hints centered in top and bottom margin */
 function uiColHintsDraw(context, board) {
     const margin     = globals.cellSize * globals.boardMargin;
@@ -107,6 +119,7 @@ function uiColHintsDraw(context, board) {
             continue;
         }
 
+        context.fillStyle = uiHintColor(board.colStatus(x));
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
     }
@@ -128,6 +141,7 @@ function uiRowHintsDraw(context, board) {
             continue;
         }
 
+        context.fillStyle = uiHintColor(board.rowStatus(y));
         context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
         context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
     }
@@ -176,6 +190,7 @@ function uiRoomHintsDraw(context, board) {
                 continue;
             }
 
+            context.fillStyle = uiHintColor(board.roomStatus(roomId));
             context.fillText(board.roomHints[roomId], globals.cellSize * (x + 1 / 6), globals.cellSize * (y + 1 / 6) + fontYShift);
         }
     }
