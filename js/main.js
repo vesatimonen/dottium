@@ -18,8 +18,6 @@ var debugChallengeSet = [
 /*****************************************************************************
  * Parse URL options
  *****************************************************************************/
-var level_option = undefined;
-var set_option   = undefined;
 function parseOptions() {
     /* Replace special characters in url */
     var newUrl = window.location.href;

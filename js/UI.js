@@ -197,5 +197,4 @@ function uiRedraw() {
 
 
 
-//document.getElementById("debug-text").innerHTML = window.innerWidth;
 
