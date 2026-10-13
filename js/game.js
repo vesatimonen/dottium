@@ -249,19 +249,18 @@ class Board {
         var boardSize   = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
         this.width      = parseInt(boardSize[1]);
         this.height     = parseInt(boardSize[2]);
-        var boardItems = boardInfo.split('-')[1];
-        var boardParts = boardInfo.split('.'); /* size.cols.rows.walls.rooms */
+        var infoParts  = boardInfo.split('.'); /* size.cols.rows.walls.rooms */
 
         /* Parse col hints */
-        this.colHints = parseHints(boardParts[1]);
+        this.colHints = parseHints(infoParts[1]);
 
         /* Parse row hints */
-        this.rowHints = parseHints(boardParts[2]);
+        this.rowHints = parseHints(infoParts[2]);
 
         /* Parse walls, one hex digit per checkered cell */
         this.verticalWalls   = array2D(this.width + 1, this.height, 0);
         this.horizontalWalls = array2D(this.width, this.height + 1, 0);
-        var wallText  = boardParts[3];
+        var wallText  = infoParts[3];
         var wallIndex = 0;
         for (let y = 0; y < this.height; y++) {
             for (let x = 0; x < this.width; x++) {
@@ -275,17 +274,13 @@ class Board {
         /* Initialize rooms */
         this.roomsInit();
 
-        /* Parse room hints */
+        /* Parse room hints, index is room id */
+        this.roomHints = parseHints(infoParts[4]);
 
         /* Initialize board content */
         this.items = array2D(this.width, this.height, 0);
 
         return; // ???
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                this.items[x][y] = parseInt(boardItems[y * this.width + x]);
-            }
-        }
 
         /* Update room statistics */
         this.updateRoomStatistics();
