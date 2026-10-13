@@ -91,10 +91,10 @@ function uiHintStatusSet(context, status, fontSize) {
             context.fillStyle = "rgba(32, 32, 32, 0.25)"; /* Faded dark, takes tint from background */
             break;
         case HINT_OVER:
-            context.fillStyle = "#C81E1E";
+            context.fillStyle = "rgba(200, 30, 30, 1.0)";
             break;
         default:
-            context.fillStyle = "#202020";
+            context.fillStyle = "rgba(32, 32, 32, 1.0)";
     }
 
     context.font = fontSize + "px Oswald, sans-serif";
