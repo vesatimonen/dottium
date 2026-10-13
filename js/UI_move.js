@@ -58,13 +58,13 @@ function uiClick(event) {
     if (Xdelta < Ydelta) {
         /* Vertical wall */
         if (Xwall > 0 && Xwall < globals.game.board.width) {
-            globals.game.makeMove("vertical", Xwall, Ycell);
+            globals.game.makeMove(Xwall, Ycell);
             uiRedraw();
         }
     } else if (Ydelta < Xdelta) {
         /* Horizontal wall, exact tie is skipped */
         if (Ywall > 0 && Ywall < globals.game.board.height) {
-            globals.game.makeMove("horizontal", Xcell, Ywall);
+            globals.game.makeMove(Xcell, Ywall);
             uiRedraw();
         }
     }

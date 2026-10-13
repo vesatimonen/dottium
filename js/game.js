@@ -47,22 +47,6 @@ class Board {
         return this.verticalWalls[this.arrayIndex(x, y)];
     }
 
-    setVerticalWall(x, y, value) {
-        this.verticalWalls[this.arrayIndex(x, y)] = value;
-    }
-
-    toggleVerticalWall(x, y) {
-        if (this.getVerticalWall(x, y) == 1) {
-            this.setVerticalWall(x, y, 0);
-        } else {
-            this.setVerticalWall(x, y, 1);
-        }
-
-        this.updateRoomStatistics();
-
-        return this.getVerticalWall(x, y);
-    }
-
     getHorizontalWall(x, y) {
         return this.horizontalWalls[this.arrayIndex(x, y)];
     }
@@ -179,28 +163,6 @@ class Board {
         this.targetSum  = parseInt(boardSize[3]);
         var boardValues = boardInfo.split('-')[1];
 
-        /* Initialize vertical walls */
-        for (let x = 0; x < this.width + 1; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (x == 0 || x == this.width) {
-                    this.setVerticalWall(x, y, 1);
-                } else {
-                    this.setVerticalWall(x, y, 0);
-                }
-            }
-        }
-
-        /* Initialize horizontal walls */
-        for (let y = 0; y < this.height + 1; y++) {
-            for (let x = 0; x < this.width; x++) {
-                if (y == 0 || y == this.height) {
-                    this.setHorizontalWall(x, y, 1);
-                } else {
-                    this.setHorizontalWall(x, y, 0);
-                }
-            }
-        }
-
         /* Initialize board values */
         this.values = array2D(this.width, this.height, 0);
         for (let x = 0; x < this.width; x++) {
@@ -238,22 +200,11 @@ class Game {
         this.board.init(info);
     }
 
-    makeMove(direction, x, y) {
-        var polarity = undefined;
-
-        switch (direction) {
-            case "vertical":
-                polarity = this.board.toggleVerticalWall(x, y);
-                break;
-            case "horizontal":
-                polarity = this.board.toggleHorizontalWall(x, y);
-                break;
-            default:
-                return undefined;
-        }
+    makeMove(x, y) {
+        var polarity = this.board.toggleHorizontalWall(x, y);
 
         /* Save move */
-        this.moves.push({direction: direction, x: x, y: y});
+        this.moves.push({x: x, y: y});
 
         return polarity;
     }
@@ -266,17 +217,7 @@ class Game {
 
         /* Pop latest move */
         let move = this.moves.pop();
-
-        switch (move.direction) {
-            case "vertical":
-                this.board.toggleVerticalWall(move.x, move.y);
-                break;
-            case "horizontal":
-                this.board.toggleHorizontalWall(move.x, move.y);
-                break;
-            default:
-                return false;
-        }
+        this.board.toggleHorizontalWall(move.x, move.y);
 
         return true;
     }
