@@ -31,6 +31,40 @@ function uiMovePosition(event) {
 /* Item being painted, undefined when not painting */
 let paintItem = undefined;
 
+/* Last cell under pointer while painting */
+let paintLastX = undefined;
+let paintLastY = undefined;
+
+/* Paint one cell, returns true if changed */
+function uiPaintCell(x, y) {
+    const oldItem = globals.game.board.getItem(x, y);
+
+    /* Off board or already painted */
+    if (oldItem == undefined || oldItem == paintItem) {
+        return false;
+    }
+
+    globals.game.paintMove(x, y, paintItem);
+    return true;
+}
+
+/* Paint all cells on line, so fast swipes skip nothing */
+function uiPaintLine(fromX, fromY, toX, toY) {
+    const steps = Math.max(Math.abs(toX - fromX), Math.abs(toY - fromY));
+    let changed = false;
+
+    for (let step = 1; step <= steps; step++) {
+        const x = Math.round(fromX + (toX - fromX) * step / steps);
+        const y = Math.round(fromY + (toY - fromY) * step / steps);
+
+        if (uiPaintCell(x, y)) {
+            changed = true;
+        }
+    }
+
+    return changed;
+}
+
 function uiPointerDown(event) {
     /* Ignore clicks during solve animation */
     if (globals.animating) {
@@ -66,6 +100,8 @@ function uiPointerDown(event) {
 
     /* Toggle cell, new item is used for painting */
     paintItem = globals.game.makeMove(Xcell, Ycell);
+    paintLastX = Xcell;
+    paintLastY = Ycell;
 
     /* Keep getting moves outside board until release */
     elements.board.setPointerCapture(event.pointerId);
@@ -84,14 +120,19 @@ function uiPointerMove(event) {
     const Xcell = Math.floor(move.X);
     const Ycell = Math.floor(move.Y);
 
-    /* Paint only changed cells, off board is skipped */
-    const oldItem = globals.game.board.getItem(Xcell, Ycell);
-    if (oldItem == undefined || oldItem == paintItem) {
+    /* Still in same cell */
+    if (Xcell == paintLastX && Ycell == paintLastY) {
         return false;
     }
 
-    globals.game.paintMove(Xcell, Ycell, paintItem);
-    uiRedraw();
+    /* Paint from last cell to this one */
+    const changed = uiPaintLine(paintLastX, paintLastY, Xcell, Ycell);
+    paintLastX = Xcell;
+    paintLastY = Ycell;
+
+    if (changed) {
+        uiRedraw();
+    }
 }
 
 function uiPointerUp(event) {
