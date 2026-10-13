@@ -50,7 +50,6 @@ function uiHintStyleSet(context) {
     context.font         = (0.6 * globals.cellSize) + "px Oswald, sans-serif";
     context.fillStyle    = "#202020";
     context.textAlign    = "center";
-    context.textBaseline = "middle";
 }
 
 /* Draw col hints centered in top and bottom margin */
@@ -58,7 +57,7 @@ function uiColHintsDraw(context, board) {
     const margin     = globals.cellSize * globals.boardMargin;
     const gridHeight = globals.cellSize * board.height;
 
-    const fontYShift  = 0.06 * globals.cellSize;
+    const fontYShift  = 0.24 * globals.cellSize;
     const placeYShift = 0.10 * globals.cellSize;
 
     uiHintStyleSet(context);
@@ -79,7 +78,7 @@ function uiRowHintsDraw(context, board) {
     const margin    = globals.cellSize * globals.boardMargin;
     const gridWidth = globals.cellSize * board.width;
 
-    const fontYShift  = 0.06 * globals.cellSize;
+    const fontYShift  = 0.24 * globals.cellSize;
     const placeXShift = 0.20 * globals.cellSize;
 
     uiHintStyleSet(context);
