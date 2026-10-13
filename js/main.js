@@ -61,7 +61,7 @@ function parseOptions() {
     }
 
     var languageOption = url.searchParams.get("language");
-    if (languageOption.length > 0) {
+    if (languageOption != null) {
         switch (languageOption) {
             case "FIN":
                 options.language = languageOption;
