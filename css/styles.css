@@ -192,15 +192,6 @@
     text-align:     center;
 }
 
-/*** Game copyright ***/
-#game-copyright {
-    margin-top:     0; /* Right under canvas */
-    line-height:    1; /* No extra space above text */
-
-    font-size:      14px;
-    text-align:     center;
-}
-
 #debug-text {
     position: relative;
     left: 10px;

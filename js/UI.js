@@ -133,6 +133,25 @@ function uiRowHintsDraw(context, board) {
     }
 }
 
+/* Draw copyright turned up on outer edge of right margin, same as code_svg.c */
+function uiCopyrightDraw(context, board) {
+    const margin     = globals.cellSize * globals.boardMargin;
+    const gridWidth  = globals.cellSize * board.width;
+    const gridHeight = globals.cellSize * board.height;
+
+    context.save();
+    context.font         = (0.3 * globals.cellSize) + "px Courier New, monospace";
+    context.fillStyle    = "#202020";
+    context.textAlign    = "center";
+    context.textBaseline = "alphabetic";
+
+    /* Turn text to read bottom to top */
+    context.translate(gridWidth + margin - 1.0, gridHeight / 2);
+    context.rotate(-Math.PI / 2);
+    context.fillText("© Vesa Timonen", 0, 0);
+    context.restore();
+}
+
 /* Draw room hints in top-left corner of room's first cell, same as code_svg.c */
 function uiRoomHintsDraw(context, board) {
     const fontYShift = 0.23 * globals.cellSize;
@@ -236,6 +255,9 @@ function uiElementsRedraw(board) {
     uiColHintsDraw(context, board);
     uiRowHintsDraw(context, board);
     uiRoomHintsDraw(context, board);
+
+    /* Draw copyright on right side */
+    uiCopyrightDraw(context, board);
 }
 
 /* Redraw when Oswald is loaded, canvas does not do it itself */
