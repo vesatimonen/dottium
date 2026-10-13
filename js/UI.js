@@ -70,6 +70,7 @@ function uiElementsRedraw(board) {
     const lineWidth = 3;
     context.beginPath();
     context.lineWidth = lineWidth;
+    context.lineCap = "round"; /* Smooth wall ends and corners */
     context.strokeStyle = "#202020";
 
     /* Draw vertical walls */
