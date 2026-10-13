@@ -26,9 +26,9 @@ class Board {
         this.targetSum = undefined;
         this.values    = [[undefined]];
 
-        /* Board walls */
-        this.horizontalWalls = [undefined];
-        this.verticalWalls = [undefined];
+        /* Board walls, [x][y] */
+        this.horizontalWalls = [[undefined]];
+        this.verticalWalls   = [[undefined]];
 
         /* Room statistics */
         this.roomId       = [[undefined]];
@@ -39,20 +39,16 @@ class Board {
     }
 
     /* Wall methods */
-    arrayIndex(x, y) {
-        return (this.width + 1) * y + x;
-    }
-
     getVerticalWall(x, y) {
-        return this.verticalWalls[this.arrayIndex(x, y)];
+        return this.verticalWalls[x][y];
     }
 
     getHorizontalWall(x, y) {
-        return this.horizontalWalls[this.arrayIndex(x, y)];
+        return this.horizontalWalls[x][y];
     }
 
     setHorizontalWall(x, y, value) {
-        this.horizontalWalls[this.arrayIndex(x, y)] = value;
+        this.horizontalWalls[x][y] = value;
     }
 
     toggleHorizontalWall(x, y) {
@@ -166,6 +162,10 @@ class Board {
         this.height     = parseInt(boardSize[2]);
         this.targetSum  = parseInt(boardSize[3]);
         var boardValues = boardInfo.split('-')[1];
+
+        /* Initialize walls, one more line than cells */
+        this.verticalWalls   = array2D(this.width + 1, this.height, 0);
+        this.horizontalWalls = array2D(this.width, this.height + 1, 0);
 
         /* Initialize board values */
         this.values = array2D(this.width, this.height, 0);
