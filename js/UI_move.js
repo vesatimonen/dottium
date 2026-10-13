@@ -6,7 +6,8 @@ function uiMovePosition(event) {
     let X, Y;
 
     switch (event.type) {
-        case "click":
+        case "pointerdown":
+        case "pointermove":
             X = event.clientX;
             Y = event.clientY;
             break;
@@ -27,9 +28,17 @@ function uiMovePosition(event) {
 /*****************************************************************************
  * Event handlers
  *****************************************************************************/
-function uiClick(event) {
+/* Item being painted, undefined when not painting */
+let paintItem = undefined;
+
+function uiPointerDown(event) {
     /* Ignore clicks during solve animation */
     if (globals.animating) {
+        return false;
+    }
+
+    /* Only main button, and not the game over modal */
+    if (event.button != 0 || event.target == elements.gameOver) {
         return false;
     }
 
@@ -55,11 +64,45 @@ function uiClick(event) {
         Ycell = board.height - 1;
     }
 
-    globals.game.makeMove(Xcell, Ycell);
+    /* Toggle cell, new item is used for painting */
+    paintItem = globals.game.makeMove(Xcell, Ycell);
+
+    /* Keep getting moves outside board until release */
+    elements.board.setPointerCapture(event.pointerId);
+
     uiRedraw();
 }
 
-elements.board.addEventListener("click", uiClick, {passive: true});
+function uiPointerMove(event) {
+    /* Not painting or solve animation running */
+    if (paintItem == undefined || globals.animating) {
+        return false;
+    }
+
+    /* Get cell under pointer */
+    const move = uiMovePosition(event);
+    const Xcell = Math.floor(move.X);
+    const Ycell = Math.floor(move.Y);
+
+    /* Paint only changed cells, off board is skipped */
+    const oldItem = globals.game.board.getItem(Xcell, Ycell);
+    if (oldItem == undefined || oldItem == paintItem) {
+        return false;
+    }
+
+    globals.game.paintMove(Xcell, Ycell, paintItem);
+    uiRedraw();
+}
+
+function uiPointerUp(event) {
+    /* Stop painting */
+    paintItem = undefined;
+}
+
+elements.board.addEventListener("pointerdown",   uiPointerDown);
+elements.board.addEventListener("pointermove",   uiPointerMove);
+elements.board.addEventListener("pointerup",     uiPointerUp);
+elements.board.addEventListener("pointercancel", uiPointerUp);
 
 
 

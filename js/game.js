@@ -307,14 +307,29 @@ class Game {
             newItem = ITEM_NONE;
         }
 
-        if (!this.board.setItem(x, y, newItem)) {
+        return this.paintMove(x, y, newItem);
+    }
+
+    /* Set cell to item, used when painting */
+    paintMove(x, y, item) {
+        const oldItem = this.board.getItem(x, y);
+
+        /* Off board */
+        if (oldItem == undefined) {
             return undefined;
         }
+
+        /* Same item, nothing to save */
+        if (oldItem == item) {
+            return item;
+        }
+
+        this.board.setItem(x, y, item);
 
         /* Save move with old item for undo */
         this.moves.push({x: x, y: y, item: oldItem});
 
-        return newItem;
+        return item;
     }
 
     undoMove() {
