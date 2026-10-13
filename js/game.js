@@ -17,16 +17,6 @@ function array2D(width, height, value) {
     return arr;
 }
 
-/* Randomize helpers */
-var randomSeed = 0;
-function randomOwnSeed(seed) {
-    randomSeed = seed;
-}
-function randomOwn() {
-    randomSeed = (randomSeed * 1103515245 + 12345) % 4294967296;
-    return ((randomSeed / 65536) % 32768) / 32768;
-}
-
 /* Visible board state */
 class Board {
     constructor() {
@@ -243,7 +233,6 @@ class Game {
 
         /* Set level */
         this.level = level;
-        randomOwnSeed(level);
 
         /* Initialize board */
         this.board.init(info);
