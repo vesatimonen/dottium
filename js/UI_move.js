@@ -35,6 +35,12 @@ let paintItem = undefined;
 let paintLastX = undefined;
 let paintLastY = undefined;
 
+/* Press point, drag starts after moving this far, in cells */
+const DRAG_THRESHOLD = 0.3;
+let paintStartX = undefined;
+let paintStartY = undefined;
+let paintDragging = false;
+
 /* Paint one cell, returns true if changed */
 function uiPaintCell(x, y) {
     const oldItem = globals.game.board.getItem(x, y);
@@ -103,6 +109,11 @@ function uiPointerDown(event) {
     paintLastX = Xcell;
     paintLastY = Ycell;
 
+    /* Remember press point for drag threshold */
+    paintStartX = move.X;
+    paintStartY = move.Y;
+    paintDragging = false;
+
     /* Keep getting moves outside board until release */
     elements.board.setPointerCapture(event.pointerId);
 
@@ -119,6 +130,14 @@ function uiPointerMove(event) {
     const move = uiMovePosition(event);
     const Xcell = Math.floor(move.X);
     const Ycell = Math.floor(move.Y);
+
+    /* Small finger slide is not a drag */
+    if (!paintDragging) {
+        if (Math.hypot(move.X - paintStartX, move.Y - paintStartY) < DRAG_THRESHOLD) {
+            return false;
+        }
+        paintDragging = true;
+    }
 
     /* Still in same cell */
     if (Xcell == paintLastX && Ycell == paintLastY) {
