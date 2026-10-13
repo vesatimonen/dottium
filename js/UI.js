@@ -91,16 +91,20 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
-/* Hint color by status: dark open, grey done, red over */
-function uiHintColor(status) {
+/* Hint color by status: dark open, grey done, orange over */
+function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
-            return "#7A8C99";
+            context.fillStyle = "#7A8C99";
+            break;
         case HINT_OVER:
-            return "#D02020";
+            context.fillStyle = "#E06A00";
+            break;
         default:
-            return "#202020";
+            context.fillStyle = "#202020";
     }
+
+    context.font = fontSize + "px Oswald, sans-serif";
 }
 
 /* Draw col hints centered in top and bottom margin */
@@ -119,7 +123,7 @@ function uiColHintsDraw(context, board) {
             continue;
         }
 
-        context.fillStyle = uiHintColor(board.colStatus(x));
+        uiHintStatusSet(context, board.colStatus(x), 0.6 * globals.cellSize);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
     }
@@ -141,7 +145,7 @@ function uiRowHintsDraw(context, board) {
             continue;
         }
 
-        context.fillStyle = uiHintColor(board.rowStatus(y));
+        uiHintStatusSet(context, board.rowStatus(y), 0.6 * globals.cellSize);
         context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
         context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
     }
@@ -172,7 +176,6 @@ function uiRoomHintsDraw(context, board) {
     let roomHintDrawn = [];
 
     uiHintStyleSet(context);
-    context.font = (0.4 * globals.cellSize) + "px Oswald, sans-serif";
 
     /* Row by row, so first cell is top-left of room */
     for (let y = 0; y < board.height; y++) {
@@ -190,7 +193,7 @@ function uiRoomHintsDraw(context, board) {
                 continue;
             }
 
-            context.fillStyle = uiHintColor(board.roomStatus(roomId));
+            uiHintStatusSet(context, board.roomStatus(roomId), 0.4 * globals.cellSize);
             context.fillText(board.roomHints[roomId], globals.cellSize * (x + 1 / 6), globals.cellSize * (y + 1 / 6) + fontYShift);
         }
     }
