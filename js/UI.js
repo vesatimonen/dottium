@@ -55,12 +55,12 @@ function uiElementsRedraw(board) {
     context.scale(pixelRatio, pixelRatio);
     context.clearRect(0, 0, elements.canvas.width, elements.canvas.height);
 
-    /* Draw dots */
-    const dotRadius = 3;
-    for (let y = 0; y <= board.height; y++) {
-        for (let x = 0; x <= board.width; x++) {
+    /* Draw dots in cell centers */
+    const dotRadius = 2.0;
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
             context.beginPath();
-            context.arc(globals.cellSize * x, globals.cellSize * y, dotRadius, 0, 2 * Math.PI, false);
+            context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), dotRadius, 0, 2 * Math.PI, false);
             context.fillStyle = "#202020";
             context.fill();
         }
