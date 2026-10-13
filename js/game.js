@@ -54,9 +54,10 @@ class Board {
         this.verticalWalls   = [[undefined]];
 
         /* Rooms info */
-        this.roomCount    = 0;
-        this.roomId       = [[undefined]];
-        this.roomHints    = [undefined];
+        this.roomCount = 0;
+        this.roomId    = [[undefined]];
+        this.roomHints = [undefined];
+        this.roomSize  = [undefined];
 
         /* Board content */
         this.items = [[undefined]];
@@ -119,6 +120,7 @@ class Board {
 
         /* Fill this cell */
         this.roomId[x][y] = roomId;
+        this.roomSize[roomId]++;
 
         /* Continue fill to neighbours */
         if (this.verticalWalls[x + 1][y] == 0) {
@@ -139,12 +141,14 @@ class Board {
     roomsInit() {
         /* Reset room layout */
         this.roomId    = array2D(this.width, this.height, undefined);
+        this.roomSize  = [];
         this.roomCount = 0;
 
         /* Go through rooms and fill them, x first keeps C id order */
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 if (this.roomId[x][y] == undefined) {
+                    this.roomSize[this.roomCount] = 0;
                     this.roomFill(x, y, this.roomCount);
                     this.roomCount++;
                 }
@@ -195,7 +199,6 @@ class Board {
     updateRoomStatistics() {
         return false; // ???
         /* Initialize room statistics */
-        this.roomId       = array2D(this.width, this.height, 0);
         this.roomResolved = 0;
         this.roomCount    = 0;
 
