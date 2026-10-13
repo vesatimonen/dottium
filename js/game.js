@@ -295,12 +295,26 @@ class Game {
     }
 
     makeMove(x, y) {
-        let polarity = this.board.toggleHorizontalWall(x, y);
+        const oldItem = this.board.getItem(x, y);
+        let newItem;
 
-        /* Save move */
-        this.moves.push({x: x, y: y});
+        /* Cycle NONE -> DOT -> BLOCK -> NONE */
+        if (oldItem == ITEM_NONE) {
+            newItem = ITEM_DOT;
+        } else if (oldItem == ITEM_DOT) {
+            newItem = ITEM_BLOCK;
+        } else {
+            newItem = ITEM_NONE;
+        }
 
-        return polarity;
+        if (!this.board.setItem(x, y, newItem)) {
+            return undefined;
+        }
+
+        /* Save move with old item for undo */
+        this.moves.push({x: x, y: y, item: oldItem});
+
+        return newItem;
     }
 
     undoMove() {
@@ -310,8 +324,8 @@ class Game {
         }
 
         /* Pop latest move */
-        let move = this.moves.pop();
-        this.board.toggleHorizontalWall(move.x, move.y);
+        const move = this.moves.pop();
+        this.board.setItem(move.x, move.y, move.item);
 
         return true;
     }
