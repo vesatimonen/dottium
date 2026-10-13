@@ -45,6 +45,56 @@ function uiCellRedraw(board, x, y) {
 }
 
 
+/* Set text style for hints */
+function uiHintStyleSet(context) {
+    context.font         = (0.6 * globals.cellSize) + "px Oswald, sans-serif";
+    context.fillStyle    = "#202020";
+    context.textAlign    = "center";
+    context.textBaseline = "middle";
+}
+
+/* Draw col hints centered in top and bottom margin */
+function uiColHintsDraw(context, board) {
+    const margin     = globals.cellSize * globals.boardMargin;
+    const gridHeight = globals.cellSize * board.height;
+
+    const fontYShift  = 0.06 * globals.cellSize;
+    const placeYShift = 0.10 * globals.cellSize;
+
+    uiHintStyleSet(context);
+
+    for (let x = 0; x < board.width; x++) {
+        /* No hint, nothing to draw */
+        if (board.colHints[x] == undefined) {
+            continue;
+        }
+
+        context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
+        context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
+    }
+}
+
+/* Draw row hints centered in left and right margin */
+function uiRowHintsDraw(context, board) {
+    const margin    = globals.cellSize * globals.boardMargin;
+    const gridWidth = globals.cellSize * board.width;
+
+    const fontYShift  = 0.06 * globals.cellSize;
+    const placeXShift = 0.20 * globals.cellSize;
+
+    uiHintStyleSet(context);
+
+    for (let y = 0; y < board.height; y++) {
+        /* No hint, nothing to draw */
+        if (board.rowHints[y] == undefined) {
+            continue;
+        }
+
+        context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
+        context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
+    }
+}
+
 function uiElementsRedraw(board) {
     const context = elements.canvas.getContext('2d');
 
@@ -108,7 +158,18 @@ function uiElementsRedraw(board) {
     context.beginPath();
     context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
+
+    /* Draw hints in margin */
+    uiColHintsDraw(context, board);
+    uiRowHintsDraw(context, board);
 }
+
+/* Redraw when Oswald is loaded, canvas does not do it itself */
+document.fonts.load("16px Oswald").then(function () {
+    if (globals.game) {
+        uiElementsRedraw(globals.game.board);
+    }
+});
 
 function uiBoardRedraw(board) {
     /* Redraw cell content */
