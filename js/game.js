@@ -23,7 +23,6 @@ class Board {
         /* Board configuration */
         this.width     = undefined;
         this.height    = undefined;
-        this.targetSum = undefined;
         this.values    = [[undefined]];
 
         /* Board walls, [x][y] */
@@ -137,7 +136,7 @@ class Board {
             return false;
         }
 
-        if (this.roomSum[roomId] == this.targetSum && this.roomArea[roomId] == 3) {
+        if (this.roomArea[roomId] == 3) {
             return true;
         } else {
             return false;
@@ -157,10 +156,9 @@ class Board {
     init(info) {
         /* Parse board configuration */
         var boardInfo   = info.split(/[>$#]/)[1];
-        var boardSize   = boardInfo.match(/^(\d+)x(\d+)=(\d+)/); /* WxH=T, any digits */
+        var boardSize   = boardInfo.match(/^(\d+)x(\d+)/); /* WxH, any digits */
         this.width      = parseInt(boardSize[1]);
         this.height     = parseInt(boardSize[2]);
-        this.targetSum  = parseInt(boardSize[3]);
         var boardValues = boardInfo.split('-')[1];
 
         /* Initialize walls, one more line than cells */
