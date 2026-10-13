@@ -104,6 +104,54 @@ class Board {
         return this.getHorizontalWall(x, y);
     }
 
+    /* Fill room from cell, same as challenge_room_fill() */
+    roomFill(x, y, roomId) {
+        /* Check limits */
+        if (x < 0 || x >= this.width ||
+            y < 0 || y >= this.height) {
+            return;
+        }
+
+        /* Already filled */
+        if (this.roomId[x][y] != undefined) {
+            return;
+        }
+
+        /* Fill this cell */
+        this.roomId[x][y] = roomId;
+
+        /* Continue fill to neighbours */
+        if (this.verticalWalls[x + 1][y] == 0) {
+            this.roomFill(x + 1, y, roomId);
+        }
+        if (this.verticalWalls[x][y] == 0) {
+            this.roomFill(x - 1, y, roomId);
+        }
+        if (this.horizontalWalls[x][y + 1] == 0) {
+            this.roomFill(x, y + 1, roomId);
+        }
+        if (this.horizontalWalls[x][y] == 0) {
+            this.roomFill(x, y - 1, roomId);
+        }
+    }
+
+    /* Find rooms, same as challenge_rooms_init() */
+    roomsInit() {
+        /* Reset room layout */
+        this.roomId    = array2D(this.width, this.height, undefined);
+        this.roomCount = 0;
+
+        /* Go through rooms and fill them, x first keeps C id order */
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                if (this.roomId[x][y] == undefined) {
+                    this.roomFill(x, y, this.roomCount);
+                    this.roomCount++;
+                }
+            }
+        }
+    }
+
     /* Room functions */
     fillCell(x, y, id) {
         return false; // ???
@@ -223,6 +271,9 @@ class Board {
                 }
             }
         }
+
+        /* Initialize rooms */
+        this.roomsInit();
 
         /* Parse room hints */
 
