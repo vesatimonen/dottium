@@ -84,11 +84,14 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
-/* Hint color by status: dark open and over, grey done */
+/* Hint color by status: dark open, grey done, red over */
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
             context.fillStyle = "#7A8C99";
+            break;
+        case HINT_OVER:
+            context.fillStyle = "#C81E1E";
             break;
         default:
             context.fillStyle = "#202020";
@@ -189,41 +192,6 @@ function uiRoomHintsDraw(context, board) {
     }
 }
 
-/* Stripe cells of rooms, rows and cols with more dots than hint */
-function uiOverDraw(context, board) {
-    const gridWidth  = globals.cellSize * board.width;
-    const gridHeight = globals.cellSize * board.height;
-    const stripeGap  = 0.25 * globals.cellSize;
-
-    /* Collect over cells as clip area */
-    context.save();
-    context.beginPath();
-
-    for (let y = 0; y < board.height; y++) {
-        for (let x = 0; x < board.width; x++) {
-            if (board.roomStatus(board.roomId[x][y]) == HINT_OVER ||
-                board.rowStatus(y) == HINT_OVER ||
-                board.colStatus(x) == HINT_OVER) {
-                context.rect(globals.cellSize * x, globals.cellSize * y, globals.cellSize, globals.cellSize);
-            }
-        }
-    }
-
-    context.clip();
-
-    /* Diagonal lines over whole grid, clip keeps them in over cells */
-    context.beginPath();
-    for (let start = -gridHeight; start < gridWidth; start += stripeGap) {
-        context.moveTo(start, gridHeight);
-        context.lineTo(start + gridHeight, 0);
-    }
-    context.lineWidth   = 1.0;
-    context.strokeStyle = "rgba(32, 32, 32, 0.4)"; /* Light, so dots stay clear */
-    context.stroke();
-
-    context.restore();
-}
-
 function uiElementsRedraw(board) {
     const context = elements.canvas.getContext('2d');
 
@@ -243,9 +211,6 @@ function uiElementsRedraw(board) {
     /* Grid 0,0 after margin, margin is at negative coordinates */
     const margin = globals.cellSize * globals.boardMargin;
     context.translate(margin, margin);
-
-    /* Stripe rooms, rows and cols with too many dots, under everything else */
-    uiOverDraw(context, board);
 
     /* Draw dots in cell centers */
     const dotRadius = 1.5;
