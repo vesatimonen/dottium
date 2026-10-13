@@ -17,12 +17,31 @@ function array2D(width, height, value) {
     return arr;
 }
 
+/* Parse hint string, '-' means no hint */
+function parseHints(text) {
+    let hints = [];
+
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] == '-') {
+            hints[i] = undefined;
+        } else {
+            hints[i] = parseInt(text[i]);
+        }
+    }
+
+    return hints;
+}
+
 /* Visible board state */
 class Board {
     constructor() {
         /* Board size */
         this.width     = undefined;
         this.height    = undefined;
+
+        /* col/row hints */
+        this.colHints = [undefined];
+        this.rowHints = [undefined];
 
         /* Board walls */
         this.horizontalWalls = [[undefined]];
@@ -162,9 +181,13 @@ class Board {
         this.width      = parseInt(boardSize[1]);
         this.height     = parseInt(boardSize[2]);
         var boardItems = boardInfo.split('-')[1];
+        var boardParts = boardInfo.split('.'); /* size.cols.rows.walls.rooms */
 
         /* Parse col hints */
+        this.colHints = parseHints(boardParts[1]);
+
         /* Parse row hints */
+        this.rowHints = parseHints(boardParts[2]);
 
         /* Parse walls */
         this.verticalWalls   = array2D(this.width + 1, this.height, 0);
