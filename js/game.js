@@ -92,9 +92,6 @@ class Board {
         this.roomDotCount = [undefined];
         this.rowDotCount  = [undefined];
         this.colDotCount  = [undefined];
-
-        /* Misc ??? */
-        this.roomResolved = 0;
     }
 
     /* Item methods */
@@ -166,18 +163,6 @@ class Board {
         }
     }
 
-    toggleHorizontalWall(x, y) {
-        if (this.getHorizontalWall(x, y) == 1) {
-            this.horizontalWalls[x][y] = 0;
-        } else {
-            this.horizontalWalls[x][y] = 1;
-        }
-
-        this.updateRoomStatistics();
-
-        return this.getHorizontalWall(x, y);
-    }
-
     /* Fill room from cell, same as challenge_room_fill() */
     roomFill(x, y, roomId) {
         /* Check limits */
@@ -226,33 +211,6 @@ class Board {
                     this.roomCount++;
                 }
             }
-        }
-    }
-
-    updateRoomStatistics() {
-        return false; // ???
-        /* Initialize room statistics */
-        this.roomResolved = 0;
-
-        /* Find first free and fill */
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (this.roomId[x][y] == 0) {
-                    if (this.resolved(x, y)) {
-                        this.roomResolved++;
-                    }
-
-                }
-            }
-        }
-    }
-
-    resolved(x, y) {
-        return false; // ???
-        let roomId = this.roomId[x][y];
-
-        if (roomId == undefined) {
-            return false;
         }
     }
 
@@ -335,11 +293,6 @@ class Board {
         this.roomDotCount = new Array(this.roomCount).fill(0);
         this.rowDotCount  = new Array(this.height).fill(0);
         this.colDotCount  = new Array(this.width).fill(0);
-
-        return; // ???
-
-        /* Update room statistics */
-        this.updateRoomStatistics();
     }
 }
 

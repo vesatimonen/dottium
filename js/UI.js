@@ -31,13 +31,6 @@ function uiCellRedraw(board, x, y) {
     /* No text in cell, items drawn on canvas */
     cell.innerHTML = '';
 
-    /* Set background */
-    if (board.resolved(x, y)) {
-        cell.style.background = "#67BFEC";
-    } else {
-        cell.style.background = "none";
-    }
-
 }
 
 
