@@ -183,9 +183,10 @@ class Board {
     init(info) {
         /* Parse board configuration */
         var boardInfo   = info.split(/[>$#]/)[1];
-        this.width      = parseInt(boardInfo.substr(0,1));
-        this.height     = parseInt(boardInfo.substr(2,1));
-        this.targetSum  = parseInt(boardInfo.split('=')[1]);
+        var boardSize   = boardInfo.match(/^(\d+)x(\d+)=(\d+)/); /* WxH=T, any digits */
+        this.width      = parseInt(boardSize[1]);
+        this.height     = parseInt(boardSize[2]);
+        this.targetSum  = parseInt(boardSize[3]);
         var boardValues = boardInfo.split('-')[1];
 
         /* Initialize vertical walls */
