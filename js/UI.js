@@ -209,7 +209,7 @@ function uiRoomHintsDraw(context, board) {
 
 /* Fill cells of rooms, rows and cols with more dots than hint */
 function uiOverDraw(context, board) {
-    context.fillStyle = "#FFD9A0"; /* Pale yellow-orange, clear on blue */
+    context.fillStyle = "#FF8A8A";
 
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
