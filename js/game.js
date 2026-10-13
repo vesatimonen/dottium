@@ -69,6 +69,7 @@ class Board {
 
     /* Room functions */
     fillCell(x, y, id) {
+        return false; // ???
         /* Out of board */
         if (x < 0 || x >= this.width ||
             y < 0 || y >= this.height) {
@@ -107,6 +108,7 @@ class Board {
     }
 
     updateRoomStatistics() {
+        return false; // ???
         /* Initialize room statistics */
         this.roomId       = array2D(this.width, this.height, 0);
         this.roomResolved = 0;
@@ -132,6 +134,7 @@ class Board {
     }
 
     resolved(x, y) {
+        return false; // ???
         var roomId = this.roomId[x][y];
 
         if (roomId == undefined) {
@@ -146,6 +149,7 @@ class Board {
     }
 
     solved() {
+        return false; // ???
         if (this.roomResolved == this.width * this.height / 3) {
             return true;
         } else {
