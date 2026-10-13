@@ -194,9 +194,10 @@
 
 /*** Game copyright ***/
 #game-copyright {
-    margin-top:     10px;
+    margin-top:     0; /* Right under canvas */
+    line-height:    1; /* No extra space above text */
 
-    font-size:      12px;
+    font-size:      14px;
     text-align:     center;
 }
 
