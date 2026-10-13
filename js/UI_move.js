@@ -33,41 +33,30 @@ function uiClick(event) {
         return false;
     }
 
-    /* Get clock position */
-    let move = uiMovePosition(event);
-    let X = move.X;
-    let Y = move.Y;
+    /* Get click position */
+    const move = uiMovePosition(event);
+    const board = globals.game.board;
 
-    /* Closest wall */
-    let Xwall = Math.round(X);
-    let Ywall = Math.round(Y);
+    /* Closest cell center */
+    let Xcell = Math.floor(move.X);
+    let Ycell = Math.floor(move.Y);
 
-    /* Current cell */
-    let Xcell = Math.floor(X);
-    let Ycell = Math.floor(Y);
-
-    /* Check limits */
-    if (Ycell < 0 || Ycell >= globals.game.board.height ||
-        Xcell < 0 || Xcell >= globals.game.board.width) {
-        return false;
+    /* Clamp to board, border clicks go to edge cell */
+    if (Xcell < 0) {
+        Xcell = 0;
+    }
+    if (Xcell > board.width - 1) {
+        Xcell = board.width - 1;
+    }
+    if (Ycell < 0) {
+        Ycell = 0;
+    }
+    if (Ycell > board.height - 1) {
+        Ycell = board.height - 1;
     }
 
-    /* Direction from wall */
-    let Xdelta = Math.abs(X - Xwall);
-    let Ydelta = Math.abs(Y - Ywall);
-    if (Xdelta < Ydelta) {
-        /* Vertical wall */
-        if (Xwall > 0 && Xwall < globals.game.board.width) {
-            globals.game.makeMove(Xwall, Ycell);
-            uiRedraw();
-        }
-    } else if (Ydelta < Xdelta) {
-        /* Horizontal wall, exact tie is skipped */
-        if (Ywall > 0 && Ywall < globals.game.board.height) {
-            globals.game.makeMove(Xcell, Ywall);
-            uiRedraw();
-        }
-    }
+    globals.game.makeMove(Xcell, Ycell);
+    uiRedraw();
 }
 
 elements.board.addEventListener("click", uiClick, {passive: true});
