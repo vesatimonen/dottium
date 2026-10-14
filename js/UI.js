@@ -229,6 +229,7 @@ function uiElementsRedraw(board) {
 
     /* Line style for walls and frame */
     const lineWidth   = 2.0;
+    const frameWidth  = 2.5; /* Outer border thicker than walls */
 
     /* Grid size in pixels */
     const gridWidth  = globals.cellSize * board.width;
@@ -294,6 +295,7 @@ function uiElementsRedraw(board) {
 
     /* Draw frame on grid edge */
     context.beginPath();
+    context.lineWidth = frameWidth;
     context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
 
@@ -410,7 +412,7 @@ function uiRedraw() {
         elements.board.addEventListener("animationend", uiGridAnimationEnd);
         elements.board.style.animation = "none";
         elements.board.offsetHeight; /* trigger reflow */
-        elements.board.style.animation = "image-appear 0.5s ease-in 0.2s 1 reverse";
+        elements.board.style.animation = "image-appear 1.0s ease-in 0.4s 1 reverse"; /* 2x slower */
     }
 }
 
