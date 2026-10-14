@@ -4,7 +4,8 @@
  * Redraw buttons
  *****************************************************************************/
 function uiButtonsRedraw(game) {
-    if (game.undoable()) {
+    /* Disabled when nothing to undo, or game over modal shows */
+    if (game.undoable() && !uiInputBlocked()) {
         elements.buttonUndo.disabled    = false;
         elements.buttonRestart.disabled = false;
     } else {
@@ -395,6 +396,7 @@ function uiGridAnimationEnd(event) {
     if (globals.game.level + 1 >= options.challenges.length) {
         /* Show game over modal, keep solved board visible under it */
         elements.gameOver.style.visibility = "visible";
+        uiButtonsRedraw(globals.game); /* Gray out buttons */
         return false;
     }
 
