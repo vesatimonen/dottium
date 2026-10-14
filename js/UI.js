@@ -418,10 +418,15 @@ function uiRedraw() {
 
     /* Check if end of level */
     if (globals.game.board.solved()) {
-        /* Last level, show game over modal at once, no animation */
+        /* Last level, fade in game over modal, board stays */
         if (globals.game.level + 1 >= options.challenges.length) {
             elements.gameOver.style.visibility = "visible";
             uiButtonsRedraw(globals.game); /* Gray out buttons */
+
+            /* Fade modal in, a bit faster than level change */
+            elements.gameOver.style.animation = "none";
+            elements.gameOver.offsetHeight; /* trigger reflow */
+            elements.gameOver.style.animation = "image-appear 0.6s ease-in 0.2s 1 normal both";
             return;
         }
 
