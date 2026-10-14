@@ -353,6 +353,7 @@ function uiBoardSetup(board) {
 
     /* Center the board, margin as padding so canvas covers it */
     elements.board.style.padding = globals.cellSize * globals.boardMargin + "px";
+    elements.board.style.paddingBottom = "2px"; /* No bottom hints, keep room for frame line */
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
