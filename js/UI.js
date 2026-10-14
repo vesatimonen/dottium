@@ -405,6 +405,9 @@ function uiRedraw() {
     /* Redraw game board */
     uiBoardRedraw(globals.game.board);
 
+    /* Save after every change */
+    gameSave();
+
     /* Check if end of level */
     if (globals.game.board.solved()) {
         /* Start animation */

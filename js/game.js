@@ -350,10 +350,13 @@ class Game {
             return item;
         }
 
-        this.board.setItem(x, y, item);
+        /* Bad item, nothing changed */
+        if (!this.board.setItem(x, y, item)) {
+            return oldItem;
+        }
 
-        /* Save move with old item for undo */
-        this.moves.push({x: x, y: y, item: oldItem});
+        /* Save move, old item for undo, new item for replay */
+        this.moves.push({x: x, y: y, oldItem: oldItem, newItem: item});
 
         return item;
     }
@@ -366,7 +369,7 @@ class Game {
 
         /* Pop latest move */
         const move = this.moves.pop();
-        this.board.setItem(move.x, move.y, move.item);
+        this.board.setItem(move.x, move.y, move.oldItem);
 
         return true;
     }

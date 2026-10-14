@@ -37,7 +37,14 @@ function parseOptions() {
     if (levelOption == null) {
         /* Read from storage */
         try {
-            options.level = JSON.parse(localStorage.getItem(globals.storage));
+            const saved = JSON.parse(localStorage.getItem(globals.storage));
+
+            if (typeof saved == "number") {
+                options.level = saved; /* Old save, level only */
+            } else if (saved != null) {
+                options.level = saved.level;
+                options.saved = saved;
+            }
         } catch (error) {
             options.level = 0; /* Bad or blocked storage */
         }
@@ -91,6 +98,54 @@ elements.gameOver.addEventListener("click",      modalClick);
 
 
 /*****************************************************************************
+ * Game save and restore
+ *****************************************************************************/
+/* Save level, challenge and move history */
+function gameSave() {
+    const game = globals.game;
+    const saved = {
+        level:     game.level,
+        challenge: options.challenges[game.level].info,
+        moves:     game.moves
+    };
+
+    try {
+        localStorage.setItem(globals.storage, JSON.stringify(saved));
+    } catch (error) {
+        /* Storage blocked, skip save */
+    }
+}
+
+/* Replay saved moves if save is for this challenge */
+function gameRestore() {
+    const game  = globals.game;
+    const saved = options.saved;
+
+    /* No save, or save for other challenge */
+    if (saved == undefined ||
+        saved.level != game.level ||
+        saved.challenge != options.challenges[game.level].info ||
+        !Array.isArray(saved.moves)) {
+        return;
+    }
+
+    /* Replay in order, rebuilds board, counts and undo history */
+    for (let index = 0; index < saved.moves.length; index++) {
+        const move = saved.moves[index];
+
+        /* Skip broken move, getItem needs whole numbers */
+        if (move == null || !Number.isInteger(move.x) || !Number.isInteger(move.y)) {
+            continue;
+        }
+
+        game.paintMove(move.x, move.y, move.newItem);
+    }
+
+    uiRedraw();
+}
+
+
+/*****************************************************************************
  * Game initialization
  *****************************************************************************/
 function gameStart(level) {
@@ -106,11 +161,7 @@ function gameStart(level) {
     globals.game.init(level, options.challenges[level].info);
 
     /* Save game point */
-    try {
-        localStorage.setItem(globals.storage, JSON.stringify(globals.game.level));
-    } catch (error) {
-        /* Storage blocked, skip save */
-    }
+    gameSave();
 
     /* Debug text */
     if (options.challenges == debugChallengeSet) {
@@ -133,6 +184,9 @@ window.onload = function () {
     /* Start game */
     globals.game = new Game();
     gameStart(options.level);
+
+    /* Put back saved board */
+    gameRestore();
 
     /* Show window */
     elements.screen.style.visibility = "visible";

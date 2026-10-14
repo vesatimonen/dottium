@@ -15,7 +15,8 @@ const globals = {
 const options = {
     challenges: [],
     level:      0,
-    language:   "ENG"
+    language:   "ENG",
+    saved:      undefined /* Saved game from storage */
 };
 
 /*****************************************************************************
