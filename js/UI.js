@@ -56,7 +56,13 @@ function uiDotsDraw(context, board) {
     }
 }
 
-/* Draw blocks as dash in cell center, sized to match dot */
+/* Add block dash in cell center to path, sized to match dot */
+function uiBlockLineAdd(context, x, y) {
+    context.moveTo(globals.cellSize * (x + 0.35), globals.cellSize * (y + 0.5));
+    context.lineTo(globals.cellSize * (x + 0.65), globals.cellSize * (y + 0.5));
+}
+
+/* Draw blocks as dash in cell center */
 function uiBlocksDraw(context, board) {
     context.beginPath();
     context.lineWidth   = 0.06 * globals.cellSize; /* Same as dot ring */
@@ -69,8 +75,31 @@ function uiBlocksDraw(context, board) {
                 continue;
             }
 
-            context.moveTo(globals.cellSize * (x + 0.35), globals.cellSize * (y + 0.5));
-            context.lineTo(globals.cellSize * (x + 0.65), globals.cellSize * (y + 0.5));
+            uiBlockLineAdd(context, x, y);
+        }
+    }
+
+    context.stroke();
+}
+
+/* Draw grey block in empty cells of done rows, cols and rooms */
+function uiDoneBlocksDraw(context, board) {
+    context.beginPath();
+    context.lineWidth   = 0.06 * globals.cellSize; /* Same as real block */
+    context.lineCap     = "round";
+    context.strokeStyle = HINT_DONE_COLOR;
+
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            if (board.getItem(x, y) != ITEM_NONE) {
+                continue;
+            }
+
+            if (board.roomStatus(board.roomId[x][y]) == HINT_DONE ||
+                board.rowStatus(y) == HINT_DONE ||
+                board.colStatus(x) == HINT_DONE) {
+                uiBlockLineAdd(context, x, y);
+            }
         }
     }
 
@@ -84,11 +113,14 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
+/* Done color, solid mix of 20% dark and blue background */
+const HINT_DONE_COLOR = "rgba(147, 183, 210, 1.0)";
+
 /* Hint color by status: dark open, grey done, yellow over */
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
-            context.fillStyle = "rgba(32, 32, 32, 0.20)"; /* Faded dark, takes tint from background */
+            context.fillStyle = HINT_DONE_COLOR;
             break;
         case HINT_OVER:
             context.fillStyle = "rgba(240, 0, 0, 1.0)";
@@ -225,6 +257,9 @@ function uiElementsRedraw(board) {
 
     /* Draw blocks */
     uiBlocksDraw(context, board);
+
+    /* Draw grey blocks where hint is done */
+    uiDoneBlocksDraw(context, board);
 
     /* Draw dots */
     uiDotsDraw(context, board);
