@@ -192,7 +192,7 @@ function uiCopyrightDraw(context, board) {
     context.textBaseline = "alphabetic";
 
     /* Turn text to read bottom to top */
-    context.translate(gridWidth + margin * 0.45, gridHeight / 2); /* Close to board, right hints are off */
+    context.translate(gridWidth + margin * 0.4, gridHeight / 2); /* Close to board, right hints are off */
     context.rotate(-Math.PI / 2);
     context.fillText("© Vesa Timonen", 0, 0);
     context.restore();
@@ -401,13 +401,6 @@ function uiGridAnimationEnd(event) {
     event.stopPropagation();
     globals.animating = false;
 
-    if (globals.game.level + 1 >= options.challenges.length) {
-        /* Show game over modal, keep solved board visible under it */
-        elements.gameOver.style.visibility = "visible";
-        uiButtonsRedraw(globals.game); /* Gray out buttons */
-        return false;
-    }
-
     gameStart(globals.game.level + 1); /* Start new level */
     return false;
 }
@@ -425,7 +418,14 @@ function uiRedraw() {
 
     /* Check if end of level */
     if (globals.game.board.solved()) {
-        /* Start animation */
+        /* Last level, show game over modal at once, no animation */
+        if (globals.game.level + 1 >= options.challenges.length) {
+            elements.gameOver.style.visibility = "visible";
+            uiButtonsRedraw(globals.game); /* Gray out buttons */
+            return;
+        }
+
+        /* Start animation to next level */
         globals.animating = true;
         elements.board.addEventListener("animationend", uiGridAnimationEnd);
         elements.board.style.animation = "none";

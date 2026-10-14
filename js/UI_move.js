@@ -113,8 +113,8 @@ function uiPointerDown(event) {
 }
 
 function uiPointerMove(event) {
-    /* Not painting or solve animation running */
-    if (paintItem == undefined || globals.animating) {
+    /* Not painting, solve animation running or game over */
+    if (paintItem == undefined || uiInputBlocked()) {
         return false;
     }
 

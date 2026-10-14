@@ -90,8 +90,8 @@
     position:           absolute;
     z-index:            1;
 
-    padding:            10px;
-    font-size:          24px;
+    padding:            14px; /* Grows with text */
+    font-size:          32px;
     font-weight:        bold;
     text-align:         center;
 
