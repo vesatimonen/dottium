@@ -96,7 +96,8 @@ function modalClick(event) {
 
     elements.gameOver.style.visibility = "hidden";
 
-    gameStart(globals.game.level);
+    /* Keep board and history, just enable buttons again */
+    uiButtonsRedraw(globals.game);
 }
 
 elements.gameOver.addEventListener("click",      modalClick);
