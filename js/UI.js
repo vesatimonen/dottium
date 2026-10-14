@@ -357,6 +357,11 @@ function uiBoardSetup(board) {
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
+    /* Center game over modal on grid frame, not on board with margins */
+    const margin = globals.cellSize * globals.boardMargin;
+    elements.gameOver.style.left = margin + globals.cellSize * board.width  / 2 + "px";
+    elements.gameOver.style.top  = margin + globals.cellSize * board.height / 2 + "px";
+
     /* Create grid and add cells */
     for (let y = 0; y < board.height; y++) {
         /* Create row */
