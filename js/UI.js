@@ -151,7 +151,8 @@ function uiColHintsDraw(context, board) {
 
         uiHintStatusSet(context, board.colStatus(x), 0.6 * globals.cellSize);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
-        context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
+        /* Bottom hint off, top only, uncomment to bring back */
+//        context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
     }
 }
 
@@ -173,7 +174,8 @@ function uiRowHintsDraw(context, board) {
 
         uiHintStatusSet(context, board.rowStatus(y), 0.6 * globals.cellSize);
         context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
-        context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
+        /* Right hint off, left only, uncomment to bring back */
+//        context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
     }
 }
 
@@ -190,7 +192,7 @@ function uiCopyrightDraw(context, board) {
     context.textBaseline = "alphabetic";
 
     /* Turn text to read bottom to top */
-    context.translate(gridWidth + margin * 0.95, gridHeight / 2); /* Small gap to canvas edge */
+    context.translate(gridWidth + margin * 0.45, gridHeight / 2); /* Close to board, right hints are off */
     context.rotate(-Math.PI / 2);
     context.fillText("© Vesa Timonen", 0, 0);
     context.restore();
