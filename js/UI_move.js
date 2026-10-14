@@ -72,8 +72,8 @@ function uiPaintLine(fromX, fromY, toX, toY) {
 }
 
 function uiPointerDown(event) {
-    /* Ignore clicks during solve animation */
-    if (globals.animating) {
+    /* Ignore clicks during solve animation or game over */
+    if (uiInputBlocked()) {
         return false;
     }
 

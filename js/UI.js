@@ -380,6 +380,11 @@ function uiBoardSetup(board) {
     uiBoardRedraw(board);
 }
 
+/* No input during solve animation or while game over modal shows */
+function uiInputBlocked() {
+    return globals.animating || elements.gameOver.style.visibility == "visible";
+}
+
 /*****************************************************************************
  * Refresh board elements and check if game over
  *****************************************************************************/
@@ -388,9 +393,9 @@ function uiGridAnimationEnd(event) {
     globals.animating = false;
 
     if (globals.game.level + 1 >= options.challenges.length) {
-        /* Show game over modal */
+        /* Show game over modal, keep solved board visible under it */
         elements.gameOver.style.visibility = "visible";
-        elements.board.style.visibility = "hidden";
+        return false;
     }
 
     gameStart(globals.game.level + 1); /* Start new level */

@@ -3,8 +3,8 @@
  * Button handlers
  *****************************************************************************/
 function uiUndo(event) {
-    /* Ignore during solve animation */
-    if (globals.animating) {
+    /* Ignore during solve animation or game over */
+    if (uiInputBlocked()) {
         return false;
     }
 
@@ -16,8 +16,8 @@ function uiUndo(event) {
 }
 
 function uiRestart(event) {
-    /* Ignore during solve animation */
-    if (globals.animating) {
+    /* Ignore during solve animation or game over */
+    if (uiInputBlocked()) {
         return false;
     }
 

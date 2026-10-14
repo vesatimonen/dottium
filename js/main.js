@@ -92,7 +92,6 @@ function modalClick(event) {
     event.stopPropagation(); /* Keep click off the board */
 
     elements.gameOver.style.visibility = "hidden";
-    elements.board.style.visibility     = "visible";
 
     gameStart(globals.game.level);
 }
