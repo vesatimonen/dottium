@@ -109,7 +109,7 @@ function uiDoneBlocksDraw(context, board) {
 
 /* Set text style for hints */
 function uiHintStyleSet(context) {
-    context.font         = (0.6 * globals.cellSize) + "px Oswald, sans-serif";
+    context.font         = (0.7 * globals.cellSize) + "px Oswald, sans-serif";
     context.fillStyle    = "#202020";
     context.textAlign    = "center";
 }
@@ -138,7 +138,7 @@ function uiColHintsDraw(context, board) {
     const margin     = globals.cellSize * globals.boardMargin;
     const gridHeight = globals.cellSize * board.height;
 
-    const fontYShift  = 0.24 * globals.cellSize;
+    const fontYShift  = 0.28 * globals.cellSize; /* 0.4 of font size */
     const placeYShift = 0.08 * globals.cellSize;
 
     uiHintStyleSet(context);
@@ -149,7 +149,7 @@ function uiColHintsDraw(context, board) {
             continue;
         }
 
-        uiHintStatusSet(context, board.colStatus(x), 0.6 * globals.cellSize);
+        uiHintStatusSet(context, board.colStatus(x), 0.7 * globals.cellSize);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
         /* Bottom hint off, top only, uncomment to bring back */
 //        context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
@@ -161,7 +161,7 @@ function uiRowHintsDraw(context, board) {
     const margin    = globals.cellSize * globals.boardMargin;
     const gridWidth = globals.cellSize * board.width;
 
-    const fontYShift  = 0.24 * globals.cellSize;
+    const fontYShift  = 0.28 * globals.cellSize; /* 0.4 of font size */
     const placeXShift = 0.18 * globals.cellSize;
 
     uiHintStyleSet(context);
@@ -172,7 +172,7 @@ function uiRowHintsDraw(context, board) {
             continue;
         }
 
-        uiHintStatusSet(context, board.rowStatus(y), 0.6 * globals.cellSize);
+        uiHintStatusSet(context, board.rowStatus(y), 0.7 * globals.cellSize);
         context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
         /* Right hint off, left only, uncomment to bring back */
 //        context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
