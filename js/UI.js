@@ -83,6 +83,37 @@ function uiBlocksDraw(context, board) {
     context.stroke();
 }
 
+/* Hint status shown on screen, updated late so quick taps do not flash */
+const HINT_DELAY = 300; /* ms */
+let uiHints = undefined;
+let uiHintTimer = undefined;
+
+/* Take hint status from board now */
+function uiHintsUpdate(board) {
+    clearTimeout(uiHintTimer);
+    uiHintTimer = undefined;
+
+    uiHints = {rows: [], cols: [], rooms: []};
+    for (let y = 0; y < board.height; y++) {
+        uiHints.rows[y] = board.rowStatus(y);
+    }
+    for (let x = 0; x < board.width; x++) {
+        uiHints.cols[x] = board.colStatus(x);
+    }
+    for (let roomId = 0; roomId < board.roomCount; roomId++) {
+        uiHints.rooms[roomId] = board.roomStatus(roomId);
+    }
+}
+
+/* Take hint status after short pause, new change restarts wait */
+function uiHintsUpdateLater() {
+    clearTimeout(uiHintTimer);
+    uiHintTimer = setTimeout(function () {
+        uiHintsUpdate(globals.game.board);
+        uiElementsRedraw(globals.game.board);
+    }, HINT_DELAY);
+}
+
 /* Draw grey block in empty cells of done rows, cols and rooms */
 function uiDoneBlocksDraw(context, board) {
     context.beginPath();
@@ -96,9 +127,9 @@ function uiDoneBlocksDraw(context, board) {
                 continue;
             }
 
-            if (board.roomStatus(board.roomId[x][y]) == HINT_DONE ||
-                board.rowStatus(y) == HINT_DONE ||
-                board.colStatus(x) == HINT_DONE) {
+            if (uiHints.rooms[board.roomId[x][y]] == HINT_DONE ||
+                uiHints.rows[y] == HINT_DONE ||
+                uiHints.cols[x] == HINT_DONE) {
                 uiBlockLineAdd(context, x, y);
             }
         }
@@ -149,7 +180,7 @@ function uiColHintsDraw(context, board) {
             continue;
         }
 
-        uiHintStatusSet(context, board.colStatus(x), 0.7 * globals.cellSize);
+        uiHintStatusSet(context, uiHints.cols[x], 0.7 * globals.cellSize);
         context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), 0          - margin / 2 + fontYShift + placeYShift);
         /* Bottom hint off, top only, uncomment to bring back */
 //        context.fillText(board.colHints[x], globals.cellSize * (x + 0.5), gridHeight + margin / 2 + fontYShift - placeYShift);
@@ -172,7 +203,7 @@ function uiRowHintsDraw(context, board) {
             continue;
         }
 
-        uiHintStatusSet(context, board.rowStatus(y), 0.7 * globals.cellSize);
+        uiHintStatusSet(context, uiHints.rows[y], 0.7 * globals.cellSize);
         context.fillText(board.rowHints[y], 0         - margin / 2 + placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
         /* Right hint off, left only, uncomment to bring back */
 //        context.fillText(board.rowHints[y], gridWidth + margin / 2 - placeXShift, globals.cellSize * (y + 0.5) + fontYShift);
@@ -221,7 +252,7 @@ function uiRoomHintsDraw(context, board) {
                 continue;
             }
 
-            uiHintStatusSet(context, board.roomStatus(roomId), 0.4 * globals.cellSize);
+            uiHintStatusSet(context, uiHints.rooms[roomId], 0.4 * globals.cellSize);
             context.fillText(board.roomHints[roomId], globals.cellSize * (x + 1 / 6), globals.cellSize * (y + 1 / 6) + fontYShift);
         }
     }
@@ -385,7 +416,8 @@ function uiBoardSetup(board) {
         }
     }
 
-    /* Redraw board */
+    /* Redraw board, new board shows hints now */
+    uiHintsUpdate(board);
     uiBoardRedraw(board);
 }
 
@@ -409,9 +441,18 @@ function uiGridAnimationEnd(event) {
 /*****************************************************************************
  * Redraw UI
  *****************************************************************************/
-function uiRedraw() {
+function uiRedraw(hintsLater) {
+    const board = globals.game.board;
+
+    /* Hints now, or after pause when tapping board, solved shows now */
+    if (hintsLater && !board.solved()) {
+        uiHintsUpdateLater();
+    } else {
+        uiHintsUpdate(board);
+    }
+
     /* Redraw game board */
-    uiBoardRedraw(globals.game.board);
+    uiBoardRedraw(board);
 
     /* Save after every change */
     gameSave();

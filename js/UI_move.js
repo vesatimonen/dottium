@@ -109,7 +109,7 @@ function uiPointerDown(event) {
     /* Keep getting moves outside board until release */
     elements.board.setPointerCapture(event.pointerId);
 
-    uiRedraw();
+    uiRedraw(true); /* Hints after pause */
 }
 
 function uiPointerMove(event) {
@@ -142,7 +142,7 @@ function uiPointerMove(event) {
     paintLastY = Ycell;
 
     if (changed) {
-        uiRedraw();
+        uiRedraw(true); /* Hints after pause */
     }
 }
 
