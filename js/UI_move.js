@@ -121,7 +121,7 @@ function uiPointerDown(event) {
     /* Keep getting moves outside board until release */
     elements.board.setPointerCapture(event.pointerId);
 
-    uiRedraw(true); /* Hints after pause */
+    uiRedraw(paintItem != ITEM_NONE); /* Clear shows hints now, add after pause */
 }
 
 function uiPointerMove(event) {
@@ -154,7 +154,7 @@ function uiPointerMove(event) {
     paintLastY = Ycell;
 
     if (changed) {
-        uiRedraw(true); /* Hints after pause */
+        uiRedraw(paintItem != ITEM_NONE); /* Clear shows hints now, add after pause */
     }
 }
 
