@@ -10,8 +10,14 @@ const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
 const WALL_WIDTH       = 0.04; /* Room walls */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
 
+/*****************************************************************************
+ * Canvas colors
+ *****************************************************************************/
 /* Dark color for walls, dots, blocks and text */
-const INK_COLOR = "#202020";
+const INK_COLOR       = "#1C2B3A";
+const HINT_DONE_COLOR = INK_COLOR + "33"; /* Ink with 20% alpha */
+const DOT_FILL_COLOR  = "#FFFFFFFF"; /* Inside of dot */
+const HINT_OVER_COLOR = "#F00000FF"; /* Hint broken */
 
 /*****************************************************************************
  * Redraw buttons
@@ -54,7 +60,7 @@ function uiDotsDraw(context, board) {
 
     context.lineWidth   = DOT_RING_WIDTH * globals.cellSize;
     context.strokeStyle = INK_COLOR;
-    context.fillStyle   = "#FFFFFF";
+    context.fillStyle   = DOT_FILL_COLOR;
 
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
@@ -163,9 +169,6 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
-/* Done color, solid mix of 20% dark and blue background */
-const HINT_DONE_COLOR = "rgba(147, 183, 210, 1.0)";
-
 /* Hint color by status: dark open, grey done, yellow over */
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
@@ -173,7 +176,7 @@ function uiHintStatusSet(context, status, fontSize) {
             context.fillStyle = HINT_DONE_COLOR;
             break;
         case HINT_OVER:
-            context.fillStyle = "rgba(240, 0, 0, 1.0)";
+            context.fillStyle = HINT_OVER_COLOR;
             break;
         default:
             context.fillStyle = INK_COLOR;
