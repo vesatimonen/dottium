@@ -262,8 +262,8 @@ function uiElementsRedraw(board) {
     const context = elements.canvas.getContext('2d');
 
     /* Line style for walls and frame */
-    const lineWidth   = 2.0;
-    const frameWidth  = 2.5; /* Outer border thicker than walls */
+    const lineWidth   = 2.5;
+    const frameWidth  = 2.5; /* Same as walls */
 
     /* Grid size in pixels */
     const gridWidth  = globals.cellSize * board.width;
