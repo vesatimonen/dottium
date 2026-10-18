@@ -1,14 +1,14 @@
 
 /*****************************************************************************
- * Canvas element sizes, part of cell size unless px
+ * Canvas element sizes, part of cell size
  *****************************************************************************/
-const DOT_RADIUS       = 0.22; /* White dot */
-const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
-const BLOCK_LINE_WIDTH = 0.06; /* Block dash thickness */
-const BLOCK_HALF_LEN   = 0.15; /* Block dash half length from center */
-const GRID_DOT_RADIUS  = 1.5;  /* px, small dot in every cell */
-const WALL_WIDTH       = 2.5;  /* px, room walls */
-const FRAME_WIDTH      = 2.5;  /* px, grid frame */
+const DOT_RADIUS       = 0.22;  /* White dot */
+const DOT_RING_WIDTH   = 0.05;  /* Dark ring around dot */
+const BLOCK_LINE_WIDTH = 0.06;  /* Block dash thickness */
+const BLOCK_HALF_LEN   = 0.15;  /* Block dash half length from center */
+const GRID_DOT_RADIUS  = 0.025; /* Small dot in every cell */
+const WALL_WIDTH       = 0.045; /* Room walls */
+const FRAME_WIDTH      = 0.045; /* Grid frame */
 
 /*****************************************************************************
  * Redraw buttons
@@ -289,7 +289,7 @@ function uiElementsRedraw(board) {
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
             context.beginPath();
-            context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), GRID_DOT_RADIUS, 0, 2 * Math.PI, false);
+            context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), GRID_DOT_RADIUS * globals.cellSize, 0, 2 * Math.PI, false);
             context.fillStyle = "#202020";
             context.fill();
         }
@@ -306,7 +306,7 @@ function uiElementsRedraw(board) {
 
     /* Draw walls */
     context.beginPath();
-    context.lineWidth = WALL_WIDTH;
+    context.lineWidth = WALL_WIDTH * globals.cellSize;
     context.lineCap = "round"; /* Smooth wall ends and corners */
     context.strokeStyle = "#202020";
 
@@ -334,7 +334,7 @@ function uiElementsRedraw(board) {
 
     /* Draw frame on grid edge */
     context.beginPath();
-    context.lineWidth = FRAME_WIDTH;
+    context.lineWidth = FRAME_WIDTH * globals.cellSize;
     context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
 
