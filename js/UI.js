@@ -16,8 +16,8 @@ const FRAME_WIDTH      = 0.04; /* Grid frame */
 /* Dark color for walls, dots, blocks and text */
 const INK_COLOR       = "#1C2B3A";
 const HINT_DONE_COLOR = INK_COLOR + "33"; /* Ink with 20% alpha */
-const DOT_FILL_COLOR  = "#FFFFFFFF"; /* Inside of dot */
-const HINT_OVER_COLOR = "#F00000FF"; /* Hint broken */
+const DOT_FILL_COLOR  = "#FFFFFF";        /* Inside of dot */
+const HINT_OVER_COLOR = "#F00000";        /* Hint broken */
 
 /*****************************************************************************
  * Redraw buttons
@@ -169,7 +169,7 @@ function uiHintStyleSet(context) {
     context.textAlign    = "center";
 }
 
-/* Hint color by status: dark open, grey done, yellow over */
+/* Hint color by status: dark open, faded done, red over */
 function uiHintStatusSet(context, status, fontSize) {
     switch (status) {
         case HINT_DONE:
