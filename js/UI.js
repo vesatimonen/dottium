@@ -2,13 +2,13 @@
 /*****************************************************************************
  * Canvas element sizes, part of cell size
  *****************************************************************************/
-const DOT_RADIUS       = 0.22;  /* White dot */
-const DOT_RING_WIDTH   = 0.05;  /* Dark ring around dot */
-const BLOCK_LINE_WIDTH = 0.06;  /* Block dash thickness */
-const BLOCK_HALF_LEN   = 0.15;  /* Block dash half length from center */
-const GRID_DOT_RADIUS  = 0.025; /* Small dot in every cell */
-const WALL_WIDTH       = 0.045; /* Room walls */
-const FRAME_WIDTH      = 0.045; /* Grid frame */
+const DOT_RADIUS       = 0.22; /* White dot */
+const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
+const BLOCK_LINE_WIDTH = 0.06; /* Block dash thickness */
+const BLOCK_HALF_LEN   = 0.15; /* Block dash half length from center */
+const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
+const WALL_WIDTH       = 0.04; /* Room walls */
+const FRAME_WIDTH      = 0.04; /* Grid frame */
 
 /*****************************************************************************
  * Redraw buttons
@@ -124,6 +124,17 @@ function uiHintsUpdateLater() {
     }, HINT_DELAY);
 }
 
+/* True if empty cell is in done row, col or room */
+function uiCellDoneBlock(board, x, y) {
+    if (board.getItem(x, y) != ITEM_NONE) {
+        return false;
+    }
+
+    return uiHints.rooms[board.roomId[x][y]] == HINT_DONE ||
+           uiHints.rows[y] == HINT_DONE ||
+           uiHints.cols[x] == HINT_DONE;
+}
+
 /* Draw grey block in empty cells of done rows, cols and rooms */
 function uiDoneBlocksDraw(context, board) {
     context.beginPath();
@@ -133,13 +144,7 @@ function uiDoneBlocksDraw(context, board) {
 
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
-            if (board.getItem(x, y) != ITEM_NONE) {
-                continue;
-            }
-
-            if (uiHints.rooms[board.roomId[x][y]] == HINT_DONE ||
-                uiHints.rows[y] == HINT_DONE ||
-                uiHints.cols[x] == HINT_DONE) {
+            if (uiCellDoneBlock(board, x, y)) {
                 uiBlockLineAdd(context, x, y);
             }
         }
@@ -285,9 +290,13 @@ function uiElementsRedraw(board) {
     const margin = globals.cellSize * globals.boardMargin;
     context.translate(margin, margin);
 
-    /* Draw dots in cell centers */
+    /* Draw grid dots in cell centers, only in cells with nothing else */
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
+            if (board.getItem(x, y) != ITEM_NONE || uiCellDoneBlock(board, x, y)) {
+                continue;
+            }
+
             context.beginPath();
             context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), GRID_DOT_RADIUS * globals.cellSize, 0, 2 * Math.PI, false);
             context.fillStyle = "#202020";
