@@ -101,15 +101,15 @@ function uiPointerDown(event) {
     }
 
     /* Fast tap on same cell cycles, else dot or clear */
-    let cycle = false;
+    let fastTap = false;
     if (uiHintsWaiting() && Xcell == tapLastX && Ycell == tapLastY) {
-        cycle = true;
+        fastTap = true;
     }
     tapLastX = Xcell;
     tapLastY = Ycell;
 
     /* Change cell, new item is used for painting */
-    paintItem = globals.game.makeMove(Xcell, Ycell, cycle);
+    paintItem = globals.game.makeMove(Xcell, Ycell, fastTap);
     paintLastX = Xcell;
     paintLastY = Ycell;
 
