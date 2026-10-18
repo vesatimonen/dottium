@@ -124,6 +124,11 @@ function uiHintsUpdate(board) {
     }
 }
 
+/* True while hint wait runs after last change */
+function uiHintsWaiting() {
+    return uiHintTimer != undefined;
+}
+
 /* Take hint status after short pause, new change restarts wait */
 function uiHintsUpdateLater() {
     clearTimeout(uiHintTimer);

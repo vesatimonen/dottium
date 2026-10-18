@@ -41,6 +41,10 @@ let paintStartX = undefined;
 let paintStartY = undefined;
 let paintDragging = false;
 
+/* Last tapped cell, fast tap on it cycles on to block */
+let tapLastX = undefined;
+let tapLastY = undefined;
+
 /* Paint one cell, returns true if changed */
 function uiPaintCell(x, y) {
     const oldItem = globals.game.board.getItem(x, y);
@@ -96,8 +100,16 @@ function uiPointerDown(event) {
         return false;
     }
 
-    /* Toggle cell, new item is used for painting */
-    paintItem = globals.game.makeMove(Xcell, Ycell);
+    /* Fast tap on same cell cycles, else dot or clear */
+    let cycle = false;
+    if (uiHintsWaiting() && Xcell == tapLastX && Ycell == tapLastY) {
+        cycle = true;
+    }
+    tapLastX = Xcell;
+    tapLastY = Ycell;
+
+    /* Change cell, new item is used for painting */
+    paintItem = globals.game.makeMove(Xcell, Ycell, cycle);
     paintLastX = Xcell;
     paintLastY = Ycell;
 

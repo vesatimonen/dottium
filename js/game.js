@@ -320,14 +320,14 @@ class Game {
         this.board.init(info);
     }
 
-    makeMove(x, y) {
+    /* Cycle true: NONE -> DOT -> BLOCK -> NONE, false: NONE -> DOT, else NONE */
+    makeMove(x, y, cycle) {
         const oldItem = this.board.getItem(x, y);
         let newItem;
 
-        /* Cycle NONE -> DOT -> BLOCK -> NONE */
         if (oldItem == ITEM_NONE) {
             newItem = ITEM_DOT;
-        } else if (oldItem == ITEM_DOT) {
+        } else if (oldItem == ITEM_DOT && cycle) {
             newItem = ITEM_BLOCK;
         } else {
             newItem = ITEM_NONE;
