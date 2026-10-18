@@ -19,7 +19,7 @@
 :root {
     --game-screen-max-width: 640px;
     --game-screen-min-width: 320px;
-    --ink-color:             #202020; /* Same as INK_COLOR in UI.js */
+    --ink-color:             #1C2B3A; /* Same as INK_COLOR in UI.js */
 }
 
 /*** Text color for whole page ***/
