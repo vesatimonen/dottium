@@ -1,4 +1,14 @@
 
+/*****************************************************************************
+ * Canvas element sizes, part of cell size unless px
+ *****************************************************************************/
+const DOT_RADIUS       = 0.22; /* White dot */
+const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
+const BLOCK_LINE_WIDTH = 0.06; /* Block dash thickness */
+const BLOCK_HALF_LEN   = 0.15; /* Block dash half length from center */
+const GRID_DOT_RADIUS  = 1.5;  /* px, small dot in every cell */
+const WALL_WIDTH       = 2.5;  /* px, room walls */
+const FRAME_WIDTH      = 2.5;  /* px, grid frame */
 
 /*****************************************************************************
  * Redraw buttons
@@ -37,9 +47,9 @@ function uiCellRedraw(board, x, y) {
 
 /* Draw dots as white circle with dark ring, same as code_svg.c */
 function uiDotsDraw(context, board) {
-    const dotRadius = 0.22 * globals.cellSize;
+    const dotRadius = DOT_RADIUS * globals.cellSize;
 
-    context.lineWidth   = 0.05 * globals.cellSize;
+    context.lineWidth   = DOT_RING_WIDTH * globals.cellSize;
     context.strokeStyle = "#202020";
     context.fillStyle   = "#FFFFFF";
 
@@ -59,14 +69,14 @@ function uiDotsDraw(context, board) {
 
 /* Add block dash in cell center to path, sized to match dot */
 function uiBlockLineAdd(context, x, y) {
-    context.moveTo(globals.cellSize * (x + 0.35), globals.cellSize * (y + 0.5));
-    context.lineTo(globals.cellSize * (x + 0.65), globals.cellSize * (y + 0.5));
+    context.moveTo(globals.cellSize * (x + 0.5 - BLOCK_HALF_LEN), globals.cellSize * (y + 0.5));
+    context.lineTo(globals.cellSize * (x + 0.5 + BLOCK_HALF_LEN), globals.cellSize * (y + 0.5));
 }
 
 /* Draw blocks as dash in cell center */
 function uiBlocksDraw(context, board) {
     context.beginPath();
-    context.lineWidth   = 0.06 * globals.cellSize; /* Same as dot ring */
+    context.lineWidth   = BLOCK_LINE_WIDTH * globals.cellSize;
     context.lineCap     = "round";
     context.strokeStyle = "#202020";
 
@@ -117,7 +127,7 @@ function uiHintsUpdateLater() {
 /* Draw grey block in empty cells of done rows, cols and rooms */
 function uiDoneBlocksDraw(context, board) {
     context.beginPath();
-    context.lineWidth   = 0.06 * globals.cellSize; /* Same as real block */
+    context.lineWidth   = BLOCK_LINE_WIDTH * globals.cellSize; /* Same as real block */
     context.lineCap     = "round";
     context.strokeStyle = HINT_DONE_COLOR;
 
@@ -261,10 +271,6 @@ function uiRoomHintsDraw(context, board) {
 function uiElementsRedraw(board) {
     const context = elements.canvas.getContext('2d');
 
-    /* Line style for walls and frame */
-    const lineWidth   = 2.5;
-    const frameWidth  = 2.5; /* Same as walls */
-
     /* Grid size in pixels */
     const gridWidth  = globals.cellSize * board.width;
     const gridHeight = globals.cellSize * board.height;
@@ -280,11 +286,10 @@ function uiElementsRedraw(board) {
     context.translate(margin, margin);
 
     /* Draw dots in cell centers */
-    const dotRadius = 1.5;
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
             context.beginPath();
-            context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), dotRadius, 0, 2 * Math.PI, false);
+            context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), GRID_DOT_RADIUS, 0, 2 * Math.PI, false);
             context.fillStyle = "#202020";
             context.fill();
         }
@@ -301,7 +306,7 @@ function uiElementsRedraw(board) {
 
     /* Draw walls */
     context.beginPath();
-    context.lineWidth = lineWidth;
+    context.lineWidth = WALL_WIDTH;
     context.lineCap = "round"; /* Smooth wall ends and corners */
     context.strokeStyle = "#202020";
 
@@ -329,7 +334,7 @@ function uiElementsRedraw(board) {
 
     /* Draw frame on grid edge */
     context.beginPath();
-    context.lineWidth = frameWidth;
+    context.lineWidth = FRAME_WIDTH;
     context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
 
