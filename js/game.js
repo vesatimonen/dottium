@@ -355,19 +355,7 @@ class Game {
             return oldItem;
         }
 
-        /* Same cell as last move, merge into it */
-        const last = this.moves[this.moves.length - 1];
-        if (last != undefined && last.x == x && last.y == y) {
-            last.newItem = item;
-
-            /* Back to start item, drop move */
-            if (last.oldItem == item) {
-                this.moves.pop();
-            }
-            return item;
-        }
-
-        /* Save move, old item for undo, new item for replay */
+        /* Save every move, old item for undo, new item for replay */
         this.moves.push({x: x, y: y, oldItem: oldItem, newItem: item});
 
         return item;
