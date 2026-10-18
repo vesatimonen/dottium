@@ -103,7 +103,7 @@ function uiBlocksDraw(context, board) {
 }
 
 /* Hint status shown on screen, updated late so quick taps do not flash */
-const HINT_DELAY = 300; /* ms */
+const HINT_DELAY = 500; /* ms */
 let uiHints = undefined;
 let uiHintTimer = undefined;
 
