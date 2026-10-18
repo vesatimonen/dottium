@@ -10,6 +10,9 @@ const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
 const WALL_WIDTH       = 0.04; /* Room walls */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
 
+/* Dark color for walls, dots, blocks and text */
+const INK_COLOR = "#202020";
+
 /*****************************************************************************
  * Redraw buttons
  *****************************************************************************/
@@ -50,7 +53,7 @@ function uiDotsDraw(context, board) {
     const dotRadius = DOT_RADIUS * globals.cellSize;
 
     context.lineWidth   = DOT_RING_WIDTH * globals.cellSize;
-    context.strokeStyle = "#202020";
+    context.strokeStyle = INK_COLOR;
     context.fillStyle   = "#FFFFFF";
 
     for (let y = 0; y < board.height; y++) {
@@ -78,7 +81,7 @@ function uiBlocksDraw(context, board) {
     context.beginPath();
     context.lineWidth   = BLOCK_LINE_WIDTH * globals.cellSize;
     context.lineCap     = "round";
-    context.strokeStyle = "#202020";
+    context.strokeStyle = INK_COLOR;
 
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
@@ -156,7 +159,7 @@ function uiDoneBlocksDraw(context, board) {
 /* Set text style for hints */
 function uiHintStyleSet(context) {
     context.font         = (0.7 * globals.cellSize) + "px Oswald, sans-serif";
-    context.fillStyle    = "#202020";
+    context.fillStyle    = INK_COLOR;
     context.textAlign    = "center";
 }
 
@@ -173,7 +176,7 @@ function uiHintStatusSet(context, status, fontSize) {
             context.fillStyle = "rgba(240, 0, 0, 1.0)";
             break;
         default:
-            context.fillStyle = "rgba(32, 32, 32, 1.0)";
+            context.fillStyle = INK_COLOR;
     }
 
     context.font = fontSize + "px Oswald, sans-serif";
@@ -233,7 +236,7 @@ function uiCopyrightDraw(context, board) {
 
     context.save();
     context.font         = (0.3 * globals.cellSize) + "px Courier New, monospace";
-    context.fillStyle    = "#202020";
+    context.fillStyle    = INK_COLOR;
     context.textAlign    = "center";
     context.textBaseline = "alphabetic";
 
@@ -299,7 +302,7 @@ function uiElementsRedraw(board) {
 
             context.beginPath();
             context.arc(globals.cellSize * (x + 0.5), globals.cellSize * (y + 0.5), GRID_DOT_RADIUS * globals.cellSize, 0, 2 * Math.PI, false);
-            context.fillStyle = "#202020";
+            context.fillStyle = INK_COLOR;
             context.fill();
         }
     }
@@ -317,7 +320,7 @@ function uiElementsRedraw(board) {
     context.beginPath();
     context.lineWidth = WALL_WIDTH * globals.cellSize;
     context.lineCap = "round"; /* Smooth wall ends and corners */
-    context.strokeStyle = "#202020";
+    context.strokeStyle = INK_COLOR;
 
     /* Draw vertical walls */
     for (let x = 0; x < board.width + 1; x++) {
