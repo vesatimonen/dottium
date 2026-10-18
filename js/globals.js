@@ -3,7 +3,7 @@
  *****************************************************************************/
 const globals = {
     game:         undefined,
-    boardMaxSize: 9,
+    boardMaxSize: 8,
     boardMargin:  1, /* Hint margin around board, in cells */
     cellSize:     undefined,
     animating:    false,
