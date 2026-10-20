@@ -5,8 +5,8 @@ const globals = {
     game:             undefined,
     boardMaxSize:     8,
     boardMargin:      1,    /* Top hint margin, in cells */
-    boardMarginLeft:  0.6,  /* Left margin with row hints, in cells */
-    boardMarginRight: 0.27, /* Right margin, in cells */
+    boardMarginLeft:  0.55,  /* Left margin with row hints, in cells */
+    boardMarginRight: 0.1,  /* Right margin, in cells */
     cellSize:         undefined,
     animating:        false,
 };

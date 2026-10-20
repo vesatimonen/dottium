@@ -218,8 +218,8 @@ function uiRowHintsDraw(context, board) {
     const margin    = globals.cellSize * globals.boardMarginLeft;
     const gridWidth = globals.cellSize * board.width;
 
-    const fontYShift  = 0.28 * globals.cellSize; /* 0.4 of font size */
-    const placeXShift = 0.0 * globals.cellSize; /* Centered in margin */
+    const fontYShift  = 0.28 * globals.cellSize;
+    const placeXShift = -0.04 * globals.cellSize;
 
     uiHintStyleSet(context);
 
