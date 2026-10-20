@@ -73,8 +73,8 @@ function parseOptions() {
         options.level = Number(levelOption - 1);
     }
 
-    /* Challenge option */
-    const challengeOption = url.searchParams.getAll("challenge");
+    /* Challenge option, short "c" or long "challenge" */
+    const challengeOption = url.searchParams.getAll("c").concat(url.searchParams.getAll("challenge"));
     if (challengeOption.length > 0) {
         options.challenges = [];
         for (let index = 0; index < challengeOption.length; index++) {
