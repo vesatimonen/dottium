@@ -46,15 +46,21 @@ function parseOptions() {
     /* Create URL */
     const url = new URL(newUrl);
 
-    /* Set option, before level so storage key is right */
-    const setOption = url.searchParams.get("set");
+    /* Set option, short "s" or long "set", before level so storage key is right */
+    let setOption = url.searchParams.get("s");
+    if (setOption == null) {
+        setOption = url.searchParams.get("set");
+    }
     if (setOption == "debug") {
         options.challenges = debugChallengeSet;
         globals.storage    = globals.storage + "-debug";
     }
 
-    /* Level option */
-    const levelOption = url.searchParams.get("level");
+    /* Level option, short "l" or long "level" */
+    let levelOption = url.searchParams.get("l");
+    if (levelOption == null) {
+        levelOption = url.searchParams.get("level");
+    }
     if (levelOption == null) {
         /* Read from storage */
         try {
@@ -74,7 +80,10 @@ function parseOptions() {
     }
 
     /* Challenge option, short "c" or long "challenge" */
-    const challengeOption = url.searchParams.getAll("c").concat(url.searchParams.getAll("challenge"));
+    let challengeOption = url.searchParams.getAll("c");
+    if (challengeOption.length == 0) {
+        challengeOption = url.searchParams.getAll("challenge");
+    }
     if (challengeOption.length > 0) {
         options.challenges = [];
         for (let index = 0; index < challengeOption.length; index++) {
