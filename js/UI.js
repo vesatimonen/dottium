@@ -2,7 +2,7 @@
 /*****************************************************************************
  * Canvas element sizes, part of cell size
  *****************************************************************************/
-const DOT_RADIUS       = 0.22; /* White dot */
+const DOT_RADIUS       = 0.26; /* White dot */
 const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
 const BLOCK_LINE_WIDTH = 0.06; /* Block dash thickness */
 const BLOCK_HALF_LEN   = 0.15; /* Block dash half length from center */
@@ -279,7 +279,7 @@ function uiRoomHintsDraw(context, board) {
             }
 
             uiHintStatusSet(context, uiHints.rooms[roomId], 0.4 * globals.cellSize);
-            context.fillText(board.roomHints[roomId], globals.cellSize * (x + 1 / 6), globals.cellSize * (y + 1 / 6) + fontYShift);
+            context.fillText(board.roomHints[roomId], globals.cellSize * (x + 0.14), globals.cellSize * (y + 1 / 6) + fontYShift);
         }
     }
 }
