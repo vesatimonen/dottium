@@ -53,6 +53,8 @@ body {
 
     background-color:   #B0DDFF; /* #92D2F2, #B0DDFF*/
 
+    touch-action:       manipulation; /* No double-tap zoom, scroll still works */
+
     visibility:         hidden; /* Show after load */
 }
 
