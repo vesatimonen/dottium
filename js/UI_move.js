@@ -163,10 +163,18 @@ function uiPointerUp(event) {
     paintItem = undefined;
 }
 
+/* Stop iOS magnifier and text select on board, modal still gets click */
+function uiTouchStart(event) {
+    if (event.target != elements.gameOver) {
+        event.preventDefault();
+    }
+}
+
 elements.board.addEventListener("pointerdown",   uiPointerDown);
 elements.board.addEventListener("pointermove",   uiPointerMove);
 elements.board.addEventListener("pointerup",     uiPointerUp);
 elements.board.addEventListener("pointercancel", uiPointerUp);
+elements.board.addEventListener("touchstart",    uiTouchStart, {passive: false});
 
 
 

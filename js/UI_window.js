@@ -21,9 +21,19 @@ function windowTouchEnd(event) {
     windowLastTouchEnd = now;
 }
 
+/* Block double-tap magnifier, it starts on second touch start */
+function windowTouchStart(event) {
+    const now = Date.now();
+
+    if (now - windowLastTouchEnd < 500 && !event.target.closest("button")) {
+        event.preventDefault();
+    }
+}
+
 
 /*****************************************************************************
  * Window event handlers
  *****************************************************************************/
 window.addEventListener("resize", windowResize);
+document.addEventListener("touchstart", windowTouchStart, {passive: false});
 document.addEventListener("touchend", windowTouchEnd, {passive: false});
