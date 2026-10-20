@@ -215,11 +215,11 @@ function uiColHintsDraw(context, board) {
 
 /* Draw row hints centered in left and right margin */
 function uiRowHintsDraw(context, board) {
-    const margin    = globals.cellSize * globals.boardMargin;
+    const margin    = globals.cellSize * globals.boardMarginLeft;
     const gridWidth = globals.cellSize * board.width;
 
     const fontYShift  = 0.28 * globals.cellSize; /* 0.4 of font size */
-    const placeXShift = 0.18 * globals.cellSize;
+    const placeXShift = 0.0 * globals.cellSize; /* Centered in margin */
 
     uiHintStyleSet(context);
 
@@ -298,8 +298,9 @@ function uiElementsRedraw(board) {
     context.scale(pixelRatio, pixelRatio);
 
     /* Grid 0,0 after margin, margin is at negative coordinates */
-    const margin = globals.cellSize * globals.boardMargin;
-    context.translate(margin, margin);
+    const margin  = globals.cellSize * globals.boardMargin;
+    const marginLeft = globals.cellSize * globals.boardMarginLeft;
+    context.translate(marginLeft, margin);
 
     /* Draw grid dots in cell centers, only in cells with nothing else */
     for (let y = 0; y < board.height; y++) {
@@ -363,8 +364,8 @@ function uiElementsRedraw(board) {
     uiRowHintsDraw(context, board);
     uiRoomHintsDraw(context, board);
 
-    /* Draw copyright on right side */
-    uiCopyrightDraw(context, board);
+    /* Copyright off, uncomment to bring back */
+//    uiCopyrightDraw(context, board);
 }
 
 /* Redraw when Oswald is loaded, canvas does not do it itself */
@@ -400,7 +401,7 @@ function uiBoardRedraw(board) {
 function uiBoardSetup(board) {
 
     /* Calculate board grid size, margin on both sides takes room too */
-    globals.cellSize = Math.floor((elements.screen.clientWidth) / (globals.boardMaxSize + 2 * globals.boardMargin));
+    globals.cellSize = Math.floor((elements.screen.clientWidth) / (globals.boardMaxSize + globals.boardMarginLeft + globals.boardMarginRight));
 
     /* Clear elements in board */
     while (elements.grid.firstChild) {
@@ -409,13 +410,16 @@ function uiBoardSetup(board) {
 
     /* Center the board, margin as padding so canvas covers it */
     elements.board.style.padding = globals.cellSize * globals.boardMargin + "px";
+    elements.board.style.paddingLeft   = globals.cellSize * globals.boardMarginLeft + "px";
+    elements.board.style.paddingRight  = globals.cellSize * globals.boardMarginRight + "px";
     elements.board.style.paddingBottom = "2px"; /* No bottom hints, keep room for frame line */
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
     /* Center game over modal on grid frame, not on board with margins */
-    const margin = globals.cellSize * globals.boardMargin;
-    elements.gameOver.style.left = margin + globals.cellSize * board.width  / 2 + "px";
+    const margin  = globals.cellSize * globals.boardMargin;
+    const marginLeft = globals.cellSize * globals.boardMarginLeft;
+    elements.gameOver.style.left = marginLeft + globals.cellSize * board.width  / 2 + "px";
     elements.gameOver.style.top  = margin + globals.cellSize * board.height / 2 + "px";
 
     /* Create grid and add cells */
