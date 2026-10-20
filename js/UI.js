@@ -18,6 +18,7 @@ const INK_COLOR       = "#1C2B3A";
 const HINT_DONE_COLOR = INK_COLOR + "33"; /* Ink with 20% alpha */
 const DOT_FILL_COLOR  = "#FFFFFF";        /* Inside of dot */
 const HINT_OVER_COLOR = "#F00000";        /* Hint broken */
+const NO_HINT_ROOM_COLOR = "#FFFFFF33";  /* White with 40% alpha, lightens rooms with no hint */
 
 /*****************************************************************************
  * Redraw buttons
@@ -236,6 +237,22 @@ function uiRowHintsDraw(context, board) {
     }
 }
 
+/* Lighten rooms with no hint, UI only, SVG stays black and white */
+function uiNoHintRoomsDraw(context, board) {
+    /* All cells in one path, so cell edges do not show as seams */
+    context.beginPath();
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            if (board.roomHints[board.roomId[x][y]] == undefined) {
+                context.rect(globals.cellSize * x, globals.cellSize * y, globals.cellSize, globals.cellSize);
+            }
+        }
+    }
+
+    context.fillStyle = NO_HINT_ROOM_COLOR;
+    context.fill();
+}
+
 /* Draw copyright turned up on outer edge of right margin, same as code_svg.c */
 function uiCopyrightDraw(context, board) {
     const margin     = globals.cellSize * globals.boardMargin;
@@ -301,6 +318,9 @@ function uiElementsRedraw(board) {
     const margin  = globals.cellSize * globals.boardMargin;
     const marginLeft = globals.cellSize * globals.boardMarginLeft;
     context.translate(marginLeft, margin);
+
+    /* Lighten rooms with no hint, under everything else */
+    uiNoHintRoomsDraw(context, board);
 
     /* Draw grid dots in cell centers, only in cells with nothing else */
     for (let y = 0; y < board.height; y++) {
