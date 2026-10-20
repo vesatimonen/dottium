@@ -17,7 +17,7 @@
 }
 
 :root {
-    --game-screen-max-width: 640px;
+    --game-screen-max-width: min(720px, calc(100svh - 120px)); /* Board fits in height, 120px for title and buttons */
     --game-screen-min-width: 320px;
     --ink-color:             #1C2B3A; /* Same as INK_COLOR in UI.js */
 }
@@ -78,15 +78,9 @@ body {
     touch-action:   none; /* Disable all including double-tap zoom */
 /*    touch-action:   pinch-zoom; */
 
-    font-size:      calc(0.08 * var(--game-screen-max-width)); /* 8vm of max-width */
+    font-size:      calc(0.08 * min(100vw, var(--game-screen-max-width))); /* 8% of screen width */
 
     font-family:    'Oswald', sans-serif;
-}
-
-@media screen and (max-width: 640px) {
-    #game-board {
-        font-size:      8vw;
-    }
 }
 
 
