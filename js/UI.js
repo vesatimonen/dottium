@@ -4,8 +4,8 @@
  *****************************************************************************/
 const DOT_RADIUS       = 0.26; /* White dot */
 const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
-const BLOCK_LINE_WIDTH = 0.06; /* Block dash thickness */
-const BLOCK_HALF_LEN   = 0.15; /* Block dash half length from center */
+const BLOCK_LINE_WIDTH = 0.06; /* Block cross thickness */
+const BLOCK_HALF_LEN   = 0.15; /* Block cross line half length from center */
 const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
 const WALL_WIDTH       = 0.04; /* Room walls */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
@@ -77,13 +77,19 @@ function uiDotsDraw(context, board) {
     }
 }
 
-/* Add block dash in cell center to path, sized to match dot */
+/* Add block cross in cell center to path, each line as long as old dash */
 function uiBlockLineAdd(context, x, y) {
-    context.moveTo(globals.cellSize * (x + 0.5 - BLOCK_HALF_LEN), globals.cellSize * (y + 0.5));
-    context.lineTo(globals.cellSize * (x + 0.5 + BLOCK_HALF_LEN), globals.cellSize * (y + 0.5));
+    const offset  = BLOCK_HALF_LEN / Math.SQRT2; /* Diagonal x and y offset */
+    const centerX = x + 0.5;
+    const centerY = y + 0.5;
+
+    context.moveTo(globals.cellSize * (centerX - offset), globals.cellSize * (centerY - offset));
+    context.lineTo(globals.cellSize * (centerX + offset), globals.cellSize * (centerY + offset));
+    context.moveTo(globals.cellSize * (centerX - offset), globals.cellSize * (centerY + offset));
+    context.lineTo(globals.cellSize * (centerX + offset), globals.cellSize * (centerY - offset));
 }
 
-/* Draw blocks as dash in cell center */
+/* Draw blocks as cross in cell center */
 function uiBlocksDraw(context, board) {
     context.beginPath();
     context.lineWidth   = BLOCK_LINE_WIDTH * globals.cellSize;
