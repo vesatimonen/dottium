@@ -167,6 +167,19 @@ body {
 /*    box-shadow:         3px 3px 5px rgb(0,0,0); */
 }
 
+/* Restart and undo icons, drawn in ink color */
+.button svg {
+    display:        block;
+    margin:         auto;
+    width:          26px;
+    height:         26px;
+    fill:           none;
+    stroke:         currentColor;
+    stroke-width:   2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .button:active:enabled {
 /*    box-shadow:         none; */
     background:     #B0DDFF;
