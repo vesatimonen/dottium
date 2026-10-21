@@ -100,7 +100,7 @@ function parseOptions() {
             case "FIN":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään. Ratkaisuja on vain yksi.";
-                elements.gameOver.innerHTML     = "Ratkaistu!";
+                elements.gameOver.innerHTML     = "Peli päättyi!";
                 break;
         }
     }
