@@ -18,7 +18,7 @@ const INK_COLOR       = "#1C2B3A";
 const HINT_DONE_COLOR = INK_COLOR + "33"; /* Ink with 20% alpha */
 const DOT_FILL_COLOR  = "#FFFFFF";        /* Inside of dot */
 const HINT_OVER_COLOR = "#F00000";        /* Hint broken */
-const NO_HINT_ROOM_COLOR = "#FFFFFF18";
+const NO_HINT_ROOM_COLOR = "#FFFFFF1C";
 
 /*****************************************************************************
  * Redraw buttons
