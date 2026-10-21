@@ -10,12 +10,22 @@ function windowResize() {
 /* Time of last touch end, for double-tap check */
 let windowLastTouchEnd = 0;
 
-/* Block double-tap zoom, buttons still get fast taps */
+/* Blocked tap gives no click, so send it to the button */
+function windowClickButton(target) {
+    const button = target.closest("button");
+
+    if (button && !button.disabled) {
+        button.click();
+    }
+}
+
+/* Block double-tap zoom, buttons get click by hand */
 function windowTouchEnd(event) {
     const now = Date.now();
 
-    if (now - windowLastTouchEnd < 500 && !event.target.closest("button")) {
+    if (now - windowLastTouchEnd < 500) {
         event.preventDefault();
+        windowClickButton(event.target);
     }
 
     windowLastTouchEnd = now;
@@ -25,7 +35,7 @@ function windowTouchEnd(event) {
 function windowTouchStart(event) {
     const now = Date.now();
 
-    if (now - windowLastTouchEnd < 500 && !event.target.closest("button")) {
+    if (now - windowLastTouchEnd < 500) {
         event.preventDefault();
     }
 }
