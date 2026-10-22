@@ -61,6 +61,13 @@ function uiPaintCell(x, y) {
         }
     }
 
+    /* Block drag skips dots and grey done blocks */
+    if (paintItem == ITEM_BLOCK) {
+        if (oldItem == ITEM_DOT || uiCellDoneBlock(globals.game.board, x, y)) {
+            return false;
+        }
+    }
+
     globals.game.paintMove(x, y, paintItem);
     return true;
 }
