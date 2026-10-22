@@ -189,9 +189,9 @@ function gameStart(level) {
     /* Save game point */
     gameSave();
 
-    /* Debug text */
+    /* Debug text, INFO without board part after > */
     if (options.challenges == debugChallengeSet) {
-//        elements.debug.innerHTML = options.challenges[level].info.split(/[>$#]/)[0];
+        elements.debug.textContent = options.challenges[level].info.split(/[>$#]/)[0].trim();
     }
 
     /* Setup board */
