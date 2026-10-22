@@ -144,6 +144,12 @@ function uiPointerMove(event) {
         return false;
     }
 
+    /* Button released where we did not see it, stop painting */
+    if (event.buttons == 0) {
+        paintItem = undefined;
+        return false;
+    }
+
     /* Get cell under pointer */
     const move = uiMovePosition(event);
     const Xcell = Math.floor(move.X);
@@ -188,6 +194,7 @@ elements.board.addEventListener("pointerdown",   uiPointerDown);
 elements.board.addEventListener("pointermove",   uiPointerMove);
 elements.board.addEventListener("pointerup",     uiPointerUp);
 elements.board.addEventListener("pointercancel", uiPointerUp);
+elements.board.addEventListener("lostpointercapture", uiPointerUp); /* Release outside window */
 elements.board.addEventListener("touchstart",    uiTouchStart, {passive: false});
 
 
