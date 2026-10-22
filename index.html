@@ -43,13 +43,16 @@
         <!-- TITLE -->
         <div id="game-title">
             DOTTIUM
+            <button id="button-about" class="button" aria-label="About"><svg viewBox="0 0 24 24"><path d="M12 11v7"/><path d="M12 6.5v0.01"/></svg></button>
         </div>
 
 
         <!-- GAME BOARD -->
         <div id="game-board">
-            <div id="game-over-modal">
-                Game over!
+            <!-- Modal for game over and about, tap anywhere closes -->
+            <div id="game-modal">
+                <div id="modal-title"></div>
+                <div id="modal-text"></div>
             </div>
             <canvas id="game-canvas"></canvas>
             <div id="game-grid">

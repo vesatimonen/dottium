@@ -61,6 +61,8 @@ body {
 #game-title {
     margin-top:     10px;
 
+    position:       relative; /* For about button */
+
     font-size:      36px;
     font-weight:    bold;
 
@@ -86,7 +88,8 @@ body {
 }
 
 
-#game-over-modal {
+/*** Modal for game over and about, in middle of board ***/
+#game-modal {
     visibility:         hidden;
 
     position:           absolute;
@@ -101,6 +104,7 @@ body {
     border:             3px solid var(--ink-color);
     border-radius:      8px;
 
+    white-space:        nowrap; /* Keep size, do not squeeze near edge */
 
     line-height: 100%;
     margin: auto;
@@ -109,6 +113,18 @@ body {
     top:                50%;
     left:               50%;
     transform:          translate(-50%, -50%);
+    white-space:        nowrap; /* Keep size, do not squeeze near edge */
+}
+
+/* Small second line, hidden when empty */
+#modal-text {
+    margin-top:         8px;
+    font-size:          20px;
+    font-weight:        normal;
+}
+
+#modal-text:empty {
+    display:            none;
 }
 
 #game-canvas {
@@ -197,6 +213,24 @@ body {
     text-align:     center;
 
     margin:         auto;
+}
+
+/*** About button, small round i at right end of title ***/
+#button-about {
+    position:       absolute;
+    right:          4px;
+    top:            50%;
+    transform:      translateY(-50%);
+
+    width:          34px;
+    height:         34px;
+    border-radius:  50%;
+}
+
+#button-about svg {
+    width:          22px;
+    height:         22px;
+    stroke-width:   3;
 }
 
 /*** Game instructions ***/

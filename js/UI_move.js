@@ -95,8 +95,8 @@ function uiPointerDown(event) {
         return false;
     }
 
-    /* Only main button, and not the game over modal */
-    if (event.button != 0 || event.target == elements.gameOver) {
+    /* Only main button */
+    if (event.button != 0) {
         return false;
     }
 
@@ -183,11 +183,9 @@ function uiPointerUp(event) {
     paintItem = undefined;
 }
 
-/* Stop iOS magnifier and text select on board, modal still gets click */
+/* Stop iOS magnifier and text select on board, modal closes on pointerdown */
 function uiTouchStart(event) {
-    if (event.target != elements.gameOver) {
-        event.preventDefault();
-    }
+    event.preventDefault();
 }
 
 elements.board.addEventListener("pointerdown",   uiPointerDown);

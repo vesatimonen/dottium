@@ -442,11 +442,11 @@ function uiBoardSetup(board) {
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
-    /* Center game over modal on grid frame, not on board with margins */
+    /* Center modal on grid frame, not on board with margins */
     const margin  = globals.cellSize * globals.boardMargin;
     const marginLeft = globals.cellSize * globals.boardMarginLeft;
-    elements.gameOver.style.left = marginLeft + globals.cellSize * board.width  / 2 + "px";
-    elements.gameOver.style.top  = margin + globals.cellSize * board.height / 2 + "px";
+    elements.modal.style.left = marginLeft + globals.cellSize * board.width  / 2 + "px";
+    elements.modal.style.top  = margin + globals.cellSize * board.height / 2 + "px";
 
     /* Create grid and add cells */
     for (let y = 0; y < board.height; y++) {
@@ -476,9 +476,9 @@ function uiBoardSetup(board) {
     uiBoardRedraw(board);
 }
 
-/* No input during solve animation or while game over modal shows */
+/* No input during solve animation or while modal shows */
 function uiInputBlocked() {
-    return globals.animating || elements.gameOver.style.visibility == "visible";
+    return globals.animating || modalVisible();
 }
 
 /*****************************************************************************
@@ -516,13 +516,7 @@ function uiRedraw(hintsLater) {
     if (globals.game.board.solved()) {
         /* Last level, fade in game over modal, board stays */
         if (globals.game.level + 1 >= options.challenges.length) {
-            elements.gameOver.style.visibility = "visible";
-            uiButtonsRedraw(globals.game); /* Gray out buttons */
-
-            /* Fade modal in, a bit faster than level change */
-            elements.gameOver.style.animation = "none";
-            elements.gameOver.offsetHeight; /* trigger reflow */
-            elements.gameOver.style.animation = "image-appear 0.6s ease-in 0.2s 1 normal both";
+            modalShow(options.gameOverText, "", true); /* Fade in, a bit faster than level change */
             return;
         }
 

@@ -18,6 +18,7 @@ const options = {
     challenges: [],
     level:      0,
     language:   "ENG",
+    gameOverText: "Game over!", /* Changed by language */
     saved:      undefined /* Saved game from storage */
 };
 
@@ -34,8 +35,11 @@ const elements = {
 
     buttonRestart:  document.getElementById("button-restart"),
     buttonUndo:     document.getElementById("button-undo"),
+    buttonAbout:    document.getElementById("button-about"),
 
-    gameOver:       document.getElementById("game-over-modal"),
+    modal:          document.getElementById("game-modal"),
+    modalTitle:     document.getElementById("modal-title"),
+    modalText:      document.getElementById("modal-text"),
 
     debug:          document.getElementById("debug-text")
 };

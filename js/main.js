@@ -100,7 +100,7 @@ function parseOptions() {
             case "FIN":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään. Ratkaisuja on vain yksi.";
-                elements.gameOver.innerHTML     = "Peli päättyi!";
+                options.gameOverText            = "Peli päättyi!";
                 break;
         }
     }
@@ -108,19 +108,64 @@ function parseOptions() {
 
 
 /*****************************************************************************
- * Modal window handling (Game over)
+ * Modal window handling (game over and about)
  *****************************************************************************/
-function modalClick(event) {
-    event.preventDefault();
-    event.stopPropagation(); /* Keep click off the board */
+/* Tap that closed modal, its click is not used */
+let modalDropClick = false;
 
-    elements.gameOver.style.visibility = "hidden";
+function modalVisible() {
+    return elements.modal.style.visibility == "visible";
+}
 
-    /* Keep board and history, just enable buttons again */
+/* Show modal in middle of board, empty text hides second line */
+function modalShow(title, text, fadeIn) {
+    elements.modalTitle.textContent = title;
+    elements.modalText.textContent  = text;
+    elements.modal.style.visibility = "visible";
+
+    uiButtonsRedraw(globals.game); /* Gray out buttons */
+
+    /* Fade in, or show at once */
+    elements.modal.style.animation = "none";
+    if (fadeIn) {
+        elements.modal.offsetHeight; /* trigger reflow */
+        elements.modal.style.animation = "image-appear 0.6s ease-in 0.2s 1 normal both";
+    }
+}
+
+/* Hide modal, keep board and history, enable buttons again */
+function modalHide() {
+    elements.modal.style.visibility = "hidden";
+
     uiButtonsRedraw(globals.game);
 }
 
-elements.gameOver.addEventListener("click",      modalClick);
+/* Tap anywhere closes modal, tap does nothing else */
+function modalPointerDown(event) {
+    if (!modalVisible()) {
+        modalDropClick = false; /* New tap, its click is used */
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation(); /* Keep tap off the board */
+
+    modalHide();
+    modalDropClick = true;
+}
+
+/* Drop click of closing tap, so buttons do not act */
+function modalClick(event) {
+    if (modalDropClick) {
+        modalDropClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+    }
+}
+
+/* Capture, so modal sees taps before board and buttons */
+document.addEventListener("pointerdown", modalPointerDown, true);
+document.addEventListener("click",       modalClick,       true);
 
 
 /*****************************************************************************
