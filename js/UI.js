@@ -325,8 +325,8 @@ function uiElementsRedraw(board) {
     context.scale(pixelRatio, pixelRatio);
 
     /* Grid 0,0 after margin, margin is at negative coordinates */
-    const margin  = globals.cellSize * globals.boardMargin;
-    const marginLeft = globals.cellSize * globals.boardMarginLeft;
+    const margin  = Math.round(globals.cellSize * globals.boardMargin);
+    const marginLeft = Math.round(globals.cellSize * globals.boardMarginLeft);
     context.translate(marginLeft, margin);
 
     /* Lighten rooms with no hint, under everything else */
@@ -472,17 +472,20 @@ function uiBoardSetup(board) {
         elements.grid.removeChild(elements.grid.firstChild);
     }
 
+    /* Whole pixel margins keep canvas size whole, no stretch blur */
+    const margin      = Math.round(globals.cellSize * globals.boardMargin);
+    const marginLeft  = Math.round(globals.cellSize * globals.boardMarginLeft);
+    const marginRight = Math.round(globals.cellSize * globals.boardMarginRight);
+
     /* Center the board, margin as padding so canvas covers it */
-    elements.board.style.padding = globals.cellSize * globals.boardMargin + "px";
-    elements.board.style.paddingLeft   = globals.cellSize * globals.boardMarginLeft + "px";
-    elements.board.style.paddingRight  = globals.cellSize * globals.boardMarginRight + "px";
+    elements.board.style.padding = margin + "px";
+    elements.board.style.paddingLeft   = marginLeft + "px";
+    elements.board.style.paddingRight  = marginRight + "px";
     elements.board.style.paddingBottom = "2px"; /* No bottom hints, keep room for frame line */
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
     /* Center modal on grid frame, not on board with margins */
-    const margin  = globals.cellSize * globals.boardMargin;
-    const marginLeft = globals.cellSize * globals.boardMarginLeft;
     elements.modal.style.left = marginLeft + globals.cellSize * board.width  / 2 + "px";
     elements.modal.style.top  = margin + globals.cellSize * board.height / 2 + "px";
 
