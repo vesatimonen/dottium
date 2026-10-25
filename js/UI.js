@@ -10,6 +10,10 @@ const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
 const WALL_WIDTH       = 0.04; /* Room walls */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
 
+/* Title, buttons, info and instructions grow with board */
+const ELEMENT_SCALE_BASE_CELL = 50;  /* Cell size where scale is 1 */
+const ELEMENT_SCALE_MAX       = 1.3; /* Biggest scale */
+
 /*****************************************************************************
  * Canvas colors
  *****************************************************************************/
@@ -422,12 +426,46 @@ function uiBoardRedraw(board) {
 
 
 /*****************************************************************************
+ * Scale for page elements, never smaller than 1
+ *****************************************************************************/
+function uiElementScale(cellSize) {
+    const scale = cellSize / ELEMENT_SCALE_BASE_CELL;
+
+    if (scale < 1) {
+        return 1;
+    }
+    if (scale > ELEMENT_SCALE_MAX) {
+        return ELEMENT_SCALE_MAX;
+    }
+    return scale;
+}
+
+
+/*****************************************************************************
+ * Frame line width snapped to whole device pixels, at least 1
+ *****************************************************************************/
+function uiFrameWidth(cellSize) {
+    const pixelRatio  = window.devicePixelRatio || 1;
+    const framePixels = Math.max(1, Math.round(FRAME_WIDTH * cellSize * pixelRatio));
+
+    return framePixels / pixelRatio;
+}
+
+
+/*****************************************************************************
  * Setup board elements
  *****************************************************************************/
 function uiBoardSetup(board) {
 
     /* Calculate board grid size, margin on both sides takes room too */
     globals.cellSize = Math.floor((elements.screen.clientWidth) / (globals.boardMaxSize + globals.boardMarginLeft + globals.boardMarginRight));
+
+    /* Modal and buttons use same line as grid frame */
+    globals.frameWidth = uiFrameWidth(globals.cellSize);
+    document.documentElement.style.setProperty("--frame-width", globals.frameWidth + "px");
+
+    /* Title, buttons, info and instructions grow with board */
+    document.documentElement.style.setProperty("--element-scale", uiElementScale(globals.cellSize));
 
     /* Clear elements in board */
     while (elements.grid.firstChild) {

@@ -17,9 +17,11 @@
 }
 
 :root {
-    --game-screen-max-width: min(720px, calc(100svh - 120px)); /* Board fits in height, 120px for title and buttons */
+    --game-screen-max-width: min(720px, calc(100svh - 144px)); /* Board fits in height, 144px for title and buttons at max scale */
     --game-screen-min-width: 320px;
     --ink-color:             #1C2B3A; /* Same as INK_COLOR in UI.js */
+    --frame-width:           2px;     /* Set from FRAME_WIDTH in UI.js */
+    --element-scale:         1;       /* Set from cell size in UI.js */
 }
 
 /*** Text color for whole page ***/
@@ -63,7 +65,7 @@ body {
 
     position:       relative; /* For about button */
 
-    font-size:      36px;
+    font-size:      calc(36px * var(--element-scale));
     font-weight:    bold;
 
     text-align:     center;
@@ -101,7 +103,7 @@ body {
     text-align:         center;
 
     background-color:   #67BFEC;
-    border:             3px solid var(--ink-color);
+    border:             var(--frame-width) solid var(--ink-color);
     border-radius:      8px;
 
     white-space:        nowrap; /* Keep size, do not squeeze near edge */
@@ -167,17 +169,17 @@ body {
     /* Appearance */
     color:          var(--ink-color);
     background:     #67BFEC;
-    border:         2px solid var(--ink-color);
-    border-radius:  16px;
+    border:         var(--frame-width) solid var(--ink-color);
+    border-radius:  calc(16px * var(--element-scale));
     outline:        0;
 
     /* Size */
-    width:          64px;
-    height:         40px;
+    width:          calc(64px * var(--element-scale));
+    height:         calc(40px * var(--element-scale));
     padding:        0;
 
     /* Text position */
-    font-size:      24px;
+    font-size:      calc(24px * var(--element-scale));
     text-align:     center;
 
 /*    box-shadow:         3px 3px 5px rgb(0,0,0); */
@@ -187,8 +189,8 @@ body {
 .button svg {
     display:        block;
     margin:         auto;
-    width:          26px;
-    height:         26px;
+    width:          calc(26px * var(--element-scale));
+    height:         calc(26px * var(--element-scale));
     fill:           none;
     stroke:         currentColor;
     stroke-width:   2.4;
@@ -208,7 +210,7 @@ body {
 
 
 #game-info {
-    font-size:      28px;
+    font-size:      calc(28px * var(--element-scale));
     font-weight:    bold;
     text-align:     center;
 
@@ -222,14 +224,14 @@ body {
     top:            50%;
     transform:      translateY(-50%);
 
-    width:          34px;
-    height:         34px;
+    width:          calc(34px * var(--element-scale));
+    height:         calc(34px * var(--element-scale));
     border-radius:  50%;
 }
 
 #button-about svg {
-    width:          22px;
-    height:         22px;
+    width:          calc(22px * var(--element-scale));
+    height:         calc(22px * var(--element-scale));
     stroke-width:   3;
 }
 
@@ -237,7 +239,7 @@ body {
 #game-instructions {
     margin-top:     10px;
 
-    font-size:      18px;
+    font-size:      calc(18px * var(--element-scale));
     text-align:     center;
 }
 

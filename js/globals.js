@@ -8,6 +8,7 @@ const globals = {
     boardMarginLeft:  0.55,  /* Left margin with row hints, in cells */
     boardMarginRight: 0.1,  /* Right margin, in cells */
     cellSize:         undefined,
+    frameWidth:       undefined, /* Grid frame line, whole device pixels */
     animating:        false,
 };
 
