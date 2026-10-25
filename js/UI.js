@@ -355,9 +355,14 @@ function uiElementsRedraw(board) {
     /* Draw dots */
     uiDotsDraw(context, board);
 
+    /* Odd width lines move half pixel to sit on whole pixels */
+    context.save();
+    const lineShift = uiLineShift(globals.frameWidth);
+    context.translate(lineShift, lineShift);
+
     /* Draw walls */
     context.beginPath();
-    context.lineWidth = WALL_WIDTH * globals.cellSize;
+    context.lineWidth = globals.frameWidth; /* Snapped to device pixels, sharp */
     context.lineCap = "round"; /* Smooth wall ends and corners */
     context.strokeStyle = INK_COLOR;
 
@@ -385,9 +390,10 @@ function uiElementsRedraw(board) {
 
     /* Draw frame on grid edge */
     context.beginPath();
-    context.lineWidth = FRAME_WIDTH * globals.cellSize;
+    context.lineWidth = globals.frameWidth; /* Same as modal and buttons */
     context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
+    context.restore(); /* Hints use unshifted grid */
 
     /* Draw hints in margin */
     uiColHintsDraw(context, board);
@@ -449,6 +455,20 @@ function uiFrameWidth(cellSize) {
     const framePixels = Math.max(1, Math.round(FRAME_WIDTH * cellSize * pixelRatio));
 
     return framePixels / pixelRatio;
+}
+
+
+/*****************************************************************************
+ * Half device pixel shift for odd width lines, else zero
+ *****************************************************************************/
+function uiLineShift(lineWidth) {
+    const pixelRatio = window.devicePixelRatio || 1;
+    const linePixels = Math.round(lineWidth * pixelRatio);
+
+    if (linePixels % 2 === 1) {
+        return 0.5 / pixelRatio;
+    }
+    return 0;
 }
 
 
