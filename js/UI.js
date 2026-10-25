@@ -7,7 +7,6 @@ const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
 const BLOCK_LINE_WIDTH = 0.06; /* Block cross thickness */
 const BLOCK_HALF_LEN   = 0.15; /* Block cross line half length from center */
 const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
-const WALL_WIDTH       = 0.04; /* Room walls */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
 
 /* Title, buttons, info and instructions grow with board */
@@ -203,7 +202,7 @@ function uiHintStatusSet(context, status, fontSize) {
 
 /* Draw col hints centered in top and bottom margin */
 function uiColHintsDraw(context, board) {
-    const margin     = globals.cellSize * globals.boardMargin;
+    const margin     = Math.round(globals.cellSize * globals.boardMargin);
     const gridHeight = globals.cellSize * board.height;
 
     const fontYShift  = 0.28 * globals.cellSize; /* 0.4 of font size */
@@ -226,7 +225,7 @@ function uiColHintsDraw(context, board) {
 
 /* Draw row hints centered in left and right margin */
 function uiRowHintsDraw(context, board) {
-    const margin    = globals.cellSize * globals.boardMarginLeft;
+    const margin    = Math.round(globals.cellSize * globals.boardMarginLeft);
     const gridWidth = globals.cellSize * board.width;
 
     const fontYShift  = 0.28 * globals.cellSize;
@@ -265,7 +264,7 @@ function uiNoHintRoomsDraw(context, board) {
 
 /* Draw copyright turned up on outer edge of right margin, same as code_svg.c */
 function uiCopyrightDraw(context, board) {
-    const margin     = globals.cellSize * globals.boardMargin;
+    const margin     = Math.round(globals.cellSize * globals.boardMargin);
     const gridWidth  = globals.cellSize * board.width;
     const gridHeight = globals.cellSize * board.height;
 
@@ -320,8 +319,9 @@ function uiElementsRedraw(board) {
 
     /* Canvas fills board with margin, setting size also clears it */
     const pixelRatio = window.devicePixelRatio || 1;
-    elements.canvas.width  = elements.canvas.clientWidth  * pixelRatio;
-    elements.canvas.height = elements.canvas.clientHeight * pixelRatio;
+    const canvasRect = elements.canvas.getBoundingClientRect(); /* Exact size, not rounded */
+    elements.canvas.width  = Math.round(canvasRect.width  * pixelRatio);
+    elements.canvas.height = Math.round(canvasRect.height * pixelRatio);
     context.scale(pixelRatio, pixelRatio);
 
     /* Grid 0,0 after margin, margin is at negative coordinates */
