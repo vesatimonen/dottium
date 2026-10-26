@@ -45,18 +45,6 @@ function uiInfoRedraw(game) {
     gameInfo.innerHTML = "L" + (game.level + 1) + "/" + options.challenges.length;
 }
 
-/*****************************************************************************
- * Redraw cell
- *****************************************************************************/
-function uiCellRedraw(board, x, y) {
-    /* Get DOM element for counter */
-    let cell = document.getElementById("cell-" + x + "-" + y);
-
-    /* No text in cell, items drawn on canvas */
-    cell.innerHTML = '';
-
-}
-
 
 /* Draw dots as white circle with dark ring, same as code_svg.c */
 function uiDotsDraw(context, board) {
@@ -412,14 +400,6 @@ document.fonts.load("16px Oswald").then(function () {
 });
 
 function uiBoardRedraw(board) {
-    /* Redraw cell content */
-    for (let y = 0; y < board.height; y++) {
-        for (let x = 0; x < board.width; x++) {
-            /* Redraw item image */
-            uiCellRedraw(board, x ,y);
-        }
-    }
-
     /* Redraw dots and walls */
     uiElementsRedraw(board);
 
@@ -524,8 +504,6 @@ function uiBoardSetup(board) {
 
             newCell.style.width      = globals.cellSize + "px";
             newCell.style.height     = globals.cellSize + "px";
-            newCell.style.lineHeight = globals.cellSize + "px"; /* Center text vertically */
-            newCell.style.textAlign  = "center";
 
             newRow.appendChild(newCell);
 
