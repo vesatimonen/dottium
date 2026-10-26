@@ -581,8 +581,9 @@ function uiRedraw(hintsLater) {
             return;
         }
 
-        /* Start animation to next level */
+        /* Start animation to next level, block input and gray buttons */
         globals.animating = true;
+        uiButtonsRedraw(globals.game);
         elements.board.addEventListener("animationend", uiGridAnimationEnd);
         elements.board.style.animation = "none";
         elements.board.offsetHeight; /* trigger reflow */
