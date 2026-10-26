@@ -37,6 +37,7 @@ const elements = {
     buttonRestart:  document.getElementById("button-restart"),
     buttonUndo:     document.getElementById("button-undo"),
     buttonAbout:    document.getElementById("button-about"),
+    info:           document.getElementById("game-info"),
 
     modal:          document.getElementById("game-modal"),
     modalTitle:     document.getElementById("modal-title"),

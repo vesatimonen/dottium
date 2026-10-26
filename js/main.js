@@ -103,9 +103,6 @@ function parseOptions() {
     /* Keep only valid challenges */
     const manualChallenges = [];
     for (let index = 0; index < challengeOption.length; index++) {
-        /* Convert URL special characters */
-        challengeOption[index] = challengeOption[index].replace("%3E",'>');
-
         if (challengeValid(challengeOption[index])) {
             manualChallenges.push({info: challengeOption[index]});
         }

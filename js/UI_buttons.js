@@ -9,7 +9,7 @@ function uiUndo(event) {
     }
 
     /* Make undo if possible */
-    globals.game.undoMove()
+    globals.game.undoMove();
 
     /* Refresh board */
     uiRedraw();
