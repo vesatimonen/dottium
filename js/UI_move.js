@@ -28,6 +28,9 @@ function uiMovePosition(event) {
 /*****************************************************************************
  * Event handlers
  *****************************************************************************/
+/* Painting on, from press to release */
+let paintActive = false;
+
 /* Item being painted, undefined when not painting */
 let paintItem = undefined;
 
@@ -100,6 +103,11 @@ function uiPointerDown(event) {
         return false;
     }
 
+    /* Buttons keep their own taps */
+    if (event.target.closest("button")) {
+        return false;
+    }
+
     /* Get click position */
     const move = uiMovePosition(event);
     const board = globals.game.board;
@@ -108,22 +116,24 @@ function uiPointerDown(event) {
     const Xcell = Math.floor(move.X);
     const Ycell = Math.floor(move.Y);
 
-    /* Ignore presses in hint margin */
-    if (Xcell < 0 || Xcell > board.width - 1 ||
-        Ycell < 0 || Ycell > board.height - 1) {
-        return false;
+    /* Outside board always paints dots */
+    paintItem = ITEM_DOT;
+    const inside = (Xcell >= 0 && Xcell < board.width &&
+                    Ycell >= 0 && Ycell < board.height);
+    if (inside) {
+        /* Fast tap on same cell cycles, else dot or clear */
+        let fastTap = false;
+        if (uiHintsWaiting() && Xcell == tapLastX && Ycell == tapLastY) {
+            fastTap = true;
+        }
+        tapLastX = Xcell;
+        tapLastY = Ycell;
+
+        /* Change cell, new item is used for painting */
+        paintItem = globals.game.makeMove(Xcell, Ycell, fastTap);
     }
 
-    /* Fast tap on same cell cycles, else dot or clear */
-    let fastTap = false;
-    if (uiHintsWaiting() && Xcell == tapLastX && Ycell == tapLastY) {
-        fastTap = true;
-    }
-    tapLastX = Xcell;
-    tapLastY = Ycell;
-
-    /* Change cell, new item is used for painting */
-    paintItem = globals.game.makeMove(Xcell, Ycell, fastTap);
+    paintActive = true;
     paintLastX = Xcell;
     paintLastY = Ycell;
 
@@ -132,21 +142,23 @@ function uiPointerDown(event) {
     paintStartY = move.Y;
     paintDragging = false;
 
-    /* Keep getting moves outside board until release */
-    elements.board.setPointerCapture(event.pointerId);
+    /* Keep getting moves outside page until release */
+    document.documentElement.setPointerCapture(event.pointerId);
 
-    uiRedraw(paintItem != ITEM_NONE); /* Clear shows hints now, add after pause */
+    if (inside) {
+        uiRedraw(paintItem != ITEM_NONE); /* Clear shows hints now, add after pause */
+    }
 }
 
 function uiPointerMove(event) {
     /* Not painting, solve animation running or game over */
-    if (paintItem == undefined || uiInputBlocked()) {
+    if (!paintActive || uiInputBlocked()) {
         return false;
     }
 
     /* Button released where we did not see it, stop painting */
     if (event.buttons == 0) {
-        paintItem = undefined;
+        paintActive = false;
         return false;
     }
 
@@ -180,7 +192,7 @@ function uiPointerMove(event) {
 
 function uiPointerUp(event) {
     /* Stop painting */
-    paintItem = undefined;
+    paintActive = false;
 }
 
 /* Stop iOS magnifier and text select on board, modal closes on pointerdown */
@@ -188,11 +200,12 @@ function uiTouchStart(event) {
     event.preventDefault();
 }
 
-elements.board.addEventListener("pointerdown",   uiPointerDown);
-elements.board.addEventListener("pointermove",   uiPointerMove);
-elements.board.addEventListener("pointerup",     uiPointerUp);
-elements.board.addEventListener("pointercancel", uiPointerUp);
-elements.board.addEventListener("lostpointercapture", uiPointerUp); /* Release outside window */
+/* Whole window listens, paint can start outside board */
+document.documentElement.addEventListener("pointerdown",   uiPointerDown);
+document.documentElement.addEventListener("pointermove",   uiPointerMove);
+document.documentElement.addEventListener("pointerup",     uiPointerUp);
+document.documentElement.addEventListener("pointercancel", uiPointerUp);
+document.documentElement.addEventListener("lostpointercapture", uiPointerUp); /* Release outside window */
 elements.board.addEventListener("touchstart",    uiTouchStart, {passive: false});
 
 
