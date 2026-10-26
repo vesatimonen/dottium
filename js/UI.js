@@ -292,7 +292,7 @@ function uiRoomHintsDraw(context, board) {
             }
 
             uiHintStatusSet(context, uiHints.rooms[roomId], 0.4 * globals.cellSize);
-            context.fillText(board.roomHints[roomId], globals.cellSize * (x + 0.14), globals.cellSize * (y + 1 / 6) + fontYShift);
+            context.fillText(board.roomHints[roomId], globals.cellSize * (x + 0.14), globals.cellSize * (y + 0.155) + fontYShift);
         }
     }
 }
