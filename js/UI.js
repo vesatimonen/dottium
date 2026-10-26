@@ -41,7 +41,12 @@ function uiButtonsRedraw(game) {
  * Redraw level elements
  *****************************************************************************/
 function uiInfoRedraw(game) {
-    elements.info.textContent = "L" + (game.level + 1) + "/" + options.challenges.length;
+    /* One challenge, like a manual link, needs no level info */
+    if (options.challenges.length == 1) {
+        elements.info.textContent = "";
+    } else {
+        elements.info.textContent = (game.level + 1) + "/" + options.challenges.length;
+    }
 }
 
 
