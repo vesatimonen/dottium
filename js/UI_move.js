@@ -48,6 +48,38 @@ let paintDragging = false;
 let tapLastX = undefined;
 let tapLastY = undefined;
 
+/* Long press on cell sets block, in ms */
+const LONG_PRESS_TIME = 500;
+let longPressTimer = undefined;
+let longPressMoved = false; /* Press made a move to undo */
+
+/* Stop waiting for long press */
+function uiLongPressCancel() {
+    clearTimeout(longPressTimer);
+    longPressTimer = undefined;
+}
+
+/* Long press: swap press move for block, drag goes on with blocks */
+function uiLongPress() {
+    longPressTimer = undefined;
+
+    /* Released, dragging or solve animation started */
+    if (!paintActive || paintDragging || uiInputBlocked()) {
+        return;
+    }
+
+    if (longPressMoved) {
+        globals.game.undoMove();
+    }
+    paintItem = globals.game.paintMove(paintLastX, paintLastY, ITEM_BLOCK);
+
+    /* Next tap on cell is normal, not fast tap */
+    tapLastX = undefined;
+    tapLastY = undefined;
+
+    uiRedraw(true);
+}
+
 /* Paint one cell, returns true if changed */
 function uiPaintCell(x, y) {
     const oldItem = globals.game.board.getItem(x, y);
@@ -120,6 +152,7 @@ function uiPointerDown(event) {
     paintItem = ITEM_DOT;
     const inside = (Xcell >= 0 && Xcell < board.width &&
                     Ycell >= 0 && Ycell < board.height);
+    uiLongPressCancel();
     if (inside) {
         /* Fast tap on same cell cycles, else dot or clear */
         let fastTap = false;
@@ -130,7 +163,12 @@ function uiPointerDown(event) {
         tapLastY = Ycell;
 
         /* Change cell, new item is used for painting */
+        const movesBefore = globals.game.moves.length;
         paintItem = globals.game.makeMove(Xcell, Ycell, fastTap);
+        longPressMoved = globals.game.moves.length > movesBefore;
+
+        /* Hold still to set block */
+        longPressTimer = setTimeout(uiLongPress, LONG_PRESS_TIME);
     }
 
     paintActive = true;
@@ -173,6 +211,7 @@ function uiPointerMove(event) {
             return false;
         }
         paintDragging = true;
+        uiLongPressCancel(); /* Drag is not long press */
     }
 
     /* Still in same cell */
@@ -193,10 +232,16 @@ function uiPointerMove(event) {
 function uiPointerUp(event) {
     /* Stop painting */
     paintActive = false;
+    uiLongPressCancel();
 }
 
 /* Stop iOS magnifier and text select on board, modal closes on pointerdown */
 function uiTouchStart(event) {
+    event.preventDefault();
+}
+
+/* No long press menu on board */
+function uiContextMenu(event) {
     event.preventDefault();
 }
 
@@ -207,6 +252,7 @@ document.documentElement.addEventListener("pointerup",     uiPointerUp);
 document.documentElement.addEventListener("pointercancel", uiPointerUp);
 document.documentElement.addEventListener("lostpointercapture", uiPointerUp); /* Release outside window */
 elements.board.addEventListener("touchstart",    uiTouchStart, {passive: false});
+elements.board.addEventListener("contextmenu",   uiContextMenu);
 
 
 
