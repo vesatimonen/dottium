@@ -135,6 +135,11 @@ function uiHintsWaiting() {
 function uiHintsUpdateLater() {
     clearTimeout(uiHintTimer);
     uiHintTimer = setTimeout(function () {
+        /* Finger still down, wait stays on until release */
+        if (paintActive) {
+            return;
+        }
+
         uiHintsUpdate(globals.game.board);
         uiElementsRedraw(globals.game.board);
     }, HINT_DELAY);

@@ -196,7 +196,7 @@ function uiPointerMove(event) {
 
     /* Button released where we did not see it, stop painting */
     if (event.buttons == 0) {
-        paintActive = false;
+        uiPaintStop();
         return false;
     }
 
@@ -229,10 +229,22 @@ function uiPointerMove(event) {
     }
 }
 
-function uiPointerUp(event) {
-    /* Stop painting */
+/* Stop painting, held hints wait again from release */
+function uiPaintStop() {
+    if (!paintActive) {
+        return;
+    }
+
     paintActive = false;
     uiLongPressCancel();
+
+    if (uiHintsWaiting()) {
+        uiHintsUpdateLater();
+    }
+}
+
+function uiPointerUp(event) {
+    uiPaintStop();
 }
 
 /* Stop iOS magnifier and text select on board, modal closes on pointerdown */
