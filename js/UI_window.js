@@ -19,16 +19,18 @@ function windowClickButton(target) {
     }
 }
 
+/* Touch start was blocked, so browser sends no click */
+let windowTouchBlocked = false;
+
 /* Block double-tap zoom, buttons get click by hand */
 function windowTouchEnd(event) {
-    const now = Date.now();
-
-    if (now - windowLastTouchEnd < 500) {
+    if (windowTouchBlocked) {
         event.preventDefault();
         windowClickButton(event.target);
     }
 
-    windowLastTouchEnd = now;
+    windowTouchBlocked = false;
+    windowLastTouchEnd = Date.now();
 }
 
 /* Block double-tap magnifier, it starts on second touch start */
@@ -37,6 +39,7 @@ function windowTouchStart(event) {
 
     if (now - windowLastTouchEnd < 500) {
         event.preventDefault();
+        windowTouchBlocked = true;
     }
 }
 
