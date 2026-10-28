@@ -42,7 +42,7 @@ elements.buttonRestart.addEventListener("click", uiRestart);
 
 /* ABOUT, show in modal, tap anywhere closes */
 function uiAbout(event) {
-    modalShow("DOTTIUM", "© Vesa Timonen", false);
+    modalShow("DOTTIUM", "© vesa.timonen[at]kolumbus.fi", false);
 }
 
 elements.buttonAbout.addEventListener("click", uiAbout);
