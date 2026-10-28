@@ -68,6 +68,7 @@ function parseOptions() {
         setOption = url.searchParams.get("set");
     }
     if (setOption == "debug") {
+        options.debug      = true;
         options.challenges = debugChallengeSet;
         globals.storage    = globals.storage + "-debug";
     }
@@ -256,7 +257,7 @@ function gameStart(level) {
     gameSave();
 
     /* Debug text, INFO without board part after > */
-    if (options.challenges == debugChallengeSet) {
+    if (options.debug) {
         elements.debug.textContent = options.challenges[level].info.split(/[>$#]/)[0].trim();
     }
 
@@ -266,7 +267,7 @@ function gameStart(level) {
 
 
 
-window.onload = function () {
+function gameBoot() {
     options.challenges = defaultChallengeSet;
     globals.storage = "dottium/game-level";
 
@@ -282,6 +283,33 @@ window.onload = function () {
 
     /* Show window */
     elements.screen.style.visibility = "visible";
+}
+
+
+
+/* Debug set is big, load it only for ?s=debug */
+function debugSetWanted() {
+    const url = new URL(window.location.href);
+
+    let setOption = url.searchParams.get("s");
+    if (setOption == null) {
+        setOption = url.searchParams.get("set");
+    }
+    return setOption == "debug";
+}
+
+
+
+window.onload = function () {
+    if (debugSetWanted() == false) {
+        gameBoot();
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.src    = "js/debug_set.js?v=1";
+    script.onload = gameBoot;
+    document.head.appendChild(script);
 }
 
 

@@ -18,6 +18,7 @@ const globals = {
 const options = {
     challenges: [],
     level:      0,
+    debug:      false, /* Debug set from ?s=debug */
     language:   "ENG",
     gameOverText: "Game over!", /* Changed by language */
     saved:      undefined /* Saved game from storage */
