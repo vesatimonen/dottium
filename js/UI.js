@@ -6,7 +6,7 @@ const DOT_RADIUS       = 0.26; /* White dot */
 const DOT_RING_WIDTH   = 0.05; /* Dark ring around dot */
 const BLOCK_LINE_WIDTH = 0.06; /* Block cross thickness */
 const BLOCK_HALF_LEN   = 0.15; /* Block cross line half length from center */
-const GRID_DOT_RADIUS  = 0.03; /* Small dot in every cell */
+const GRID_DOT_RADIUS  = 0.04; /* Small dot in every cell */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
 
 /* Title, buttons, info and instructions grow with board */
