@@ -124,6 +124,32 @@ function uiPaintLine(fromX, fromY, toX, toY) {
     return changed;
 }
 
+/* Press on top or left margin fills that col or row with dots, returns true if changed */
+function uiPaintBorder(Xcell, Ycell) {
+    const board = globals.game.board;
+    let changed = false;
+
+    /* Top margin, fill col */
+    if (Ycell == -1 && Xcell >= 0 && Xcell < board.width) {
+        for (let y = 0; y < board.height; y++) {
+            if (uiPaintCell(Xcell, y)) {
+                changed = true;
+            }
+        }
+    }
+
+    /* Left margin, fill row */
+    if (Xcell == -1 && Ycell >= 0 && Ycell < board.height) {
+        for (let x = 0; x < board.width; x++) {
+            if (uiPaintCell(x, Ycell)) {
+                changed = true;
+            }
+        }
+    }
+
+    return changed;
+}
+
 function uiPointerDown(event) {
     /* Ignore clicks during solve animation or game over */
     if (uiInputBlocked()) {
@@ -185,6 +211,8 @@ function uiPointerDown(event) {
 
     if (inside) {
         uiRedraw(paintItem != ITEM_NONE); /* Clear shows hints now, add after pause */
+    } else if (uiPaintBorder(Xcell, Ycell)) {
+        uiRedraw(true); /* Dots added, hints after pause */
     }
 }
 
