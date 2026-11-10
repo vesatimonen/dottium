@@ -231,7 +231,7 @@ function gameRestore() {
             continue;
         }
 
-        game.paintMove(move.x, move.y, move.newItem);
+        game.paintMove(move.x, move.y, move.newItem, move.linked);
     }
 
     uiRedraw();

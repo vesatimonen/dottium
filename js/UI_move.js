@@ -80,8 +80,8 @@ function uiLongPress() {
     uiRedraw(true);
 }
 
-/* Paint one cell, returns true if changed */
-function uiPaintCell(x, y) {
+/* Paint one cell, linked undoes with move before, returns true if changed */
+function uiPaintCell(x, y, linked) {
     const oldItem = globals.game.board.getItem(x, y);
 
     /* Off board or already painted */
@@ -103,7 +103,7 @@ function uiPaintCell(x, y) {
         }
     }
 
-    globals.game.paintMove(x, y, paintItem);
+    globals.game.paintMove(x, y, paintItem, linked);
     return true;
 }
 
@@ -124,7 +124,7 @@ function uiPaintLine(fromX, fromY, toX, toY) {
     return changed;
 }
 
-/* Press on top or left margin fills that col or row with dots, returns true if changed */
+/* Press on top or left margin fills that col or row with dots, one undo, returns true if changed */
 function uiPaintBorder(Xcell, Ycell) {
     const board = globals.game.board;
     let changed = false;
@@ -132,7 +132,7 @@ function uiPaintBorder(Xcell, Ycell) {
     /* Top margin, fill col */
     if (Ycell == -1 && Xcell >= 0 && Xcell < board.width) {
         for (let y = 0; y < board.height; y++) {
-            if (uiPaintCell(Xcell, y)) {
+            if (uiPaintCell(Xcell, y, changed)) {
                 changed = true;
             }
         }
@@ -141,7 +141,7 @@ function uiPaintBorder(Xcell, Ycell) {
     /* Left margin, fill row */
     if (Xcell == -1 && Ycell >= 0 && Ycell < board.height) {
         for (let x = 0; x < board.width; x++) {
-            if (uiPaintCell(x, Ycell)) {
+            if (uiPaintCell(x, Ycell, changed)) {
                 changed = true;
             }
         }

@@ -336,8 +336,8 @@ class Game {
         return this.paintMove(x, y, newItem);
     }
 
-    /* Set cell to item, used when painting */
-    paintMove(x, y, item) {
+    /* Set cell to item, used when painting, linked undoes with move before */
+    paintMove(x, y, item, linked) {
         const oldItem = this.board.getItem(x, y);
 
         /* Off board */
@@ -356,7 +356,7 @@ class Game {
         }
 
         /* Save every move, old item for undo, new item for replay */
-        this.moves.push({x: x, y: y, oldItem: oldItem, newItem: item});
+        this.moves.push({x: x, y: y, oldItem: oldItem, newItem: item, linked: linked == true});
 
         return item;
     }
@@ -367,9 +367,12 @@ class Game {
             return false;
         }
 
-        /* Pop latest move */
-        const move = this.moves.pop();
-        this.board.setItem(move.x, move.y, move.oldItem);
+        /* Pop latest move, go on while move is linked to one before */
+        let move;
+        do {
+            move = this.moves.pop();
+            this.board.setItem(move.x, move.y, move.oldItem);
+        } while (move.linked && this.moves.length > 0);
 
         return true;
     }
