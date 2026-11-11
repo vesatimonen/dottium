@@ -42,12 +42,11 @@ elements.buttonRestart.addEventListener("click", uiRestart);
 
 /* Controls help, action and result */
 const ABOUT_HELP = [
-    ["Click",                  "dot"],
-    ["Double click",           "block"],
-    ["Long press",             "block"],
-    ["Click dot or block",     "clear"],
-    ["Drag",                   "paint many cells"],
-    ["Click edge",             "fill line with dots"]
+    ["Click",                  "Set dot or clear"],
+    ["Double click",           "Set block"],
+    ["Long press",             "Set block"],
+    ["Drag",                   "Set or clear cells"],
+    ["Click edge",             "Set dots to empty places"]
 ];
 
 /* Build help grid, dashes line up in middle column */
