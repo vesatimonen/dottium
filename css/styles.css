@@ -124,12 +124,36 @@ html {
 /* Small second line, hidden when empty */
 #modal-text {
     margin-top:         8px;
-    font-size:          20px;
+    font-size:          16px;
+    line-height:        1.25; /* Own spacing, not title 32px */
     font-weight:        normal;
+    white-space:        pre-line; /* Keep line breaks */
 }
 
 #modal-text:empty {
     display:            none;
+}
+
+/* Controls help in about, dashes in one column */
+.modal-help {
+    display:               grid;
+    grid-template-columns: auto auto auto;
+    column-gap:            6px;
+    width:                 fit-content;
+    margin:                0 auto 20px auto; /* Centered, empty line below */
+}
+
+.modal-help span {
+    white-space:           nowrap; /* One row per line */
+}
+
+.modal-help span:nth-child(3n+1) {
+    text-align:            right; /* Action */
+    font-weight:           600; /* Action stands out */
+}
+
+.modal-help span:nth-child(3n) {
+    text-align:            left; /* Result */
 }
 
 #game-canvas {
