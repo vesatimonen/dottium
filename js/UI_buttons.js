@@ -46,7 +46,7 @@ const ABOUT_HELP = [
     ["Double click",           "Set block"],
     ["Long press",             "Set block"],
     ["Drag",                   "Set or clear cells"],
-    ["Click edge",             "Set dots to empty places"]
+    ["Click edge",             "Set dots to\nempty places"]
 ];
 
 /* Build help grid, dashes line up in middle column */

@@ -144,7 +144,7 @@ html {
 }
 
 .modal-help span {
-    white-space:           nowrap; /* One row per line */
+    white-space:           pre; /* No wrap, \n breaks line */
 }
 
 .modal-help span:nth-child(3n+1) {
