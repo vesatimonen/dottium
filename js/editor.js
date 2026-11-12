@@ -19,12 +19,91 @@ const editor = {
 
 
 /*****************************************************************************
- * Stubs for main.js functions that UI.js uses
+ * Modal for help, same as in main.js, which editor does not load
  *****************************************************************************/
-/* Editor has no modal */
+/* Tap that closed modal, its click is not used */
+let modalDropClick = false;
+
 function modalVisible() {
-    return false;
+    return elements.modal.style.visibility == "visible";
 }
+
+function modalShow(title, text) {
+    elements.modalTitle.textContent = title;
+    elements.modalText.textContent  = text;
+    elements.modal.style.visibility = "visible";
+
+    uiButtonsRedraw(globals.game); /* Gray out buttons */
+}
+
+function modalHide() {
+    elements.modal.style.visibility = "hidden";
+
+    uiButtonsRedraw(globals.game);
+}
+
+/* Tap anywhere closes modal, tap does nothing else */
+function modalPointerDown(event) {
+    if (!modalVisible()) {
+        modalDropClick = false;
+        return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation(); /* Keep tap off the board */
+
+    modalHide();
+    modalDropClick = true;
+}
+
+/* Drop click of closing tap, so buttons do not act */
+function modalClick(event) {
+    if (modalDropClick) {
+        modalDropClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+    }
+}
+
+/* Capture, so modal sees taps before board and buttons */
+document.addEventListener("pointerdown", modalPointerDown, true);
+document.addEventListener("click",       modalClick,       true);
+
+
+/*****************************************************************************
+ * Help in modal
+ *****************************************************************************/
+/* Editor controls, action and result */
+const EDITOR_HELP = [
+    ["Click edge",          "Increase line number"],
+    ["Click cell",          "Increase room number"],
+    ["Click wall",          "Set or clear wall"],
+    ["Right click",         "Decrease number"],
+    ["Long press",          "Decrease number"],
+    ["Paste to link box",   "Load challenge"]
+];
+
+/* Build help grid, dashes line up in middle column */
+function editorHelp() {
+    const help = document.createElement("div");
+    help.className = "modal-help";
+
+    for (const [action, result] of EDITOR_HELP) {
+        for (const part of [action, "–", result]) {
+            const cell = document.createElement("span");
+            cell.textContent = part;
+            help.appendChild(cell);
+        }
+    }
+    return help;
+}
+
+function editorAbout() {
+    modalShow("DOTTIUM EDITOR", "©\u00A0vesa.timonen[at]kolumbus.fi");
+    elements.modalText.prepend(editorHelp()); /* modalShow clears it next time */
+}
+
+elements.buttonAbout.addEventListener("click", editorAbout);
 
 
 /*****************************************************************************
@@ -486,7 +565,7 @@ function editorPressCancel() {
 function editorPointerDown(event) {
     const target = editorTargetGet(event);
     editorPressCancel();
-    if (target == undefined) {
+    if (target == undefined || modalVisible()) {
         return;
     }
 
