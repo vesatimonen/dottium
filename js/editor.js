@@ -107,8 +107,221 @@ function editorSizeButtonsRedraw(size) {
 
 
 /*****************************************************************************
+ * Challenge encoding, reverse of Board.init()
+ *****************************************************************************/
+/* Hints to text, '-' means no hint */
+function editorHintsText(hints, count) {
+    let text = "";
+
+    for (let i = 0; i < count; i++) {
+        if (hints[i] == undefined) {
+            text += "-";
+        } else {
+            text += hints[i];
+        }
+    }
+
+    return text;
+}
+
+/* Room hints, trailing '-' cut but one kept, so link does not end in dot */
+function editorRoomHintsText(roomHints, roomCount) {
+    let text = editorHintsText(roomHints, roomCount).replace(/-+$/, "");
+
+    if (text == "") {
+        text = "-";
+    }
+
+    return text;
+}
+
+/* Wall mask of one cell, outer frame is not saved */
+function editorWallMask(width, height, verticalWalls, horizontalWalls, x, y) {
+    let mask = 0;
+
+    if (y > 0 && horizontalWalls[x][y] > 0) {
+        mask |= WALL_MASK_UP;
+    }
+    if (x < width - 1 && verticalWalls[x + 1][y] > 0) {
+        mask |= WALL_MASK_RIGHT;
+    }
+    if (y < height - 1 && horizontalWalls[x][y + 1] > 0) {
+        mask |= WALL_MASK_DOWN;
+    }
+    if (x > 0 && verticalWalls[x][y] > 0) {
+        mask |= WALL_MASK_LEFT;
+    }
+
+    return mask;
+}
+
+/* One hex digit per checkered cell, each inner edge touches one of them */
+function editorWallsText(width, height, verticalWalls, horizontalWalls) {
+    let text = "";
+
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            if ((x + y) % 2 == 0) {
+                text += editorWallMask(width, height, verticalWalls, horizontalWalls, x, y).toString(16);
+            }
+        }
+    }
+
+    return text;
+}
+
+/* Challenge string from board parts, size.cols.rows.walls.rooms */
+function editorEncode(width, height, colHints, rowHints, verticalWalls, horizontalWalls, roomsText) {
+    return width + "x" + height + "." +
+           editorHintsText(colHints, width) + "." +
+           editorHintsText(rowHints, height) + "." +
+           editorWallsText(width, height, verticalWalls, horizontalWalls) + "." +
+           roomsText;
+}
+
+/* Copy of 2D array */
+function editorArrayCopy(array) {
+    return array.map(function (column) { return column.slice(); });
+}
+
+
+/*****************************************************************************
+ * Edit functions, each returns new challenge string
+ *****************************************************************************/
+/* Next hint: no hint, 0, 1 ... max, no hint, back = other way */
+function editorHintCycle(hint, max, back) {
+    if (back) {
+        if (hint == undefined) {
+            return max;
+        }
+        if (hint == 0) {
+            return undefined;
+        }
+        return Math.min(hint, max + 1) - 1;
+    }
+
+    if (hint == undefined) {
+        return 0;
+    }
+    if (hint >= max) {
+        return undefined;
+    }
+    return hint + 1;
+}
+
+/* Biggest hint, one digit only */
+function editorHintMax(cellCount) {
+    return Math.min(9, cellCount);
+}
+
+function editorColHintEdit(board, x, back) {
+    const colHints = board.colHints.slice();
+    colHints[x] = editorHintCycle(colHints[x], editorHintMax(board.height), back);
+
+    return editorEncode(board.width, board.height, colHints, board.rowHints,
+                        board.verticalWalls, board.horizontalWalls,
+                        editorRoomHintsText(board.roomHints, board.roomCount));
+}
+
+function editorRowHintEdit(board, y, back) {
+    const rowHints = board.rowHints.slice();
+    rowHints[y] = editorHintCycle(rowHints[y], editorHintMax(board.width), back);
+
+    return editorEncode(board.width, board.height, board.colHints, rowHints,
+                        board.verticalWalls, board.horizontalWalls,
+                        editorRoomHintsText(board.roomHints, board.roomCount));
+}
+
+function editorRoomHintEdit(board, x, y, back) {
+    const roomId    = board.roomId[x][y];
+    const roomHints = board.roomHints.slice();
+    roomHints[roomId] = editorHintCycle(roomHints[roomId], editorHintMax(board.roomSize[roomId]), back);
+
+    return editorEncode(board.width, board.height, board.colHints, board.rowHints,
+                        board.verticalWalls, board.horizontalWalls,
+                        editorRoomHintsText(roomHints, board.roomCount));
+}
+
+/* First cell of each hinted room, x first like roomsInit() */
+function editorRoomAnchors(board) {
+    const anchors = [];
+    const seen    = [];
+
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            const roomId = board.roomId[x][y];
+            if (seen[roomId]) {
+                continue;
+            }
+            seen[roomId] = true;
+
+            if (board.roomHints[roomId] != undefined) {
+                anchors.push({x: x, y: y, hint: board.roomHints[roomId]});
+            }
+        }
+    }
+
+    return anchors;
+}
+
+/* Toggle wall, room hints follow their first cell to new rooms */
+function editorWallEdit(board, wall) {
+    const verticalWalls   = editorArrayCopy(board.verticalWalls);
+    const horizontalWalls = editorArrayCopy(board.horizontalWalls);
+
+    if (wall.vertical) {
+        verticalWalls[wall.x][wall.y] = 1 - verticalWalls[wall.x][wall.y];
+    } else {
+        horizontalWalls[wall.x][wall.y] = 1 - horizontalWalls[wall.x][wall.y];
+    }
+
+    /* New rooms without hints */
+    const newBoard = new Board();
+    newBoard.init(editorEncode(board.width, board.height, board.colHints, board.rowHints,
+                               verticalWalls, horizontalWalls, "-"));
+
+    /* Move hints, merged rooms keep first hint */
+    const roomHints = [];
+    for (const anchor of editorRoomAnchors(board)) {
+        const roomId = newBoard.roomId[anchor.x][anchor.y];
+        if (roomHints[roomId] == undefined) {
+            roomHints[roomId] = anchor.hint;
+        }
+    }
+
+    return editorEncode(board.width, board.height, board.colHints, board.rowHints,
+                        verticalWalls, horizontalWalls,
+                        editorRoomHintsText(roomHints, newBoard.roomCount));
+}
+
+
+/*****************************************************************************
  * Editor redraw
  *****************************************************************************/
+/* Hints dark, room hint bigger than room red, no done grey */
+function editorHintsMark(board) {
+    uiHints = {rows: [], cols: [], rooms: []};
+
+    for (let y = 0; y < board.height; y++) {
+        uiHints.rows[y] = HINT_OPEN;
+    }
+    for (let x = 0; x < board.width; x++) {
+        uiHints.cols[x] = HINT_OPEN;
+    }
+    for (let roomId = 0; roomId < board.roomCount; roomId++) {
+        uiHints.rooms[roomId] = HINT_OPEN;
+        if (board.roomHints[roomId] > board.roomSize[roomId]) {
+            uiHints.rooms[roomId] = HINT_OVER;
+        }
+    }
+}
+
+/* Draw board with editor hint colors */
+function editorRedraw() {
+    editorHintsMark(globals.game.board);
+    uiElementsRedraw(globals.game.board);
+}
+
 /* Load challenge into board and draw it */
 function editorShow(info) {
     editor.info = info;
@@ -116,19 +329,29 @@ function editorShow(info) {
 
     globals.game.init(0, info);
     uiBoardSetup(globals.game.board);
+    editorRedraw();
 
     editorElements.text.value = editorLink(info);
     editorSizeButtonsRedraw(globals.game.board.width);
+}
+
+/* Show changed challenge, old one goes to undo history */
+function editorChange(info) {
+    if (info == editor.info) {
+        return;
+    }
+
+    editor.history.push(editor.info);
+    editorShow(info);
 }
 
 
 /*****************************************************************************
  * Button handlers
  *****************************************************************************/
-/* New empty board, old one goes to undo history */
+/* New empty board */
 function editorSizeSet(size) {
-    editor.history.push(editor.info);
-    editorShow(editorEmptyInfo(size));
+    editorChange(editorEmptyInfo(size));
 }
 
 for (const size of EDITOR_SIZES) {
@@ -161,8 +384,7 @@ function editorTextInput() {
         return;
     }
 
-    editor.history.push(editor.info);
-    editorShow(info);
+    editorChange(info);
     editorElements.result.textContent = "";
     editorTextFocus(); /* Keep link selected for next paste */
 }
@@ -176,6 +398,135 @@ function editorTextBlur() {
 editorElements.text.addEventListener("focus", editorTextFocus);
 editorElements.text.addEventListener("input", editorTextInput);
 editorElements.text.addEventListener("blur",  editorTextBlur);
+
+
+/*****************************************************************************
+ * Board input
+ *****************************************************************************/
+const EDITOR_EDGE_ZONE  = 0.2; /* Tap this near line sets wall, in cells */
+const EDITOR_LONG_PRESS = 500; /* ms, long press goes back */
+
+let editorPressTarget = undefined;
+let editorPressTimer  = undefined;
+
+/* What is under pointer: col, row, wall or room, undefined if nothing */
+function editorTargetGet(event) {
+    const board = globals.game.board;
+    const rect  = elements.grid.getBoundingClientRect();
+    const X = (event.clientX - rect.left) / globals.cellSize;
+    const Y = (event.clientY - rect.top)  / globals.cellSize;
+
+    /* Hint margins */
+    if (Y < 0) {
+        if (X >= 0 && X < board.width) {
+            return {type: "col", x: Math.floor(X)};
+        }
+        return undefined;
+    }
+    if (X < 0) {
+        if (Y < board.height) {
+            return {type: "row", y: Math.floor(Y)};
+        }
+        return undefined;
+    }
+    if (X >= board.width || Y >= board.height) {
+        return undefined;
+    }
+
+    /* Nearest inner lines */
+    const lineX = Math.round(X);
+    const lineY = Math.round(Y);
+    let distanceX = Math.abs(X - lineX);
+    let distanceY = Math.abs(Y - lineY);
+    if (lineX < 1 || lineX > board.width - 1) {
+        distanceX = 1;
+    }
+    if (lineY < 1 || lineY > board.height - 1) {
+        distanceY = 1;
+    }
+
+    /* Near line is wall, nearer one wins in corner */
+    if (distanceX < EDITOR_EDGE_ZONE && distanceX <= distanceY) {
+        return {type: "wall", vertical: true, x: lineX, y: Math.floor(Y)};
+    }
+    if (distanceY < EDITOR_EDGE_ZONE) {
+        return {type: "wall", vertical: false, x: Math.floor(X), y: lineY};
+    }
+
+    return {type: "room", x: Math.floor(X), y: Math.floor(Y)};
+}
+
+/* Make edit for target, back cycles hint other way */
+function editorTargetEdit(target, back) {
+    const board = globals.game.board;
+
+    switch (target.type) {
+        case "col":
+            editorChange(editorColHintEdit(board, target.x, back));
+            break;
+        case "row":
+            editorChange(editorRowHintEdit(board, target.y, back));
+            break;
+        case "wall":
+            editorChange(editorWallEdit(board, target));
+            break;
+        case "room":
+            editorChange(editorRoomHintEdit(board, target.x, target.y, back));
+            break;
+    }
+}
+
+function editorPressCancel() {
+    clearTimeout(editorPressTimer);
+    editorPressTimer  = undefined;
+    editorPressTarget = undefined;
+}
+
+/* Right button goes back now, other press waits for release or long press */
+function editorPointerDown(event) {
+    const target = editorTargetGet(event);
+    editorPressCancel();
+    if (target == undefined) {
+        return;
+    }
+
+    if (event.button == 2) {
+        editorTargetEdit(target, true);
+        return;
+    }
+
+    editorPressTarget = target;
+    editorPressTimer  = setTimeout(function () {
+        const longTarget = editorPressTarget;
+        editorPressCancel();
+        editorTargetEdit(longTarget, true);
+    }, EDITOR_LONG_PRESS);
+}
+
+/* Short press goes forward */
+function editorPointerUp(event) {
+    if (editorPressTarget == undefined) {
+        return;
+    }
+
+    const target = editorPressTarget;
+    editorPressCancel();
+    editorTargetEdit(target, false);
+}
+
+/* No menu on right click or long press */
+function editorContextMenu(event) {
+    event.preventDefault();
+}
+
+elements.board.addEventListener("pointerdown",   editorPointerDown);
+elements.board.addEventListener("pointerup",     editorPointerUp);
+elements.board.addEventListener("pointercancel", editorPressCancel);
+elements.board.addEventListener("pointerleave",  editorPressCancel);
+elements.board.addEventListener("contextmenu",   editorContextMenu);
+
+/* UI_window.js resize sets game hint colors, put editor colors back */
+window.addEventListener("resize", editorRedraw);
 
 
 /*****************************************************************************
