@@ -403,8 +403,32 @@ function editorHintsMark(board) {
     }
 }
 
-/* Draw board with editor hint colors */
-/* Faint dash in empty edge hints, same places as UI.js hints */
+/* Faint dash in rooms without hint, top-left cell as in UI.js */
+function editorRoomPlacesDraw(context, board) {
+    const drawn = [];
+
+    context.font = (0.4 * globals.cellSize) + "px Oswald, sans-serif";
+
+    /* Row by row, so first cell is top-left of room */
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            const roomId = board.roomId[x][y];
+            if (drawn[roomId]) {
+                continue;
+            }
+            drawn[roomId] = true;
+
+            /* Room has hint, UI.js draws it */
+            if (board.roomHints[roomId] != undefined) {
+                continue;
+            }
+
+            context.fillText("-", globals.cellSize * (x + 0.14), globals.cellSize * (y + 0.155) + 0.23 * globals.cellSize);
+        }
+    }
+}
+
+/* Faint dash in empty edge and room hints, same places as UI.js hints */
 function editorHintPlacesDraw(board) {
     const context    = elements.canvas.getContext("2d");
     const marginTop  = Math.round(globals.cellSize * globals.boardMargin);
@@ -425,13 +449,24 @@ function editorHintPlacesDraw(board) {
             context.fillText("-", 0 - marginLeft / 2 - 0.04 * globals.cellSize, globals.cellSize * (y + 0.5) + fontYShift);
         }
     }
+
+    editorRoomPlacesDraw(context, board);
 }
 
+/* Game board drawing, editor marks go on top */
+const uiElementsRedrawGame = uiElementsRedraw;
+
+/* Every redraw adds marks, also the one when Oswald font loads in UI.js */
+uiElementsRedraw = function (board) {
+    uiElementsRedrawGame(board);
+    editorHintPlacesDraw(board);
+    editorDifferDraw();
+};
+
+/* Draw board with editor hint colors */
 function editorRedraw() {
     editorHintsMark(globals.game.board);
     uiElementsRedraw(globals.game.board);
-    editorHintPlacesDraw(globals.game.board);
-    editorDifferDraw();
 }
 
 /* Load challenge into board and draw it */
