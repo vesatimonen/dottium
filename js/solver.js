@@ -194,6 +194,78 @@ function solverPropagate(state) {
 
 
 /*****************************************************************************
+ * Guess and backtrack
+ *****************************************************************************/
+/* Open cell of most limited group, else any open cell, -1 if board full */
+function solverCellPick(state) {
+    let best = undefined;
+
+    for (const group of state.groups) {
+        if (group.open > 0 && (best == undefined || group.open < best.open)) {
+            best = group;
+        }
+    }
+
+    /* Cells in hinted groups first, free cells last */
+    let cells = state.cells.keys();
+    if (best != undefined) {
+        cells = best.cells;
+    }
+    for (const index of cells) {
+        if (state.cells[index] == SOLVER_OPEN) {
+            return index;
+        }
+    }
+
+    return -1;
+}
+
+/* Copy full board as solution[x][y], true for dot */
+function solverSolutionSave(state, result) {
+    result.solution = array2D(state.width, state.height, false);
+
+    for (let index = 0; index < state.cells.length; index++) {
+        const x = index % state.width;
+        const y = Math.floor(index / state.width);
+        result.solution[x][y] = state.cells[index] == SOLVER_DOT;
+    }
+}
+
+/* Try dot and empty in picked cell, forced moves after each guess */
+function solverSearch(state, result, visitLimit) {
+    result.visits++;
+    if (result.visits > visitLimit) {
+        result.stopped = true;
+        return;
+    }
+
+    /* Full board is a solution */
+    const index = solverCellPick(state);
+    if (index < 0) {
+        result.count++;
+        if (result.count == 1) {
+            solverSolutionSave(state, result);
+        }
+        return;
+    }
+
+    for (const value of [SOLVER_DOT, SOLVER_EMPTY]) {
+        const trailLength = state.trail.length;
+
+        if (solverCellSet(state, index, value) && solverPropagate(state)) {
+            solverSearch(state, result, visitLimit);
+        }
+        solverUndo(state, trailLength);
+
+        /* Second solution or limit ends search */
+        if (result.count >= SOLVER_MAX_SOLUTIONS || result.stopped) {
+            return;
+        }
+    }
+}
+
+
+/*****************************************************************************
  * Solver entry
  *****************************************************************************/
 /* Count solutions of board, board is only read */
@@ -211,7 +283,7 @@ function solverRun(board, visitLimit) {
         return result;
     }
 
-    /* Search comes in plan #4 */
+    solverSearch(state, result, visitLimit);
 
     return result;
 }
