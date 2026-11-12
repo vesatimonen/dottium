@@ -453,10 +453,10 @@ function uiRedraw(hintsLater) {
 /*****************************************************************************
  * Editor redraw
  *****************************************************************************/
-/* Hint colors as in game with test items, else all dark */
+/* Hint colors as in game, solution keeps hints dark */
 function editorHintsMark(board) {
-    /* Test items: game colors and grey crosses, solution keeps hints dark */
-    if (editorItemsAny() && !editor.solution) {
+    /* Game colors and grey crosses, as at game start */
+    if (!editor.solution) {
         uiHintsUpdate(board);
     } else {
         uiHints = {rows: [], cols: [], rooms: []};
