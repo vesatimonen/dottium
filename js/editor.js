@@ -80,6 +80,7 @@ const EDITOR_HELP = [
     ["Click wall",          "Set or clear wall"],
     ["Right click",         "Decrease number"],
     ["Long press",          "Decrease number"],
+    ["Solve",               "Show solution"],
     ["Paste to link box",   "Load challenge"]
 ];
 
@@ -415,6 +416,7 @@ function editorShow(info) {
     editorRedraw();
 
     editorElements.text.value = editorLink(info);
+    editorElements.result.textContent = "";
     editorSizeButtonsRedraw(globals.game.board.width);
 }
 
@@ -468,8 +470,55 @@ function uiButtonsRedraw(game) {
 elements.buttonRestart.addEventListener("click", editorRestart);
 elements.buttonUndo.addEventListener("click",    editorUndo);
 
-/* Not done yet, see plan #4 */
-editorElements.check.disabled = true;
+/* Solve: count solutions and show first one */
+const EDITOR_SOLVE_LIMIT = 2000000; /* Visits, about 1 s */
+
+/* Result text for solver result */
+function editorSolveText(result) {
+    if (result.stopped) {
+        return "Too slow";
+    }
+    if (result.count == 0) {
+        return "No solution";
+    }
+    if (result.count == 1) {
+        return "Unique";
+    }
+    return "2+ solutions";
+}
+
+/* Draw solution dots, next edit rebuilds board and clears them */
+function editorSolutionDraw(solution) {
+    const board = globals.game.board;
+
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            if (solution[x][y]) {
+                board.setItem(x, y, ITEM_DOT);
+            }
+        }
+    }
+    editorRedraw();
+}
+
+function editorSolveRun() {
+    const result = solverRun(globals.game.board, EDITOR_SOLVE_LIMIT);
+
+    if (result.solution != undefined) {
+        editorSolutionDraw(result.solution);
+    }
+    editorElements.result.textContent = editorSolveText(result);
+    editorElements.check.disabled = false;
+}
+
+/* Show text first, solver runs after browser has drawn it */
+function editorSolve() {
+    editorElements.result.textContent = "Solving...";
+    editorElements.check.disabled = true;
+    setTimeout(editorSolveRun, 30);
+}
+
+editorElements.check.addEventListener("click", editorSolve);
 
 /* Open challenge in game next to editor, new tab */
 function editorPlay() {
