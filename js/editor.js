@@ -161,14 +161,17 @@ function editorInfoValid(info) {
            match[5].length == Math.ceil(width * height / 2);
 }
 
-/* Challenge from link or bare string, c= part if there is one */
+/* Challenge from link, INFO line or bare string, part after last > like Board.init() */
 function editorInfoFromText(text) {
-    const match = text.trim().match(/[?&]c=([^&#]*)/);
-    if (match == null) {
-        return text.trim();
+    let info = text.trim();
+
+    const match = info.match(/[?&]c=([^&#]*)/);
+    if (match != null) {
+        info = decodeURIComponent(match[1]);
     }
 
-    return decodeURIComponent(match[1]);
+    const parts = info.split(">");
+    return parts[parts.length - 1].trim();
 }
 
 /* Board sizes with own button, id editor-size-N */
