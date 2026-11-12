@@ -453,23 +453,9 @@ function uiRedraw(hintsLater) {
 /*****************************************************************************
  * Editor redraw
  *****************************************************************************/
-/* Hint colors as in game, solution keeps hints dark */
+/* Hint colors and grey crosses as in game, also with solution */
 function editorHintsMark(board) {
-    /* Game colors and grey crosses, as at game start */
-    if (!editor.solution) {
-        uiHintsUpdate(board);
-    } else {
-        uiHints = {rows: [], cols: [], rooms: []};
-        for (let y = 0; y < board.height; y++) {
-            uiHints.rows[y] = HINT_OPEN;
-        }
-        for (let x = 0; x < board.width; x++) {
-            uiHints.cols[x] = HINT_OPEN;
-        }
-        for (let roomId = 0; roomId < board.roomCount; roomId++) {
-            uiHints.rooms[roomId] = HINT_OPEN;
-        }
-    }
+    uiHintsUpdate(board);
 }
 
 /* Hint bigger than room is always red, also after delayed hint update */
