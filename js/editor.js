@@ -14,10 +14,11 @@ const editorElements = {
  *****************************************************************************/
 const editor = {
     info:     undefined, /* Current challenge string */
-    history:  [],        /* Earlier challenge strings for undo */
+    history:  [],        /* Earlier {info, items} for undo, edits and test dots */
     solution: false,     /* Solution dots on board */
     differ:   [],        /* Cells [x, y] that differ in second solution */
-    items:    undefined  /* Test items[x][y], dot or cross, not in link or undo */
+    items:    undefined, /* Test items[x][y], dot or cross, not in link */
+    pressUndo: false     /* Cell press pushed undo step, drop it if no change */
 };
 
 
@@ -564,13 +565,50 @@ function editorShow(info) {
     editorSizeButtonsRedraw(globals.game.board.width);
 }
 
+/* Copy of test items, undefined if none yet */
+function editorItemsCopy() {
+    if (editor.items == undefined) {
+        return undefined;
+    }
+
+    return editor.items.map(function (column) { return column.slice(); });
+}
+
+/* True if two item copies hold same items, undefined is all empty */
+function editorItemsSame(first, second) {
+    const board = globals.game.board;
+
+    for (let y = 0; y < board.height; y++) {
+        for (let x = 0; x < board.width; x++) {
+            let firstItem  = ITEM_NONE;
+            let secondItem = ITEM_NONE;
+            if (first != undefined) {
+                firstItem = first[x][y];
+            }
+            if (second != undefined) {
+                secondItem = second[x][y];
+            }
+            if (firstItem != secondItem) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/* Save challenge and test items before change, for undo */
+function editorHistoryPush() {
+    editor.history.push({info: editor.info, items: editorItemsCopy()});
+}
+
 /* Show changed challenge, old one goes to undo history */
 function editorChange(info) {
     if (info == editor.info) {
         return;
     }
 
-    editor.history.push(editor.info);
+    editorHistoryPush();
     editorShow(info);
 }
 
@@ -587,27 +625,24 @@ for (const size of EDITOR_SIZES) {
     editorSizeButton(size).addEventListener("click", function () { editorSizeSet(size); });
 }
 
-/* Empty board of same size, can be undone */
+/* Empty board of same size, undo brings back board with its test items */
 function editorRestart() {
     const board = globals.game.board;
-    const empty = editorEmptyInfo(board.width, board.height);
 
-    /* Test items go too, they are not in undo */
+    editorHistoryPush();
     editor.items = undefined;
-    if (editor.info == empty) {
-        editorShow(empty);
-        return;
-    }
-    editorChange(empty);
+    editorShow(editorEmptyInfo(board.width, board.height));
 }
 
-/* Back to challenge before last change */
+/* Back to challenge and test items before last change */
 function editorUndo() {
     if (editor.history.length == 0) {
         return;
     }
 
-    editorShow(editor.history.pop());
+    const entry = editor.history.pop();
+    editor.items = entry.items;
+    editorShow(entry.info);
 }
 
 /* Replaces UI.js version: undo needs history, restart needs non-empty board */
@@ -901,6 +936,10 @@ function editorPointerDown(event) {
 
     /* Cell goes to game code: tap, fast tap, long press and drag */
     if (target.type == "cell") {
+        if (event.button == 0) {
+            editorHistoryPush(); /* Whole press is one undo step */
+            editor.pressUndo = true;
+        }
         uiPointerDown(event);
         return;
     }
@@ -934,8 +973,25 @@ function editorContextMenu(event) {
     event.preventDefault();
 }
 
+/* Cell press ended, drop its undo step if dots and crosses did not change */
+function editorCellPressEnd() {
+    if (!editor.pressUndo) {
+        return;
+    }
+    editor.pressUndo = false;
+
+    const last = editor.history[editor.history.length - 1];
+    if (last.info == editor.info && editorItemsSame(last.items, editor.items)) {
+        editor.history.pop();
+        uiButtonsRedraw(globals.game);
+    }
+}
+
 /* Editor picks presses, game press only for cells, game move and release stay */
 document.documentElement.removeEventListener("pointerdown", uiPointerDown);
+document.documentElement.addEventListener("pointerup",          editorCellPressEnd); /* After game release */
+document.documentElement.addEventListener("pointercancel",      editorCellPressEnd);
+document.documentElement.addEventListener("lostpointercapture", editorCellPressEnd);
 elements.board.addEventListener("pointerdown",   editorPointerDown);
 elements.board.addEventListener("pointerup",     editorPointerUp);
 elements.board.addEventListener("pointercancel", editorPressCancel);
