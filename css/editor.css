@@ -12,11 +12,9 @@
     justify-content: center;
 }
 
-/* Text buttons, wider than icon buttons */
+/* Text buttons, same size as icon buttons */
 .editor-row .button {
-    width:          auto;
-    padding:        0 12px;
-    font-size:      calc(18px * var(--element-scale));
+    font-size:      calc(16px * var(--element-scale));
     font-weight:    bold;
 }
 

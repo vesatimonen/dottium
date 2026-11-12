@@ -2,13 +2,8 @@
  * Editor elements
  *****************************************************************************/
 const editorElements = {
-    size4:  document.getElementById("editor-size-4"),
-    size6:  document.getElementById("editor-size-6"),
-    size8:  document.getElementById("editor-size-8"),
     check:  document.getElementById("editor-check"),
     play:   document.getElementById("editor-play"),
-    copy:   document.getElementById("editor-copy"),
-    load:   document.getElementById("editor-load"),
     result: document.getElementById("editor-result"),
     text:   document.getElementById("editor-text")
 };
@@ -68,6 +63,24 @@ function editorPlayLink(info) {
     return new URL(page, window.location.href).href + "?c=" + info;
 }
 
+/* Same check as challengeValid() in main.js, which editor does not load */
+function editorInfoValid(info) {
+    const match = info.match(/^([0-9]+)x([0-9]+)\.([0-9-]+)\.([0-9-]+)\.([0-9a-fA-F]+)\.([0-9-]*)$/);
+    if (match == null) {
+        return false;
+    }
+
+    const width  = Number(match[1]);
+    const height = Number(match[2]);
+    if (width < 1 || height < 1 || width > globals.boardMaxSize || height > globals.boardMaxSize) {
+        return false;
+    }
+
+    return match[3].length == width &&
+           match[4].length == height &&
+           match[5].length == Math.ceil(width * height / 2);
+}
+
 /* Challenge from link or bare string, c= part if there is one */
 function editorInfoFromText(text) {
     const match = text.trim().match(/[?&]c=([^&#]*)/);
@@ -78,11 +91,18 @@ function editorInfoFromText(text) {
     return decodeURIComponent(match[1]);
 }
 
+/* Board sizes with own button, id editor-size-N */
+const EDITOR_SIZES = [4, 5, 6, 7, 8];
+
+function editorSizeButton(size) {
+    return document.getElementById("editor-size-" + size);
+}
+
 /* Mark button of current size */
 function editorSizeButtonsRedraw(size) {
-    editorElements.size4.classList.toggle("selected", size == 4);
-    editorElements.size6.classList.toggle("selected", size == 6);
-    editorElements.size8.classList.toggle("selected", size == 8);
+    for (const buttonSize of EDITOR_SIZES) {
+        editorSizeButton(buttonSize).classList.toggle("selected", buttonSize == size);
+    }
 }
 
 
@@ -111,15 +131,51 @@ function editorSizeSet(size) {
     editorShow(editorEmptyInfo(size));
 }
 
-editorElements.size4.addEventListener("click", function () { editorSizeSet(4); });
-editorElements.size6.addEventListener("click", function () { editorSizeSet(6); });
-editorElements.size8.addEventListener("click", function () { editorSizeSet(8); });
+for (const size of EDITOR_SIZES) {
+    editorSizeButton(size).addEventListener("click", function () { editorSizeSet(size); });
+}
 
-/* Not done yet, see plan #3 - #6 */
+/* Not done yet, see plan #4 and #5 */
 editorElements.check.disabled = true;
 editorElements.play.disabled  = true;
-editorElements.copy.disabled  = true;
-editorElements.load.disabled  = true;
+
+
+/*****************************************************************************
+ * Challenge box handlers
+ *****************************************************************************/
+/* Select whole link, so copy takes all of it */
+function editorTextFocus() {
+    setTimeout(function () { editorElements.text.select(); }, 0); /* After click sets cursor */
+}
+
+/* Load pasted or typed challenge when it is valid */
+function editorTextInput() {
+    const info = editorInfoFromText(editorElements.text.value);
+
+    if (!editorInfoValid(info)) {
+        editorElements.result.textContent = "Not a valid challenge";
+        return;
+    }
+    if (info == editor.info) {
+        editorElements.result.textContent = "";
+        return;
+    }
+
+    editor.history.push(editor.info);
+    editorShow(info);
+    editorElements.result.textContent = "";
+    editorTextFocus(); /* Keep link selected for next paste */
+}
+
+/* Leaving box shows current board link again */
+function editorTextBlur() {
+    editorElements.text.value = editorLink(editor.info);
+    editorElements.result.textContent = "";
+}
+
+editorElements.text.addEventListener("focus", editorTextFocus);
+editorElements.text.addEventListener("input", editorTextInput);
+editorElements.text.addEventListener("blur",  editorTextBlur);
 
 
 /*****************************************************************************
