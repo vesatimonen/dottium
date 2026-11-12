@@ -465,9 +465,15 @@ function uiButtonsRedraw(game) {
 elements.buttonRestart.addEventListener("click", editorRestart);
 elements.buttonUndo.addEventListener("click",    editorUndo);
 
-/* Not done yet, see plan #4 and #5 */
+/* Not done yet, see plan #4 */
 editorElements.check.disabled = true;
-editorElements.play.disabled  = true;
+
+/* Open challenge in game next to editor, new tab */
+function editorPlay() {
+    window.open(editorPlayLink(editor.info), "_blank");
+}
+
+editorElements.play.addEventListener("click", editorPlay);
 
 
 /*****************************************************************************
