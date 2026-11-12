@@ -8,6 +8,7 @@ function solverResult() {
     return {
         count:    0,         /* Solutions found, 0, 1 or 2 */
         solution: undefined, /* First solution, solution[x][y] true for dot */
+        second:   undefined, /* Second solution, same form */
         visits:   0,         /* Boards visited, bigger = harder */
         stopped:  false      /* Visit limit reached, count is not final */
     };
@@ -221,14 +222,16 @@ function solverCellPick(state) {
 }
 
 /* Copy full board as solution[x][y], true for dot */
-function solverSolutionSave(state, result) {
-    result.solution = array2D(state.width, state.height, false);
+function solverSolutionCopy(state) {
+    const solution = array2D(state.width, state.height, false);
 
     for (let index = 0; index < state.cells.length; index++) {
         const x = index % state.width;
         const y = Math.floor(index / state.width);
-        result.solution[x][y] = state.cells[index] == SOLVER_DOT;
+        solution[x][y] = state.cells[index] == SOLVER_DOT;
     }
+
+    return solution;
 }
 
 /* Try dot and empty in picked cell, forced moves after each guess */
@@ -244,7 +247,9 @@ function solverSearch(state, result, visitLimit) {
     if (index < 0) {
         result.count++;
         if (result.count == 1) {
-            solverSolutionSave(state, result);
+            result.solution = solverSolutionCopy(state);
+        } else {
+            result.second = solverSolutionCopy(state);
         }
         return;
     }

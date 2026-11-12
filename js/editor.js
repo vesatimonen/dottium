@@ -15,7 +15,8 @@ const editorElements = {
 const editor = {
     info:     undefined, /* Current challenge string */
     history:  [],        /* Earlier challenge strings for undo */
-    solution: false      /* Solution dots on board */
+    solution: false,     /* Solution dots on board */
+    differ:   []         /* Cells [x, y] that differ in second solution */
 };
 
 
@@ -82,6 +83,7 @@ const EDITOR_HELP = [
     ["Right click",         "Decrease number"],
     ["Long press",          "Decrease number"],
     ["Solve",               "Show solution"],
+    ["Red ring",            "Cell differs in 2nd solution"],
     ["Paste to link box",   "Load challenge"]
 ];
 
@@ -405,12 +407,14 @@ function editorHintsMark(board) {
 function editorRedraw() {
     editorHintsMark(globals.game.board);
     uiElementsRedraw(globals.game.board);
+    editorDifferDraw();
 }
 
 /* Load challenge into board and draw it */
 function editorShow(info) {
     editor.info = info;
     editor.solution = false;
+    editor.differ   = [];
     options.challenges = [{info: info}]; /* One challenge, info line stays empty */
 
     globals.game.init(0, info);
@@ -474,6 +478,7 @@ elements.buttonUndo.addEventListener("click",    editorUndo);
 
 /* Solve: count solutions and show first one */
 const EDITOR_SOLVE_LIMIT = 2000000; /* Visits, about 1 s */
+const EDITOR_DIFFER_RADIUS = 0.38; /* Red ring, part of cell size */
 
 /* Result text for solver result */
 function editorSolveText(result) {
@@ -487,6 +492,39 @@ function editorSolveText(result) {
         return "Unique";
     }
     return "2+ solutions";
+}
+
+/* Cells where two solutions differ, as [x, y] */
+function editorDifferFind(solution, second) {
+    const differ = [];
+
+    for (let y = 0; y < solution[0].length; y++) {
+        for (let x = 0; x < solution.length; x++) {
+            if (solution[x][y] != second[x][y]) {
+                differ.push([x, y]);
+            }
+        }
+    }
+
+    return differ;
+}
+
+/* Red ring in cells that differ, canvas keeps grid offset from UI.js */
+function editorDifferDraw() {
+    const context = elements.canvas.getContext("2d");
+
+    context.beginPath();
+    context.lineWidth   = DOT_RING_WIDTH * globals.cellSize;
+    context.strokeStyle = HINT_OVER_COLOR;
+
+    for (const [x, y] of editor.differ) {
+        const centerX = globals.cellSize * (x + 0.5);
+        const centerY = globals.cellSize * (y + 0.5);
+        context.moveTo(centerX + EDITOR_DIFFER_RADIUS * globals.cellSize, centerY);
+        context.arc(centerX, centerY, EDITOR_DIFFER_RADIUS * globals.cellSize, 0, 2 * Math.PI, false);
+    }
+
+    context.stroke();
 }
 
 /* Draw solution dots, next edit rebuilds board and clears them */
@@ -515,6 +553,9 @@ function editorSolutionClear() {
 function editorSolveRun() {
     const result = solverRun(globals.game.board, EDITOR_SOLVE_LIMIT);
 
+    if (result.second != undefined) {
+        editor.differ = editorDifferFind(result.solution, result.second);
+    }
     if (result.solution != undefined) {
         editorSolutionDraw(result.solution);
     }
