@@ -93,7 +93,103 @@ function solverGroupsBuild(board) {
         solverGroupAdd(state, board.roomHints[roomId], roomCells[roomId]);
     }
 
+    /* Cell values and undo trail */
+    state.cells = new Int8Array(width * height).fill(SOLVER_OPEN);
+    state.trail = []; /* Set cells in order, for undo */
+
     return state;
+}
+
+
+/*****************************************************************************
+ * Cell set and undo
+ *****************************************************************************/
+const SOLVER_OPEN  = -1;
+const SOLVER_EMPTY = 0;
+const SOLVER_DOT   = 1;
+
+/* Group can still reach its hint */
+function solverGroupOk(group) {
+    return group.dots <= group.hint && group.dots + group.open >= group.hint;
+}
+
+/* Set open cell, false if some group can no longer reach its hint */
+function solverCellSet(state, index, value) {
+    let ok = true;
+
+    state.cells[index] = value;
+    state.trail.push(index);
+
+    for (const group of state.cellGroups[index]) {
+        group.open--;
+        group.dots += value;
+        if (!solverGroupOk(group)) {
+            ok = false; /* Keep going, undo needs all counters updated */
+        }
+    }
+
+    return ok;
+}
+
+/* Undo cells back to trail length */
+function solverUndo(state, trailLength) {
+    while (state.trail.length > trailLength) {
+        const index = state.trail.pop();
+        const value = state.cells[index];
+
+        for (const group of state.cellGroups[index]) {
+            group.open++;
+            group.dots -= value;
+        }
+        state.cells[index] = SOLVER_OPEN;
+    }
+}
+
+
+/*****************************************************************************
+ * Forced moves
+ *****************************************************************************/
+/* Set all open cells of group, false on dead end */
+function solverGroupFill(state, group, value) {
+    for (const index of group.cells) {
+        if (state.cells[index] != SOLVER_OPEN) {
+            continue;
+        }
+        if (!solverCellSet(state, index, value)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/* Hint met: rest empty, all open needed: rest dots, repeat until no change */
+function solverPropagate(state) {
+    let changed = true;
+
+    while (changed) {
+        changed = false;
+
+        for (const group of state.groups) {
+            if (group.open == 0) {
+                continue;
+            }
+
+            if (group.dots == group.hint) {
+                if (!solverGroupFill(state, group, SOLVER_EMPTY)) {
+                    return false;
+                }
+                changed = true;
+            } else if (group.dots + group.open == group.hint) {
+                if (!solverGroupFill(state, group, SOLVER_DOT)) {
+                    return false;
+                }
+                changed = true;
+            }
+        }
+    }
+
+    return true;
 }
 
 
@@ -110,7 +206,12 @@ function solverRun(board, visitLimit) {
         return result;
     }
 
-    /* Search comes in plan #3 - #4 */
+    /* Forced moves first, dead end means no solution */
+    if (!solverPropagate(state)) {
+        return result;
+    }
+
+    /* Search comes in plan #4 */
 
     return result;
 }
