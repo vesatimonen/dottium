@@ -78,15 +78,12 @@ document.addEventListener("click",       modalClick,       true);
  *****************************************************************************/
 /* Editor controls, action and result */
 const EDITOR_HELP = [
-    ["Click edge",          "Increase line number"],
-    ["Click room corner",   "Increase room number"],
+    ["Click line number",   "Increase the number"],
+    ["Click region number", "Increase the number"],
     ["Click cell",          "Set or clear test dot"],
     ["Click wall",          "Set or clear wall"],
-    ["Right click",         "Decrease number"],
-    ["Long press",          "Decrease number"],
-    ["Solve",               "Show solution"],
-    ["Red ring",            "Cell differs in 2nd solution"],
-    ["Paste to link box",   "Load challenge"]
+    ["Right click",         "Decrease the number"],
+    ["Long press",          "Decrease the number"]
 ];
 
 /* Build help grid, dashes line up in middle column */
