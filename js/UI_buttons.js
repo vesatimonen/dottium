@@ -43,8 +43,8 @@ elements.buttonRestart.addEventListener("click", uiRestart);
 /* Controls help, action and result */
 const ABOUT_HELP = [
     ["Click",                  "Set dot or clear"],
-    ["Double click",           "Set block"],
-    ["Long press",             "Set block"],
+    ["Double click",           "Set cross"],
+    ["Long press",             "Set cross"],
     ["Drag",                   "Set or clear cells"],
     ["Click edge",             "Set dots to\nempty places"]
 ];

@@ -81,8 +81,8 @@ document.addEventListener("click",       modalClick,       true);
 const EDITOR_HELP = [
     ["Click line number",   "Increase the number"],
     ["Click region number", "Increase the number"],
-    ["Click cell",          "Set or clear test dot"],
-    ["Double click cell",   "Set test cross"],
+    ["Click cell",          "Set or clear dot"],
+    ["Double click cell",   "Set cross"],
     ["Click wall",          "Set or clear wall"],
     ["Right click",         "Decrease the number"],
     ["Long press",          "Decrease the number"]
