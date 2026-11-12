@@ -50,7 +50,32 @@ function editorEmptyInfo(size) {
     const hints = "-".repeat(size);
     const walls = "0".repeat(Math.ceil(size * size / 2));
 
-    return "INFO: >" + size + "x" + size + "." + hints + "." + hints + "." + walls + ".";
+    return size + "x" + size + "." + hints + "." + hints + "." + walls + ".";
+}
+
+/* Public game link, shown in box and copied */
+function editorLink(info) {
+    return "https://dottium.app/?c=" + info;
+}
+
+/* Game next to editor, for Play, web uses folder, local file needs index.html */
+function editorPlayLink(info) {
+    let page = "index.html";
+    if (window.location.protocol == "http:" || window.location.protocol == "https:") {
+        page = "./";
+    }
+
+    return new URL(page, window.location.href).href + "?c=" + info;
+}
+
+/* Challenge from link or bare string, c= part if there is one */
+function editorInfoFromText(text) {
+    const match = text.trim().match(/[?&]c=([^&#]*)/);
+    if (match == null) {
+        return text.trim();
+    }
+
+    return decodeURIComponent(match[1]);
 }
 
 /* Mark button of current size */
@@ -72,7 +97,7 @@ function editorShow(info) {
     globals.game.init(0, info);
     uiBoardSetup(globals.game.board);
 
-    editorElements.text.value = info;
+    editorElements.text.value = editorLink(info);
     editorSizeButtonsRedraw(globals.game.board.width);
 }
 
