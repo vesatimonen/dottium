@@ -169,7 +169,7 @@ function editorInfoValid(info) {
 function editorInfoFromText(text) {
     let info = text.trim();
 
-    const match = info.match(/[?&]c=([^&#]*)/);
+    const match = info.match(/[?&](?:c|challenge)=([^&#]*)/); /* Short or long option, as in game */
     if (match != null) {
         info = decodeURIComponent(match[1]);
     }
@@ -767,11 +767,26 @@ window.addEventListener("resize", editorRedraw);
 /*****************************************************************************
  * Editor initialization
  *****************************************************************************/
+/* Load ?c= or ?challenge= from address, empty 6x6 if missing or bad */
+function editorStart() {
+    const info = editorInfoFromText(location.search);
+
+    if (editorInfoValid(info)) {
+        editorShow(info);
+        return;
+    }
+
+    editorShow(editorEmptyInfo(6, 6));
+    if (location.search.match(/[?&](?:c|challenge)=/) != null) {
+        editorElements.result.textContent = "Not a valid challenge";
+    }
+}
+
 window.onload = function () {
     globals.game = new EditorGame();
 
-    /* Start with empty 6x6 board */
-    editorShow(editorEmptyInfo(6, 6));
+    /* Start with ?c= challenge, else empty 6x6 board */
+    editorStart();
 
     /* Show window */
     elements.screen.style.visibility = "visible";
