@@ -120,11 +120,12 @@ class EditorGame extends Game {
  * Challenge helpers
  *****************************************************************************/
 /* Empty board, no hints and no walls, rooms "-" so link does not end in dot */
-function editorEmptyInfo(size) {
-    const hints = "-".repeat(size);
-    const walls = "0".repeat(Math.ceil(size * size / 2));
+function editorEmptyInfo(width, height) {
+    const colHints = "-".repeat(width);
+    const rowHints = "-".repeat(height);
+    const walls    = "0".repeat(Math.ceil(width * height / 2));
 
-    return size + "x" + size + "." + hints + "." + hints + "." + walls + ".-";
+    return width + "x" + height + "." + colHints + "." + rowHints + "." + walls + ".-";
 }
 
 /* Public game link, shown in box and copied */
@@ -430,12 +431,39 @@ function editorChange(info) {
  *****************************************************************************/
 /* New empty board */
 function editorSizeSet(size) {
-    editorChange(editorEmptyInfo(size));
+    editorChange(editorEmptyInfo(size, size));
 }
 
 for (const size of EDITOR_SIZES) {
     editorSizeButton(size).addEventListener("click", function () { editorSizeSet(size); });
 }
+
+/* Empty board of same size, can be undone */
+function editorRestart() {
+    const board = globals.game.board;
+    editorChange(editorEmptyInfo(board.width, board.height));
+}
+
+/* Back to challenge before last change */
+function editorUndo() {
+    if (editor.history.length == 0) {
+        return;
+    }
+
+    editorShow(editor.history.pop());
+}
+
+/* Replaces UI.js version: undo needs history, restart needs non-empty board */
+function uiButtonsRedraw(game) {
+    const board = game.board;
+    const empty = editor.info == editorEmptyInfo(board.width, board.height);
+
+    elements.buttonUndo.disabled    = !game.undoable() || modalVisible();
+    elements.buttonRestart.disabled = empty || modalVisible();
+}
+
+elements.buttonRestart.addEventListener("click", editorRestart);
+elements.buttonUndo.addEventListener("click",    editorUndo);
 
 /* Not done yet, see plan #4 and #5 */
 editorElements.check.disabled = true;
@@ -615,7 +643,7 @@ window.onload = function () {
     globals.game = new EditorGame();
 
     /* Start with empty 6x6 board */
-    editorShow(editorEmptyInfo(6));
+    editorShow(editorEmptyInfo(6, 6));
 
     /* Show window */
     elements.screen.style.visibility = "visible";
