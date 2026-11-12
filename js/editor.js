@@ -488,8 +488,9 @@ function editorTextFocus() {
 }
 
 /* Load pasted or typed challenge when it is valid */
-function editorTextInput() {
-    const info = editorInfoFromText(editorElements.text.value);
+function editorTextInput(event) {
+    const text = editorElements.text;
+    const info = editorInfoFromText(text.value);
 
     if (!editorInfoValid(info)) {
         editorElements.result.textContent = "Not a valid challenge";
@@ -500,9 +501,20 @@ function editorTextInput() {
         return;
     }
 
+    /* Board redraw writes link to box, typing keeps own text and cursor */
+    const typed = text.value;
+    const start = text.selectionStart;
+    const end   = text.selectionEnd;
+
     editorChange(info);
     editorElements.result.textContent = "";
-    editorTextFocus(); /* Keep link selected for next paste */
+
+    if (event.inputType == "insertFromPaste") {
+        editorTextFocus(); /* Keep link selected for next paste */
+        return;
+    }
+    text.value = typed;
+    text.setSelectionRange(start, end);
 }
 
 /* Leaving box shows current board link again */
