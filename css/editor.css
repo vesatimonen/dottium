@@ -59,3 +59,8 @@
     flex:           1;
     gap:            4px;
 }
+
+/* Size buttons under title */
+#editor-sizes {
+    margin-top:     8px;
+}
