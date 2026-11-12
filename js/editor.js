@@ -467,7 +467,7 @@ function editorRoomOverMark(board) {
     }
 }
 
-/* Faint dash in rooms without hint, top-left cell as in UI.js */
+/* Faint minus in rooms without hint, top-left cell as in UI.js */
 function editorRoomPlacesDraw(context, board) {
     const drawn = [];
 
@@ -487,12 +487,12 @@ function editorRoomPlacesDraw(context, board) {
                 continue;
             }
 
-            context.fillText("-", globals.cellSize * (x + 0.14), globals.cellSize * (y + 0.155) + 0.23 * globals.cellSize);
+            context.fillText("\u2212", globals.cellSize * (x + 0.14), globals.cellSize * (y + 0.155) + 0.23 * globals.cellSize);
         }
     }
 }
 
-/* Faint dash in empty edge and room hints, same places as UI.js hints */
+/* Faint minus in empty edge and room hints, minus sits at digit middle */
 function editorHintPlacesDraw(board) {
     const context    = elements.canvas.getContext("2d");
     const marginTop  = Math.round(globals.cellSize * globals.boardMargin);
@@ -504,13 +504,13 @@ function editorHintPlacesDraw(board) {
 
     for (let x = 0; x < board.width; x++) {
         if (board.colHints[x] == undefined) {
-            context.fillText("-", globals.cellSize * (x + 0.5), 0 - marginTop / 2 + fontYShift + 0.02 * globals.cellSize);
+            context.fillText("\u2212", globals.cellSize * (x + 0.5), 0 - marginTop / 2 + fontYShift + 0.02 * globals.cellSize);
         }
     }
 
     for (let y = 0; y < board.height; y++) {
         if (board.rowHints[y] == undefined) {
-            context.fillText("-", 0 - marginLeft / 2 - 0.04 * globals.cellSize, globals.cellSize * (y + 0.5) + fontYShift);
+            context.fillText("\u2212", 0 - marginLeft / 2 - 0.04 * globals.cellSize, globals.cellSize * (y + 0.5) + fontYShift);
         }
     }
 
