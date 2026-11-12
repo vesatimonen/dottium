@@ -1,0 +1,63 @@
+/* Editor panel below board */
+#editor-panel {
+    margin-top:     10px;
+    display:        grid;
+    gap:            8px;
+}
+
+.editor-row {
+    display:        flex;
+    gap:            8px;
+    flex-wrap:      wrap;
+    justify-content: center;
+}
+
+/* Text buttons, wider than icon buttons */
+.editor-row .button {
+    width:          auto;
+    padding:        0 12px;
+    font-size:      calc(18px * var(--element-scale));
+    font-weight:    bold;
+}
+
+/* Selected size */
+.editor-row .button.selected {
+    background:     #B0DDFF;
+}
+
+#editor-result {
+    min-height:     1.4em;
+    font-size:      calc(20px * var(--element-scale));
+    font-weight:    bold;
+    text-align:     center;
+}
+
+/* Challenge text can be selected and edited */
+#editor-text {
+    box-sizing:     border-box;
+    width:          100%;
+    height:         calc(1.2em + 14px); /* One line plus padding and border */
+    line-height:    1.2;
+    overflow:       hidden;
+    padding:        6px;
+    font-size:      14px;
+    color:          var(--ink-color);
+    background:     #E6F4FF;
+    border:         1px solid var(--ink-color);
+    border-radius:  4px;
+    resize:         none;
+    touch-action:   auto;
+    -webkit-user-select: text;
+    user-select:    text;
+}
+
+/* Info is empty in editor, action buttons take its place */
+#game-info {
+    display:        none;
+}
+
+/* Action buttons between restart and undo */
+#editor-actions {
+    flex:           1;
+    gap:            4px;
+}
