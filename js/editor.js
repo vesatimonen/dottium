@@ -404,9 +404,33 @@ function editorHintsMark(board) {
 }
 
 /* Draw board with editor hint colors */
+/* Faint dash in empty edge hints, same places as UI.js hints */
+function editorHintPlacesDraw(board) {
+    const context    = elements.canvas.getContext("2d");
+    const marginTop  = Math.round(globals.cellSize * globals.boardMargin);
+    const marginLeft = Math.round(globals.cellSize * globals.boardMarginLeft);
+    const fontYShift = 0.28 * globals.cellSize;
+
+    uiHintStyleSet(context);
+    context.fillStyle = HINT_DONE_COLOR;
+
+    for (let x = 0; x < board.width; x++) {
+        if (board.colHints[x] == undefined) {
+            context.fillText("-", globals.cellSize * (x + 0.5), 0 - marginTop / 2 + fontYShift + 0.02 * globals.cellSize);
+        }
+    }
+
+    for (let y = 0; y < board.height; y++) {
+        if (board.rowHints[y] == undefined) {
+            context.fillText("-", 0 - marginLeft / 2 - 0.04 * globals.cellSize, globals.cellSize * (y + 0.5) + fontYShift);
+        }
+    }
+}
+
 function editorRedraw() {
     editorHintsMark(globals.game.board);
     uiElementsRedraw(globals.game.board);
+    editorHintPlacesDraw(globals.game.board);
     editorDifferDraw();
 }
 
