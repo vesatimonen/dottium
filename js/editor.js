@@ -45,12 +45,12 @@ class EditorGame extends Game {
 /*****************************************************************************
  * Challenge helpers
  *****************************************************************************/
-/* Empty board, no hints and no walls */
+/* Empty board, no hints and no walls, rooms "-" so link does not end in dot */
 function editorEmptyInfo(size) {
     const hints = "-".repeat(size);
     const walls = "0".repeat(Math.ceil(size * size / 2));
 
-    return size + "x" + size + "." + hints + "." + hints + "." + walls + ".";
+    return size + "x" + size + "." + hints + "." + hints + "." + walls + ".-";
 }
 
 /* Public game link, shown in box and copied */
