@@ -13,8 +13,9 @@ const editorElements = {
  * Editor state
  *****************************************************************************/
 const editor = {
-    info:    undefined, /* Current challenge string */
-    history: []         /* Earlier challenge strings for undo */
+    info:     undefined, /* Current challenge string */
+    history:  [],        /* Earlier challenge strings for undo */
+    solution: false      /* Solution dots on board */
 };
 
 
@@ -409,6 +410,7 @@ function editorRedraw() {
 /* Load challenge into board and draw it */
 function editorShow(info) {
     editor.info = info;
+    editor.solution = false;
     options.challenges = [{info: info}]; /* One challenge, info line stays empty */
 
     globals.game.init(0, info);
@@ -490,6 +492,7 @@ function editorSolveText(result) {
 /* Draw solution dots, next edit rebuilds board and clears them */
 function editorSolutionDraw(solution) {
     const board = globals.game.board;
+    editor.solution = true;
 
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
@@ -499,6 +502,14 @@ function editorSolutionDraw(solution) {
         }
     }
     editorRedraw();
+}
+
+/* Board without solution dots, result text stays */
+function editorSolutionClear() {
+    const text = editorElements.result.textContent;
+
+    editorShow(editor.info);
+    editorElements.result.textContent = text;
 }
 
 function editorSolveRun() {
@@ -664,6 +675,12 @@ function editorPointerDown(event) {
     const target = editorTargetGet(event);
     editorPressCancel();
     if (target == undefined || modalVisible()) {
+        return;
+    }
+
+    /* First tap on board after Solve only clears solution dots */
+    if (editor.solution) {
+        editorSolutionClear();
         return;
     }
 
