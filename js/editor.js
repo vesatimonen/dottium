@@ -16,7 +16,8 @@ const editor = {
     info:     undefined, /* Current challenge string */
     history:  [],        /* Earlier challenge strings for undo */
     solution: false,     /* Solution dots on board */
-    differ:   []         /* Cells [x, y] that differ in second solution */
+    differ:   [],        /* Cells [x, y] that differ in second solution */
+    dots:     undefined  /* Test dots dots[x][y], not in link or undo */
 };
 
 
@@ -78,7 +79,8 @@ document.addEventListener("click",       modalClick,       true);
 /* Editor controls, action and result */
 const EDITOR_HELP = [
     ["Click edge",          "Increase line number"],
-    ["Click cell",          "Increase room number"],
+    ["Click room corner",   "Increase room number"],
+    ["Click cell",          "Set or clear test dot"],
     ["Click wall",          "Set or clear wall"],
     ["Right click",         "Decrease number"],
     ["Long press",          "Decrease number"],
@@ -383,20 +385,84 @@ function editorWallEdit(board, wall) {
 
 
 /*****************************************************************************
- * Editor redraw
+ * Test dots, kept over edits of same size
  *****************************************************************************/
-/* Hints dark, room hint bigger than room red, no done grey */
-function editorHintsMark(board) {
-    uiHints = {rows: [], cols: [], rooms: []};
+/* Make test dots fit board, new size starts empty */
+function editorDotsFit(board) {
+    const dots = editor.dots;
+
+    if (dots == undefined || dots.length != board.width || dots[0].length != board.height) {
+        editor.dots = array2D(board.width, board.height, false);
+    }
+}
+
+/* Put test dots on board */
+function editorDotsPlace(board) {
+    editorDotsFit(board);
 
     for (let y = 0; y < board.height; y++) {
-        uiHints.rows[y] = HINT_OPEN;
+        for (let x = 0; x < board.width; x++) {
+            if (editor.dots[x][y]) {
+                board.setItem(x, y, ITEM_DOT);
+            }
+        }
     }
-    for (let x = 0; x < board.width; x++) {
-        uiHints.cols[x] = HINT_OPEN;
+}
+
+/* True if some test dot is set */
+function editorDotsAny() {
+    if (editor.dots == undefined) {
+        return false;
     }
+
+    for (const column of editor.dots) {
+        if (column.includes(true)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/* Set or clear one test dot */
+function editorDotToggle(x, y) {
+    const board = globals.game.board;
+
+    editor.dots[x][y] = !editor.dots[x][y];
+    if (editor.dots[x][y]) {
+        board.setItem(x, y, ITEM_DOT);
+    } else {
+        board.setItem(x, y, ITEM_NONE);
+    }
+
+    editorRedraw();
+    uiButtonsRedraw(globals.game);
+}
+
+
+/*****************************************************************************
+ * Editor redraw
+ *****************************************************************************/
+/* Hint colors as in game when dots on board, room hint bigger than room red */
+function editorHintsMark(board) {
+    /* Test dots: game colors and grey crosses, solution keeps hints dark */
+    if (editorDotsAny() && !editor.solution) {
+        uiHintsUpdate(board);
+    } else {
+        uiHints = {rows: [], cols: [], rooms: []};
+        for (let y = 0; y < board.height; y++) {
+            uiHints.rows[y] = HINT_OPEN;
+        }
+        for (let x = 0; x < board.width; x++) {
+            uiHints.cols[x] = HINT_OPEN;
+        }
+        for (let roomId = 0; roomId < board.roomCount; roomId++) {
+            uiHints.rooms[roomId] = HINT_OPEN;
+        }
+    }
+
+    /* Hint bigger than room is always red */
     for (let roomId = 0; roomId < board.roomCount; roomId++) {
-        uiHints.rooms[roomId] = HINT_OPEN;
         if (board.roomHints[roomId] > board.roomSize[roomId]) {
             uiHints.rooms[roomId] = HINT_OVER;
         }
@@ -477,6 +543,7 @@ function editorShow(info) {
     options.challenges = [{info: info}]; /* One challenge, info line stays empty */
 
     globals.game.init(0, info);
+    editorDotsPlace(globals.game.board);
     uiBoardSetup(globals.game.board);
     editorRedraw();
 
@@ -511,7 +578,15 @@ for (const size of EDITOR_SIZES) {
 /* Empty board of same size, can be undone */
 function editorRestart() {
     const board = globals.game.board;
-    editorChange(editorEmptyInfo(board.width, board.height));
+    const empty = editorEmptyInfo(board.width, board.height);
+
+    /* Test dots go too, they are not in undo */
+    editor.dots = undefined;
+    if (editor.info == empty) {
+        editorShow(empty);
+        return;
+    }
+    editorChange(empty);
 }
 
 /* Back to challenge before last change */
@@ -529,7 +604,7 @@ function uiButtonsRedraw(game) {
     const empty = editor.info == editorEmptyInfo(board.width, board.height);
 
     elements.buttonUndo.disabled    = !game.undoable() || modalVisible();
-    elements.buttonRestart.disabled = empty || modalVisible();
+    elements.buttonRestart.disabled = (empty && !editorDotsAny()) || modalVisible();
 }
 
 elements.buttonRestart.addEventListener("click", editorRestart);
@@ -591,10 +666,13 @@ function editorSolutionDraw(solution) {
     const board = globals.game.board;
     editor.solution = true;
 
+    /* Solution replaces test dots, they come back on next tap */
     for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
             if (solution[x][y]) {
                 board.setItem(x, y, ITEM_DOT);
+            } else {
+                board.setItem(x, y, ITEM_NONE);
             }
         }
     }
@@ -694,10 +772,27 @@ editorElements.text.addEventListener("blur",  editorTextBlur);
 const EDITOR_EDGE_ZONE  = 0.2; /* Tap this near line sets wall, in cells */
 const EDITOR_LONG_PRESS = 500; /* ms, long press goes back */
 
+const EDITOR_CORNER_ZONE = 0.35; /* Room number corner, in cells */
+
 let editorPressTarget = undefined;
 let editorPressTimer  = undefined;
 
-/* What is under pointer: col, row, wall or room, undefined if nothing */
+/* True if cell is room's first cell row by row, where number is drawn */
+function editorRoomFirstCell(board, x, y) {
+    const roomId = board.roomId[x][y];
+
+    for (let cellY = 0; cellY < board.height; cellY++) {
+        for (let cellX = 0; cellX < board.width; cellX++) {
+            if (board.roomId[cellX][cellY] == roomId) {
+                return cellX == x && cellY == y;
+            }
+        }
+    }
+
+    return false;
+}
+
+/* What is under pointer: col, row, room corner, wall or dot cell, undefined if nothing */
 function editorTargetGet(event) {
     const board = globals.game.board;
     const rect  = elements.grid.getBoundingClientRect();
@@ -721,6 +816,14 @@ function editorTargetGet(event) {
         return undefined;
     }
 
+    /* Number corner of room wins over walls next to it */
+    const cellX = Math.floor(X);
+    const cellY = Math.floor(Y);
+    if (X - cellX < EDITOR_CORNER_ZONE && Y - cellY < EDITOR_CORNER_ZONE &&
+        editorRoomFirstCell(board, cellX, cellY)) {
+        return {type: "room", x: cellX, y: cellY};
+    }
+
     /* Nearest inner lines */
     const lineX = Math.round(X);
     const lineY = Math.round(Y);
@@ -741,7 +844,7 @@ function editorTargetGet(event) {
         return {type: "wall", vertical: false, x: Math.floor(X), y: lineY};
     }
 
-    return {type: "room", x: Math.floor(X), y: Math.floor(Y)};
+    return {type: "dot", x: cellX, y: cellY};
 }
 
 /* Make edit for target, back cycles hint other way */
@@ -760,6 +863,9 @@ function editorTargetEdit(target, back) {
             break;
         case "room":
             editorChange(editorRoomHintEdit(board, target.x, target.y, back));
+            break;
+        case "dot":
+            editorDotToggle(target.x, target.y); /* Same both ways */
             break;
     }
 }
