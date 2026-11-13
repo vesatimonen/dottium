@@ -8,6 +8,7 @@ const BLOCK_LINE_WIDTH = 0.06; /* Block cross thickness */
 const BLOCK_HALF_LEN   = 0.15; /* Block cross line half length from center */
 const GRID_DOT_RADIUS  = 0.04; /* Small dot in every cell */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
+const FRAME_MAX_WIDTH  = 1.7;  /* Grid frame max in CSS px, as on iPhone */
 
 /* Title, buttons, info and instructions grow with board */
 const ELEMENT_SCALE_BASE_CELL = 50;  /* Cell size where scale is 1 */
@@ -441,7 +442,8 @@ function uiElementScale(cellSize) {
  *****************************************************************************/
 function uiFrameWidth(cellSize) {
     const pixelRatio  = window.devicePixelRatio || 1;
-    const framePixels = Math.max(1, Math.round(FRAME_WIDTH * cellSize * pixelRatio));
+    const frameWidth  = Math.min(FRAME_WIDTH * cellSize, FRAME_MAX_WIDTH);
+    const framePixels = Math.max(1, Math.round(frameWidth * pixelRatio));
 
     return framePixels / pixelRatio;
 }
