@@ -178,13 +178,13 @@ function parseOptions() {
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään. Ratkaisuja on vain yksi.";
                 options.gameOverText            = "Peli päättyi!";
-                options.waitText                = "Uusi tehtävä aukeaa {day}. joulukuuta!";
+                options.waitText                = "Uusi tehtävä aukeaa\n{day}. joulukuuta!";
                 break;
             case "SWE":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Placera prickar i rutnätet så att varje rad, kolumn och område innehåller exakt det antal prickar som anges för den. Saknas siffra kan det finnas hur många prickar som helst eller inga alls. Lösningen är unik.";
                 options.gameOverText            = "Spelet är slut!";
-                options.waitText                = "En ny utmaning öppnas den {day} december!";
+                options.waitText                = "En ny utmaning öppnas\nden {day} december!";
                 break;
         }
     }
@@ -358,6 +358,7 @@ function gameBoot() {
     /* Closed calendar, show date and block play */
     if (playableCount() == 0) {
         modalShow(waitTextGet(), "", false);
+        elements.board.classList.add("board-locked"); /* Blur, not open yet */
     }
 }
 

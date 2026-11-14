@@ -121,6 +121,13 @@ html {
     white-space:        nowrap; /* Keep size, do not squeeze near edge */
 }
 
+/* Title keeps line breaks, no wrap */
+#modal-title {
+    white-space:        pre;
+    line-height:        1.15; /* Room between two lines */
+}
+
+
 /* Small second line, hidden when empty */
 #modal-text {
     margin-top:         8px;
@@ -163,6 +170,12 @@ html {
     width: 100%;
     height: 100%;
     background: none;
+}
+
+/* Not open yet, blur board but not modal */
+.board-locked #game-canvas,
+.board-locked #game-grid {
+    filter: blur(8px);
 }
 
 .grid-row:after {
