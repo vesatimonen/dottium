@@ -22,6 +22,7 @@ const options = {
     language:   "ENG",
     gameOverText: "Game over!", /* Changed by language */
     waitText:     "A new challenge opens\non the {day} of December!", /* Advent, {day} = next open day */
+    christmasText: "Merry Christmas!", /* Advent, game over text */
     playable:   undefined, /* Open challenge count, undefined = all */
     adventYear: undefined, /* Advent set year, undefined = not advent */
     saved:      undefined /* Saved game from storage */
