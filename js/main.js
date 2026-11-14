@@ -80,6 +80,15 @@ function playableCount() {
     return options.playable;
 }
 
+/* Read date again, advent doors may have opened */
+function playableRefresh() {
+    if (options.adventYear == undefined) {
+        return;
+    }
+    options.playable = adventOpenCount(options.adventYear, options.challenges.length);
+}
+
+
 /* English day with ending: 1st, 2nd, 3rd, 4th, 21st */
 function dayOrdinal(day) {
     if (day % 10 == 1 && day != 11) {
@@ -124,7 +133,8 @@ function parseOptions() {
         globals.storage    = globals.storage + "-debug";
     } else if (setOption == "advent-2026") {
         options.challenges = advent2026Set;
-        options.playable   = adventOpenCount(2026, advent2026Set.length);
+        options.adventYear = 2026;
+        options.playable   = adventOpenCount(options.adventYear, advent2026Set.length);
         globals.storage    = globals.storage + "-advent-2026";
     }
 

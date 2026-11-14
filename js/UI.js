@@ -570,6 +570,9 @@ function uiRedraw(hintsLater) {
 
     /* Check if end of level */
     if (globals.game.board.solved()) {
+        /* Date may have changed since page load */
+        playableRefresh();
+
         /* Last level, fade in game over modal, board stays */
         if (globals.game.level + 1 >= options.challenges.length) {
             modalShow(options.gameOverText, "", true); /* Fade in, a bit faster than level change */
