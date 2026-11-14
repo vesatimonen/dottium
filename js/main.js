@@ -429,11 +429,11 @@ function setFileWanted() {
         setOption = url.searchParams.get("set");
     }
     if (setOption == "debug") {
-        return "js/debug_set.js?v=1";
+        return "js/debug_set.js?v=2";
     }
     const adventYear = adventYearGet(setOption);
     if (adventYear != undefined) {
-        return "js/advent" + adventYear + "_set.js?v=1";
+        return "js/advent" + adventYear + "_set.js?v=2";
     }
     return undefined;
 }
