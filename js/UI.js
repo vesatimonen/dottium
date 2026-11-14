@@ -576,6 +576,12 @@ function uiRedraw(hintsLater) {
             return;
         }
 
+        /* Last open advent door, wait for next day */
+        if (globals.game.level + 1 >= playableCount()) {
+            modalShow(waitTextGet(), "", true);
+            return;
+        }
+
         /* Start animation to next level, block input and gray buttons */
         globals.animating = true;
         uiButtonsRedraw(globals.game);

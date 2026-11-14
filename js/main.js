@@ -59,6 +59,52 @@ function challengeValid(info) {
            match[5].length == Math.ceil(width * height / 2);
 }
 
+/* Advent doors open by date: 1 Dec opens one, 10 Dec opens ten */
+function adventOpenCount(year, count) {
+    const now = new Date();
+
+    if (now.getFullYear() > year) {
+        return count;
+    }
+    if (now.getFullYear() < year || now.getMonth() < 11) {
+        return 0;
+    }
+    return Math.min(now.getDate(), count);
+}
+
+/* Count of challenges that can be played now */
+function playableCount() {
+    if (options.playable == undefined) {
+        return options.challenges.length;
+    }
+    return options.playable;
+}
+
+/* English day with ending: 1st, 2nd, 3rd, 4th, 21st */
+function dayOrdinal(day) {
+    if (day % 10 == 1 && day != 11) {
+        return day + "st";
+    }
+    if (day % 10 == 2 && day != 12) {
+        return day + "nd";
+    }
+    if (day % 10 == 3 && day != 13) {
+        return day + "rd";
+    }
+    return day + "th";
+}
+
+/* Wait text with next open day */
+function waitTextGet() {
+    const day = playableCount() + 1;
+    let dayText = String(day);
+
+    if (options.language == "ENG") {
+        dayText = dayOrdinal(day);
+    }
+    return options.waitText.replace("{day}", dayText);
+}
+
 function parseOptions() {
     /* Replace special characters in url */
     let newUrl = window.location.href;
@@ -78,6 +124,7 @@ function parseOptions() {
         globals.storage    = globals.storage + "-debug";
     } else if (setOption == "advent-2026") {
         options.challenges = advent2026Set;
+        options.playable   = adventOpenCount(2026, advent2026Set.length);
         globals.storage    = globals.storage + "-advent-2026";
     }
 
@@ -131,11 +178,13 @@ function parseOptions() {
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään. Ratkaisuja on vain yksi.";
                 options.gameOverText            = "Peli päättyi!";
+                options.waitText                = "Uusi tehtävä aukeaa {day}. joulukuuta!";
                 break;
             case "SWE":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Placera prickar i rutnätet så att varje rad, kolumn och område innehåller exakt det antal prickar som anges för den. Saknas siffra kan det finnas hur många prickar som helst eller inga alls. Lösningen är unik.";
                 options.gameOverText            = "Spelet är slut!";
+                options.waitText                = "En ny utmaning öppnas den {day} december!";
                 break;
         }
     }
@@ -170,6 +219,11 @@ function modalShow(title, text, fadeIn) {
 
 /* Hide modal, keep board and history, enable buttons again */
 function modalHide() {
+    /* Closed calendar, modal stays */
+    if (playableCount() == 0) {
+        return;
+    }
+
     elements.modal.style.visibility = "hidden";
 
     uiButtonsRedraw(globals.game);
@@ -262,6 +316,10 @@ function gameStart(level) {
     if (level >= options.challenges.length) {
         level = options.challenges.length - 1;
     }
+    /* Not open yet, go to last open one */
+    if (level >= playableCount() && playableCount() > 0) {
+        level = playableCount() - 1;
+    }
 
     /* Initialize game */
     globals.game.init(level, options.challenges[level].info);
@@ -296,6 +354,11 @@ function gameBoot() {
 
     /* Show window */
     elements.screen.style.visibility = "visible";
+
+    /* Closed calendar, show date and block play */
+    if (playableCount() == 0) {
+        modalShow(waitTextGet(), "", false);
+    }
 }
 
 
