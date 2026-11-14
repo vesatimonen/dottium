@@ -201,6 +201,8 @@ function parseOptions() {
     if (manualChallenges.length > 0) {
         options.challenges = manualChallenges;
         globals.storage = globals.storage + "-manual";
+        options.adventYear = undefined; /* Manual challenges have no date lock */
+        options.playable   = undefined;
         options.level   = 0;
     }
 
@@ -254,9 +256,14 @@ function modalShow(title, text, fadeIn) {
 
 /* Hide modal, keep board and history, enable buttons again */
 function modalHide() {
-    /* Closed calendar, modal stays */
+    /* Closed calendar, open it if date has come, else modal stays */
     if (playableCount() == 0) {
-        return;
+        playableRefresh();
+        if (playableCount() == 0) {
+            return;
+        }
+        elements.board.classList.remove("board-locked");
+        gameStart(0); /* First door opened */
     }
 
     elements.modal.style.visibility = "hidden";
