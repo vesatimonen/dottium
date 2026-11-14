@@ -74,6 +74,11 @@ function adventYearGet(setOption) {
 
 /* Advent doors open by date: 1 Dec opens one, 10 Dec opens ten */
 function adventOpenCount(year, count) {
+    /* Test day from ?day=N, acts as N December */
+    if (options.testDay != undefined) {
+        return Math.min(options.testDay, count);
+    }
+
     const now = new Date();
 
     if (now.getFullYear() > year) {
@@ -145,6 +150,12 @@ function parseOptions() {
     const url = new URL(newUrl);
 
     /* Set option, short "s" or long "set", before level so storage key is right */
+    /* Test day option "day", playtest advent before December */
+    const dayOption = parseInt(url.searchParams.get("day"));
+    if (dayOption >= 0) {
+        options.testDay = dayOption;
+    }
+
     let setOption = url.searchParams.get("s");
     if (setOption == null) {
         setOption = url.searchParams.get("set");
