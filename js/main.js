@@ -59,6 +59,19 @@ function challengeValid(info) {
            match[5].length == Math.ceil(width * height / 2);
 }
 
+/* Year from "advent-YYYY" set name, undefined if not advent */
+function adventYearGet(setOption) {
+    if (setOption == null) {
+        return undefined;
+    }
+
+    const match = setOption.match(/^advent-(\d{4})$/);
+    if (match == null) {
+        return undefined;
+    }
+    return parseInt(match[1]);
+}
+
 /* Advent doors open by date: 1 Dec opens one, 10 Dec opens ten */
 function adventOpenCount(year, count) {
     const now = new Date();
@@ -131,11 +144,12 @@ function parseOptions() {
         options.debug      = true;
         options.challenges = debugChallengeSet;
         globals.storage    = globals.storage + "-debug";
-    } else if (setOption == "advent-2026") {
-        options.challenges = advent2026Set;
-        options.adventYear = 2026;
-        options.playable   = adventOpenCount(options.adventYear, advent2026Set.length);
-        globals.storage    = globals.storage + "-advent-2026";
+    } else if (adventYearGet(setOption) != undefined && typeof adventChallengeSet != "undefined") {
+        /* Set file adventYYYY_set.js loaded */
+        options.challenges = adventChallengeSet;
+        options.adventYear = adventYearGet(setOption);
+        options.playable   = adventOpenCount(options.adventYear, options.challenges.length);
+        globals.storage    = globals.storage + "-" + setOption;
     }
 
     /* Level option, short "l" or long "level" */
@@ -385,8 +399,9 @@ function setFileWanted() {
     if (setOption == "debug") {
         return "js/debug_set.js?v=1";
     }
-    if (setOption == "advent-2026") {
-        return "js/advent_set.js?v=1";
+    const adventYear = adventYearGet(setOption);
+    if (adventYear != undefined) {
+        return "js/advent" + adventYear + "_set.js?v=1";
     }
     return undefined;
 }
@@ -402,8 +417,9 @@ window.onload = function () {
     }
 
     const script = document.createElement("script");
-    script.src    = setFile;
-    script.onload = gameBoot;
+    script.src     = setFile;
+    script.onload  = gameBoot;
+    script.onerror = gameBoot; /* No set file, play default set */
     document.head.appendChild(script);
 }
 
