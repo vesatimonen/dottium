@@ -76,6 +76,9 @@ function parseOptions() {
         options.debug      = true;
         options.challenges = debugChallengeSet;
         globals.storage    = globals.storage + "-debug";
+    } else if (setOption == "advent-2026") {
+        options.challenges = advent2026Set;
+        globals.storage    = globals.storage + "-advent-2026";
     }
 
     /* Level option, short "l" or long "level" */
@@ -297,27 +300,35 @@ function gameBoot() {
 
 
 
-/* Debug set is big, load it only for ?s=debug */
-function debugSetWanted() {
+/* Extra set file for ?s=, or undefined for default set */
+function setFileWanted() {
     const url = new URL(window.location.href);
 
     let setOption = url.searchParams.get("s");
     if (setOption == null) {
         setOption = url.searchParams.get("set");
     }
-    return setOption == "debug";
+    if (setOption == "debug") {
+        return "js/debug_set.js?v=1";
+    }
+    if (setOption == "advent-2026") {
+        return "js/advent_set.js?v=1";
+    }
+    return undefined;
 }
 
 
 
 window.onload = function () {
-    if (debugSetWanted() == false) {
+    const setFile = setFileWanted();
+
+    if (setFile == undefined) {
         gameBoot();
         return;
     }
 
     const script = document.createElement("script");
-    script.src    = "js/debug_set.js?v=1";
+    script.src    = setFile;
     script.onload = gameBoot;
     document.head.appendChild(script);
 }
