@@ -581,7 +581,7 @@ function uiRedraw(hintsLater) {
 
         /* Last open advent door, wait for next day */
         if (globals.game.level + 1 >= playableCount()) {
-            modalShow(waitTextGet(), "", true);
+            modalWaitShow(true);
             return;
         }
 

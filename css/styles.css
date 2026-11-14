@@ -127,6 +127,11 @@ html {
     line-height:        1.15; /* Room between two lines */
 }
 
+/* Smaller title, long advent wait text */
+.modal-small #modal-title {
+    font-size:          0.8em;
+}
+
 
 /* Small second line, hidden when empty */
 #modal-text {

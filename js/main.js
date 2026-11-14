@@ -241,6 +241,7 @@ function modalVisible() {
 /* Show modal in middle of board, empty text hides second line */
 function modalShow(title, text, fadeIn) {
     elements.modalTitle.textContent = title;
+    elements.modal.classList.remove("modal-small"); /* Normal size, wait text sets it */
     elements.modalText.textContent  = text;
     elements.modal.style.visibility = "visible";
 
@@ -254,13 +255,19 @@ function modalShow(title, text, fadeIn) {
     }
 }
 
+/* Advent wait text, smaller so two lines fit */
+function modalWaitShow(fadeIn) {
+    modalShow(waitTextGet(), "", fadeIn);
+    elements.modal.classList.add("modal-small");
+}
+
 /* Hide modal, keep board and history, enable buttons again */
 function modalHide() {
     /* Closed calendar, open it if date has come, else modal stays */
     if (playableCount() == 0) {
         playableRefresh();
         if (playableCount() == 0) {
-            modalShow(waitTextGet(), "", false); /* Back from About */
+            modalWaitShow(false); /* Back from About */
             return;
         }
         elements.board.classList.remove("board-locked");
@@ -406,7 +413,7 @@ function gameBoot() {
 
     /* Closed calendar, show date and block play */
     if (playableCount() == 0) {
-        modalShow(waitTextGet(), "", false);
+        modalWaitShow(false);
         elements.board.classList.add("board-locked"); /* Blur, not open yet */
     }
 }
