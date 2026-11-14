@@ -329,6 +329,7 @@ class Game {
             newItem = ITEM_DOT;
         } else if (oldItem == ITEM_DOT && fastTap) {
             newItem = ITEM_BLOCK;
+            this.undoDotOnCell(x, y); /* One undo for double tap, like long press */
         } else {
             newItem = ITEM_NONE;
         }
@@ -359,6 +360,18 @@ class Game {
         this.moves.push({x: x, y: y, oldItem: oldItem, newItem: item, linked: linked == true});
 
         return item;
+    }
+
+    /* Undo last move if it put dot on this cell */
+    undoDotOnCell(x, y) {
+        const last = this.moves[this.moves.length - 1];
+
+        if (last == undefined || last.linked) {
+            return;
+        }
+        if (last.x == x && last.y == y && last.newItem == ITEM_DOT) {
+            this.undoMove();
+        }
     }
 
     undoMove() {
