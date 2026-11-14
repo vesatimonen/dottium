@@ -260,6 +260,7 @@ function modalHide() {
     if (playableCount() == 0) {
         playableRefresh();
         if (playableCount() == 0) {
+            modalShow(waitTextGet(), "", false); /* Back from About */
             return;
         }
         elements.board.classList.remove("board-locked");
@@ -275,6 +276,12 @@ function modalHide() {
 function modalPointerDown(event) {
     if (!modalVisible()) {
         modalDropClick = false; /* New tap, its click is used */
+        return;
+    }
+
+    /* Closed calendar, About button still works */
+    if (playableCount() == 0 && elements.buttonAbout.contains(event.target)) {
+        modalDropClick = false;
         return;
     }
 
