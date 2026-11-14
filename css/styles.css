@@ -127,9 +127,16 @@ html {
     line-height:        1.15; /* Room between two lines */
 }
 
+/* Wait and game over window in middle of screen, not board */
+#game-modal.modal-screen {
+    position:           fixed;
+    left:               50% !important; /* Beats board center set in UI.js */
+    top:                50% !important;
+}
+
 /* Smaller title, long advent wait text */
 .modal-small #modal-title {
-    font-size:          0.8em;
+    font-size:          min(0.8em, 6vw); /* Fits narrow phone */
 }
 
 
