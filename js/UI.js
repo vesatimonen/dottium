@@ -496,10 +496,6 @@ function uiBoardSetup(board) {
     elements.board.style.width = globals.cellSize * board.width + "px";
     elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
 
-    /* Center modal on grid frame, not on board with margins */
-    elements.modal.style.left = marginLeft + globals.cellSize * board.width  / 2 + "px";
-    elements.modal.style.top  = margin + globals.cellSize * board.height / 2 + "px";
-
     /* Create grid and add cells */
     for (let y = 0; y < board.height; y++) {
         /* Create row */
@@ -576,7 +572,6 @@ function uiRedraw(hintsLater) {
         /* Last level, fade in game over modal, board stays */
         if (globals.game.level + 1 >= options.challenges.length) {
             modalShow(gameOverTextGet(), "", true); /* Fade in, a bit faster than level change */
-            elements.modal.classList.add("modal-screen"); /* Middle of screen */
             return;
         }
 

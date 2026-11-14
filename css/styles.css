@@ -93,11 +93,11 @@ html {
 }
 
 
-/*** Modal for game over and about, in middle of board ***/
+/*** Modal for game over and about, in middle of screen ***/
 #game-modal {
     visibility:         hidden;
 
-    position:           absolute;
+    position:           fixed;
     z-index:            1;
 
     padding:            14px; /* Grows with text */
@@ -125,13 +125,6 @@ html {
 #modal-title {
     white-space:        pre;
     line-height:        1.15; /* Room between two lines */
-}
-
-/* Wait and game over window in middle of screen, not board */
-#game-modal.modal-screen {
-    position:           fixed;
-    left:               50% !important; /* Beats board center set in UI.js */
-    top:                50% !important;
 }
 
 /* Smaller title, long advent wait text */

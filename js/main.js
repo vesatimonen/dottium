@@ -241,7 +241,7 @@ function modalVisible() {
 /* Show modal in middle of board, empty text hides second line */
 function modalShow(title, text, fadeIn) {
     elements.modalTitle.textContent = title;
-    elements.modal.classList.remove("modal-small", "modal-screen"); /* Board center, normal size */
+    elements.modal.classList.remove("modal-small"); /* Normal size, wait text sets it */
     elements.modalText.textContent  = text;
     elements.modal.style.visibility = "visible";
 
@@ -258,7 +258,7 @@ function modalShow(title, text, fadeIn) {
 /* Advent wait text, smaller so two lines fit */
 function modalWaitShow(fadeIn) {
     modalShow(waitTextGet(), "", fadeIn);
-    elements.modal.classList.add("modal-small", "modal-screen");
+    elements.modal.classList.add("modal-small");
 }
 
 /* Hide modal, keep board and history, enable buttons again */
