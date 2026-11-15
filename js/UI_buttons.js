@@ -40,6 +40,27 @@ elements.buttonUndo.addEventListener("click", uiUndo);
 /* RESTART */
 elements.buttonRestart.addEventListener("click", uiRestart);
 
+/* < and > around level, go to level before or after */
+function uiLevelStep(event) {
+    const arrow = event.target.closest(".level-arrow");
+
+    /* Only main button, touch has 0 too */
+    if (event.button != 0) {
+        return false;
+    }
+
+    if (arrow == null || arrow.classList.contains("level-arrow-off") || uiInputBlocked()) {
+        return false;
+    }
+
+    event.preventDefault(); /* No text select or zoom */
+    gameStart(globals.game.level + Number(arrow.dataset.step));
+    return false;
+}
+
+/* LEVEL ARROWS, on press, iPad drops click of fast second tap */
+elements.info.addEventListener("pointerdown", uiLevelStep);
+
 /* Controls help, action and result */
 const ABOUT_HELP = [
     ["Click",                  "Set dot or clear"],

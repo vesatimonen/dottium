@@ -262,6 +262,18 @@ html {
     margin:         auto;
 }
 
+/* < and > around level, room for finger */
+.level-arrow {
+    padding:        0 0.4em;
+    cursor:         pointer;
+}
+
+/* No level that way */
+.level-arrow-off {
+    opacity:        0.3;
+    cursor:         default;
+}
+
 /*** About button, small round i at right end of title ***/
 #button-about {
     position:       absolute;

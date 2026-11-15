@@ -25,6 +25,7 @@ const options = {
     christmasText: "Merry Christmas!", /* Advent, game over text */
     playable:   undefined, /* Open challenge count, undefined = all */
     adventYear: undefined, /* Advent set year, undefined = not advent */
+    reached:    0,         /* Furthest level > may go to, solved + 1 */
     testDay:    undefined, /* Advent test day from ?day=N */
     saved:      undefined /* Saved game from storage */
 };

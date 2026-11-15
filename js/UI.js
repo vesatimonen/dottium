@@ -43,11 +43,36 @@ function uiButtonsRedraw(game) {
  *****************************************************************************/
 function uiInfoRedraw(game) {
     /* One challenge, like a manual link, needs no level info */
-    if (options.challenges.length == 1) {
+    if (options.challenges.length <= 1) {
         elements.info.textContent = "";
-    } else {
-        elements.info.textContent = (game.level + 1) + "/" + options.challenges.length;
+        return;
     }
+
+    const text = (game.level + 1) + "/" + options.challenges.length;
+
+    /* Clickable < and > around level */
+    elements.info.replaceChildren(
+        uiLevelArrow("<", -1, game.level > 0),
+        document.createTextNode(text),
+        uiLevelArrow(">", 1, uiLevelNextOpen(game.level)));
+}
+
+/* Next level open for >, solved before and date open */
+function uiLevelNextOpen(level) {
+    return level + 1 < playableCount() && level + 1 <= options.reached;
+}
+
+/* Level arrow, gray when no level that way */
+function uiLevelArrow(text, step, enabled) {
+    const arrow = document.createElement("span");
+
+    arrow.textContent  = text;
+    arrow.className    = "level-arrow";
+    arrow.dataset.step = step;
+    if (!enabled) {
+        arrow.classList.add("level-arrow-off");
+    }
+    return arrow;
 }
 
 
@@ -550,6 +575,11 @@ function uiGridAnimationEnd(event) {
  *****************************************************************************/
 function uiRedraw(hintsLater) {
     const board = globals.game.board;
+
+    /* Solved level opens next one for > */
+    if (board.solved() && globals.game.level + 1 > options.reached) {
+        options.reached = globals.game.level + 1;
+    }
 
     /* Hints now, or after pause when tapping board, solved shows now */
     if (hintsLater && !board.solved()) {
