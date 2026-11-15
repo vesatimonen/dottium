@@ -356,15 +356,19 @@ function gameSave() {
         moves:     game.moves,
         reached:   options.reached
     };
+    const text = JSON.stringify(saved);
+
+    /* Copy in memory, peek back to this level replays it */
+    options.saved = JSON.parse(text);
 
     try {
-        localStorage.setItem(globals.storage, JSON.stringify(saved));
+        localStorage.setItem(globals.storage, text);
     } catch (error) {
         /* Storage blocked, skip save */
     }
 }
 
-/* Replay saved moves if save is for this challenge */
+/* Replay saved moves if save is for this challenge, true if done */
 function gameRestore() {
     const game  = globals.game;
     const saved = options.saved;
@@ -374,7 +378,7 @@ function gameRestore() {
         saved.level != game.level ||
         saved.challenge != options.challenges[game.level].info ||
         !Array.isArray(saved.moves)) {
-        return;
+        return false;
     }
 
     /* Replay in order, rebuilds board, counts and undo history */
@@ -390,13 +394,15 @@ function gameRestore() {
     }
 
     uiRedraw();
+    return true;
 }
 
 
 /*****************************************************************************
  * Game initialization
  *****************************************************************************/
-function gameStart(level) {
+/* Peek keeps old save, first move in level saves over it */
+function gameStart(level, peek) {
     /* Check level value */
     if (level == undefined || isNaN(level) || level < 0) {
         level = 0;
@@ -417,8 +423,10 @@ function gameStart(level) {
     /* Initialize game */
     globals.game.init(level, options.challenges[level].info);
 
-    /* Save game point */
-    gameSave();
+    /* Save game point, not when peeking */
+    if (!peek) {
+        gameSave();
+    }
 
     /* Debug text, INFO without board part after > */
     if (options.debug) {
@@ -440,10 +448,12 @@ function gameBoot() {
 
     /* Start game */
     globals.game = new Game();
-    gameStart(options.level);
+    gameStart(options.level, true);
 
-    /* Put back saved board */
-    gameRestore();
+    /* Put back saved board, else save new start */
+    if (!gameRestore()) {
+        gameSave();
+    }
 
     /* Show window */
     elements.screen.style.visibility = "visible";

@@ -54,7 +54,9 @@ function uiLevelStep(event) {
     }
 
     event.preventDefault(); /* No text select or zoom */
-    gameStart(globals.game.level + Number(arrow.dataset.step));
+    /* Peek, save stays until first move, back to saved level replays it */
+    gameStart(globals.game.level + Number(arrow.dataset.step), true);
+    gameRestore();
     return false;
 }
 
