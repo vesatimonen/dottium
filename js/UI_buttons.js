@@ -101,25 +101,39 @@ elements.buttonAbout.addEventListener("click", uiAbout);
 /* Main page, shared link has no level or day */
 const SHARE_URL = "https://dottium.app/";
 
+/* Advent share text, invite to daily puzzle */
+function uiShareAdventText(solved, count) {
+    const name = "Dottium Advent " + options.adventYear;
+
+    if (solved == 0) {
+        return "Join me in " + name + "! 🎄\n";
+    }
+    if (solved == count) {
+        return name + " 🎄\nAll " + count + " days solved! 🎉\nJoin the daily puzzle!\n";
+    }
+    return name + " 🎄\n" + solved + "/" + count + " days solved. Join the daily puzzle!\n";
+}
+
+/* Normal share text, solved level count */
+function uiShareLevelText(solved, count) {
+    if (solved == 0) {
+        return "Join me in Dottium!\n";
+    }
+    if (solved == count) {
+        return "Dottium\nAll " + count + " levels solved! 🎉\n";
+    }
+    return "Dottium\n" + solved + "/" + count + " solved\n";
+}
+
 /* Share text, progress and link */
 function uiShareText() {
-    const solved = Math.min(options.reached, options.challenges.length);
-    let text = "";
-    let link = SHARE_URL;
+    const count  = options.challenges.length;
+    const solved = Math.min(options.reached, playableCount()); /* Not past open days */
 
     if (options.adventYear != undefined) {
-        text = "Dottium Advent " + options.adventYear + " 🎄\n";
-        if (solved > 0) {
-            text += "Day " + solved + "/" + options.challenges.length + " solved\n";
-        }
-        link += "?s=advent-" + options.adventYear;
-    } else {
-        text = "Dottium\n";
-        if (solved > 0) {
-            text += "Level " + solved + " solved\n";
-        }
+        return uiShareAdventText(solved, count) + SHARE_URL + "?s=advent-" + options.adventYear;
     }
-    return text + link;
+    return uiShareLevelText(solved, count) + SHARE_URL;
 }
 
 /* Copy text, modal shows what was copied */
