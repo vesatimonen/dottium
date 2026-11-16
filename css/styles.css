@@ -280,7 +280,7 @@ html {
 }
 
 /*** About button, small round i at right end of title ***/
-#button-about {
+#button-about, #button-share {
     position:       absolute;
     right:          4px;
     top:            50%;
@@ -291,10 +291,23 @@ html {
     border-radius:  50%;
 }
 
-#button-about svg {
+/* Share at left end, about at right */
+#button-share {
+    left:           4px;
+    right:          auto;
+}
+
+#button-about svg, #button-share svg {
     width:          calc(22px * var(--element-scale));
     height:         calc(22px * var(--element-scale));
     stroke-width:   3;
+}
+
+/* Share 20% bigger, thinner so lines look same */
+#button-share svg {
+    width:          calc(26.4px * var(--element-scale));
+    height:         calc(26.4px * var(--element-scale));
+    stroke-width:   2;
 }
 
 /*** Game instructions ***/

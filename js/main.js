@@ -227,11 +227,17 @@ function parseOptions() {
         globals.storage = globals.storage + "-manual";
         options.adventYear = undefined; /* Manual challenges have no date lock */
         options.playable   = undefined;
+        options.manual  = true;
         options.level   = 0;
     }
 
     if (options.adventYear != undefined) {
         adventTitleSet(options.adventYear);
+    }
+
+    /* Share only real sets, not debug or manual */
+    if (options.debug || options.manual) {
+        elements.buttonShare.style.display = "none";
     }
 
     const languageOption = url.searchParams.get("language");
@@ -314,8 +320,8 @@ function modalPointerDown(event) {
         return;
     }
 
-    /* Closed calendar, About button still works */
-    if (playableCount() == 0 && elements.buttonAbout.contains(event.target)) {
+    /* Closed calendar, About and Share still work */
+    if (playableCount() == 0 && (elements.buttonAbout.contains(event.target) || elements.buttonShare.contains(event.target))) {
         modalDropClick = false;
         return;
     }

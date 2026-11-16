@@ -19,6 +19,7 @@ const options = {
     challenges: [],
     level:      0,
     debug:      false, /* Debug set from ?s=debug */
+    manual:     false, /* Manual challenges from ?c= */
     language:   "ENG",
     gameOverText: "Game over!", /* Changed by language */
     waitText:     "A new challenge opens\non the {day} of December!", /* Advent, {day} = next open day */
@@ -44,6 +45,7 @@ const elements = {
     buttonRestart:  document.getElementById("button-restart"),
     buttonUndo:     document.getElementById("button-undo"),
     buttonAbout:    document.getElementById("button-about"),
+    buttonShare:    document.getElementById("button-share"),
     info:           document.getElementById("game-info"),
 
     modal:          document.getElementById("game-modal"),

@@ -97,3 +97,56 @@ function uiAbout(event) {
 }
 
 elements.buttonAbout.addEventListener("click", uiAbout);
+
+/* Main page, shared link has no level or day */
+const SHARE_URL = "https://dottium.app/";
+
+/* Share text, progress and link */
+function uiShareText() {
+    const solved = Math.min(options.reached, options.challenges.length);
+    let text = "";
+    let link = SHARE_URL;
+
+    if (options.adventYear != undefined) {
+        text = "Dottium Advent " + options.adventYear + " 🎄\n";
+        if (solved > 0) {
+            text += "Day " + solved + "/" + options.challenges.length + " solved\n";
+        }
+        link += "?s=advent-" + options.adventYear;
+    } else {
+        text = "Dottium\n";
+        if (solved > 0) {
+            text += "Level " + solved + " solved\n";
+        }
+    }
+    return text + link;
+}
+
+/* Copy text, modal shows what was copied */
+function uiShareCopy(text) {
+    if (navigator.clipboard == undefined) {
+        modalShow("SHARE", text, false);
+        return;
+    }
+    navigator.clipboard.writeText(text).then(
+        function () { modalShow("COPIED", text, false); },
+        function () { modalShow("SHARE", text, false); });
+}
+
+/* SHARE, phone share sheet, else copy */
+function uiShare(event) {
+    const text = uiShareText();
+
+    if (navigator.share == undefined) {
+        uiShareCopy(text);
+        return;
+    }
+    navigator.share({text: text}).catch(function (error) {
+        /* Cancel is fine, other errors copy */
+        if (error.name != "AbortError") {
+            uiShareCopy(text);
+        }
+    });
+}
+
+elements.buttonShare.addEventListener("click", uiShare);
