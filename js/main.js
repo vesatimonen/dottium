@@ -98,6 +98,16 @@ function playableCount() {
     return options.playable;
 }
 
+/* Advent title, small "ADVENT YYYY" line under name */
+function adventTitleSet(year) {
+    const line = document.createElement("div");
+
+    line.id          = "game-title-advent";
+    line.textContent = "ADVENT " + year;
+    document.getElementById("game-title").appendChild(line);
+    document.title = "DOTTIUM ADVENT " + year;
+}
+
 /* Read date again, advent doors may have opened */
 function playableRefresh() {
     if (options.adventYear == undefined) {
@@ -218,6 +228,10 @@ function parseOptions() {
         options.adventYear = undefined; /* Manual challenges have no date lock */
         options.playable   = undefined;
         options.level   = 0;
+    }
+
+    if (options.adventYear != undefined) {
+        adventTitleSet(options.adventYear);
     }
 
     const languageOption = url.searchParams.get("language");
