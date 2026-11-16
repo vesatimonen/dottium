@@ -106,27 +106,42 @@ function uiShareAdventText(solved, count) {
     const name = "Dottium Advent " + options.adventYear;
 
     if (solved == 0) {
-        return "Join me in " + name + "! 🎄\n";
+        return name + " 🎄\nA new puzzle every day!\n";
     }
     if (solved == count) {
-        return name + " 🎄\nAll " + count + " days solved! 🎉\nJoin the daily puzzle!\n";
+        return name + " 🎄\nAll " + count + " days solved! 🎉\nA new puzzle every day!\n";
     }
-    return name + " 🎄\n" + solved + "/" + count + " days solved. Join the daily puzzle!\n";
+    return name + " 🎄\n" + solved + "/" + count + " days solved. A new puzzle every day!\n";
 }
 
 /* Normal share text, solved level count */
 function uiShareLevelText(solved, count) {
     if (solved == 0) {
-        return "Join me in Dottium!\n";
+        return "Try Dottium!\n";
     }
     if (solved == count) {
-        return "Dottium\nAll " + count + " levels solved! 🎉\n";
+        return "All " + count + " levels solved! 🎉\nTry Dottium too!\n";
     }
-    return "Dottium\n" + solved + "/" + count + " solved\n";
+    return solved + "/" + count + " solved. Try Dottium too!\n";
+}
+
+/* Manual share text, link has board part of each challenge */
+function uiShareManualText() {
+    const params = [];
+
+    for (const challenge of options.challenges) {
+        const parts = challenge.info.split(/[>$#]/);
+        params.push("c=" + parts[parts.length - 1].trim());
+    }
+    return "Can you solve this Dottium puzzle?\n" + SHARE_URL + "?" + params.join("&");
 }
 
 /* Share text, progress and link */
 function uiShareText() {
+    if (options.manual) {
+        return uiShareManualText();
+    }
+
     const count  = options.challenges.length;
     const solved = Math.min(options.reached, playableCount()); /* Not past open days */
 

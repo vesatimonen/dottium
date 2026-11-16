@@ -235,8 +235,8 @@ function parseOptions() {
         adventTitleSet(options.adventYear);
     }
 
-    /* Share only real sets, not debug or manual */
-    if (options.debug || options.manual) {
+    /* Share real sets and manual puzzles, not debug */
+    if (options.debug) {
         elements.buttonShare.style.display = "none";
     }
 
