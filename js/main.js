@@ -320,8 +320,14 @@ function modalPointerDown(event) {
         return;
     }
 
-    /* Closed calendar, About and Share still work */
-    if (playableCount() == 0 && (elements.buttonAbout.contains(event.target) || elements.buttonShare.contains(event.target))) {
+    /* Closed calendar, About still works */
+    if (playableCount() == 0 && elements.buttonAbout.contains(event.target)) {
+        modalDropClick = false;
+        return;
+    }
+
+    /* Share works over modal, like after solve */
+    if (elements.buttonShare.contains(event.target)) {
         modalDropClick = false;
         return;
     }
