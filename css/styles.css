@@ -152,6 +152,24 @@ html {
     display:            none;
 }
 
+/* Share text, looks like modal text, user can select and copy */
+.share-text {
+    display:            block;
+    max-width:          min(80vw, 340px); /* Long link wraps, fits phone */
+    margin:             0 auto;
+    overflow-wrap:      break-word; /* Only long link breaks, width stays */
+
+    -webkit-user-select: text; /* Body has none */
+            user-select: text;
+    -webkit-touch-callout: default; /* iOS long press Copy menu */
+}
+
+/* Selected share text, mid blue, ink text */
+.share-text::selection {
+    background-color:   #3F95D0;
+    color:              var(--ink-color);
+}
+
 /* Controls help in about, dashes in one column */
 .modal-help {
     display:               grid;

@@ -277,11 +277,18 @@ function uiPointerUp(event) {
 
 /* Stop iOS magnifier and text select on board, modal closes on pointerdown */
 function uiTouchStart(event) {
+    /* Share text keeps long press, select and copy */
+    if (event.target.closest(".share-text")) {
+        return;
+    }
     event.preventDefault();
 }
 
-/* No long press menu on board */
+/* No long press menu on board, share text keeps it for copy */
 function uiContextMenu(event) {
+    if (event.target.closest(".share-text")) {
+        return;
+    }
     event.preventDefault();
 }
 

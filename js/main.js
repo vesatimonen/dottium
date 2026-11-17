@@ -332,6 +332,12 @@ function modalPointerDown(event) {
         return;
     }
 
+    /* Tap in share text box selects, does not close */
+    if (event.target.closest(".share-text")) {
+        modalDropClick = false;
+        return;
+    }
+
     event.preventDefault();
     event.stopPropagation(); /* Keep tap off the board */
 

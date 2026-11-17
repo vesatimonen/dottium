@@ -159,12 +159,23 @@ function uiShareText() {
 /* Copy text, modal shows what was copied */
 function uiShareCopy(text) {
     if (navigator.clipboard == undefined) {
-        modalShow("SHARE", text, false);
+        uiShareShow("SHARE", text);
         return;
     }
     navigator.clipboard.writeText(text).then(
-        function () { modalShow("COPIED", text, false); },
-        function () { modalShow("SHARE", text, false); });
+        function () { uiShareShow("COPIED", text); },
+        function () { uiShareShow("SHARE", text); });
+}
+
+/* Plain text, selected, user can copy it by hand */
+function uiShareShow(title, text) {
+    const line = document.createElement("span");
+
+    modalShow(title, "", false);
+    line.className   = "share-text";
+    line.textContent = text;
+    elements.modalText.appendChild(line); /* modalShow clears it next time */
+    window.getSelection().selectAllChildren(line);
 }
 
 /* SHARE, phone share sheet, else copy */
