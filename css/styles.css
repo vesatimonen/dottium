@@ -27,6 +27,7 @@
 /*** Text color for whole page ***/
 body {
     color:          var(--ink-color);
+    margin-bottom:  0; /* No extra space under instructions, board gets it */
 }
 
 /*** Drag paints anywhere in window, no zoom or scroll by touch ***/
