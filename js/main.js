@@ -309,6 +309,7 @@ function modalHide() {
     }
 
     elements.modal.style.visibility = "hidden";
+    window.getSelection().removeAllRanges(); /* iOS keeps share text selection */
 
     uiButtonsRedraw(globals.game);
 }
