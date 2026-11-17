@@ -544,7 +544,8 @@ function uiBoardBuild(board) {
     elements.board.style.paddingRight  = marginRight + "px";
     elements.board.style.paddingBottom = "2px"; /* No bottom hints, keep room for frame line */
     elements.board.style.width = globals.cellSize * board.width + "px";
-    elements.board.style.left  = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2) + "px";
+    const baseLeft = Math.floor((globals.cellSize * (globals.boardMaxSize - board.width)) / 2);
+    elements.board.style.left  = baseLeft + "px";
 
     /* Create grid and add cells */
     for (let y = 0; y < board.height; y++) {
@@ -569,7 +570,31 @@ function uiBoardBuild(board) {
 
     /* Redraw board, new board shows hints now */
     uiHintsUpdate(board);
+
+    /* Whole device pixels keep canvas crisp */
+    uiBoardSnap(baseLeft);
+
     uiBoardRedraw(board);
+}
+
+
+/*****************************************************************************
+ * Move board to whole device pixels, centering can give half pixels
+ *****************************************************************************/
+function uiBoardSnap(baseLeft) {
+    const pixelRatio = window.devicePixelRatio || 1;
+
+    /* Measure from base place, not from old shift */
+    elements.board.style.left = baseLeft + "px";
+    elements.board.style.top  = "0px";
+
+    /* Shift by rest to nearest device pixel */
+    const rect      = elements.canvas.getBoundingClientRect();
+    const shiftLeft = (Math.round(rect.left * pixelRatio) - rect.left * pixelRatio) / pixelRatio;
+    const shiftTop  = (Math.round(rect.top  * pixelRatio) - rect.top  * pixelRatio) / pixelRatio;
+
+    elements.board.style.left = (baseLeft + shiftLeft) + "px";
+    elements.board.style.top  = shiftTop + "px";
 }
 
 /* No input during solve animation or while modal shows */
