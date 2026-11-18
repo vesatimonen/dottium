@@ -119,10 +119,26 @@ function playableRefresh() {
 
 /* Game over text, advent ends with Christmas wish */
 function gameOverTextGet() {
+    if (options.manual) {
+        return options.solvedText;
+    }
     if (options.adventYear != undefined) {
         return options.christmasText;
     }
     return options.gameOverText;
+}
+
+/* Small line under game over, solved count */
+function gameOverLineGet() {
+    const count = options.challenges.length;
+
+    if (options.manual) {
+        return "";
+    }
+    if (options.adventYear != undefined) {
+        return options.christmasLine.replace("{count}", count);
+    }
+    return options.gameOverLine.replace("{count}", count);
 }
 
 
@@ -246,16 +262,22 @@ function parseOptions() {
             case "FIN":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään. Ratkaisuja on vain yksi.";
-                options.gameOverText            = "Peli päättyi!";
+                options.gameOverText            = "Kaikki ratkaistu!";
+                options.gameOverLine            = "Ratkaisit kaikki {count} tehtävää.";
+                options.solvedText              = "Ratkaistu!";
                 options.waitText                = "Uusi tehtävä aukeaa\n{day}. joulukuuta!";
                 options.christmasText           = "Hyvää joulua!";
+                options.christmasLine           = "Kaikki {count} päivää ratkaistu.";
                 break;
             case "SWE":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Placera prickar i rutnätet så att varje rad, kolumn och område innehåller exakt det antal prickar som anges för den. Saknas siffra kan det finnas hur många prickar som helst eller inga alls. Lösningen är unik.";
-                options.gameOverText            = "Spelet är slut!";
+                options.gameOverText            = "Allt löst!";
+                options.gameOverLine            = "Du löste alla {count} pussel.";
+                options.solvedText              = "Löst!";
                 options.waitText                = "En ny utmaning öppnas\nden {day} december!";
                 options.christmasText           = "God jul!";
+                options.christmasLine           = "Alla {count} dagar lösta.";
                 break;
         }
     }
@@ -509,11 +531,11 @@ function setFileWanted() {
         setOption = url.searchParams.get("set");
     }
     if (setOption == "debug") {
-        return "js/debug_set.js?v=2";
+        return "js/debug_set.js";
     }
     const adventYear = adventYearGet(setOption);
     if (adventYear != undefined) {
-        return "js/advent" + adventYear + "_set.js?v=2";
+        return "js/advent" + adventYear + "_set.js";
     }
     return undefined;
 }

@@ -651,7 +651,7 @@ function uiRedraw(hintsLater) {
 
         /* Last level, fade in game over modal, board stays */
         if (globals.game.level + 1 >= options.challenges.length) {
-            modalShow(gameOverTextGet(), "", true); /* Fade in, a bit faster than level change */
+            modalShow(gameOverTextGet(), gameOverLineGet(), true); /* Fade in, a bit faster than level change */
             return;
         }
 
