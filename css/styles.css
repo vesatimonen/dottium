@@ -124,7 +124,6 @@ html {
     top:                50%;
     left:               50%;
     transform:          translate(-50%, -50%);
-    white-space:        nowrap; /* Keep size, do not squeeze near edge */
 }
 
 /* Title keeps line breaks, no wrap */
