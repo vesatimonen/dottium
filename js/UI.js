@@ -9,6 +9,7 @@ const BLOCK_HALF_LEN   = 0.15; /* Block cross line half length from center */
 const GRID_DOT_RADIUS  = 0.04; /* Small dot in every cell */
 const FRAME_WIDTH      = 0.04; /* Grid frame */
 const FRAME_MAX_WIDTH  = 1.7;  /* Grid frame max in CSS px, as on iPhone */
+const BORDER_SCALE     = 4 / 3; /* Grid border thicker than walls, as SVG 0.4 and 0.3 */
 
 /* Title, buttons, info and instructions grow with board */
 const ELEMENT_SCALE_BASE_CELL = 50;  /* Cell size where scale is 1 */
@@ -410,10 +411,14 @@ function uiElementsRedraw(board) {
     }
 
     context.stroke();
+    context.restore();
 
-    /* Draw frame on grid edge */
+    /* Draw frame on grid edge, thicker than walls, own pixel shift */
+    const borderShift = uiLineShift(globals.borderWidth);
+    context.save();
+    context.translate(borderShift, borderShift);
     context.beginPath();
-    context.lineWidth = globals.frameWidth; /* Same as modal and buttons */
+    context.lineWidth = globals.borderWidth;
     context.rect(0, 0, gridWidth, gridHeight);
     context.stroke();
     context.restore(); /* Hints use unshifted grid */
@@ -465,9 +470,9 @@ function uiElementScale(cellSize) {
 /*****************************************************************************
  * Frame line width snapped to whole device pixels, at least 1
  *****************************************************************************/
-function uiFrameWidth(cellSize) {
+function uiFrameWidth(cellSize, scale) {
     const pixelRatio  = window.devicePixelRatio || 1;
-    const frameWidth  = Math.min(FRAME_WIDTH * cellSize, FRAME_MAX_WIDTH);
+    const frameWidth  = Math.min(FRAME_WIDTH * cellSize, FRAME_MAX_WIDTH) * scale;
     const framePixels = Math.max(1, Math.round(frameWidth * pixelRatio));
 
     return framePixels / pixelRatio;
@@ -521,8 +526,12 @@ function uiBoardBuild(board) {
     /* Calculate board grid size, margin on both sides takes room too */
     globals.cellSize = Math.floor((elements.screen.clientWidth) / (globals.boardMaxSize + globals.boardMarginLeft + globals.boardMarginRight));
 
-    /* Modal and buttons use same line as grid frame */
-    globals.frameWidth = uiFrameWidth(globals.cellSize);
+    /* Modal and buttons use same line as walls */
+    globals.frameWidth = uiFrameWidth(globals.cellSize, 1);
+    globals.borderWidth = uiFrameWidth(globals.cellSize, BORDER_SCALE); /* Grid border only */
+    if (globals.borderWidth <= globals.frameWidth) {
+        globals.borderWidth = globals.frameWidth + 1 / (window.devicePixelRatio || 1); /* Rounding made it same, one device pixel more */
+    }
     document.documentElement.style.setProperty("--frame-width", globals.frameWidth + "px");
 
     /* Title, buttons, info and instructions grow with board */
