@@ -262,9 +262,9 @@ function parseOptions() {
             case "FIN":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Aseta ruudukkoon täpliä niin, että jokaisen rivin, sarakkeen ja alueen täplien määrä vastaa sille annettua lukua. Jos lukua ei ole, täpliä voi olla kuinka monta tahansa tai ei yhtään. Ratkaisuja on vain yksi.";
-                options.gameOverText            = "Kaikki ratkaistu!";
+                options.gameOverText            = "🏆 Kaikki ratkaistu! 🏆";
                 options.gameOverLine            = "Ratkaisit kaikki {count} tehtävää.";
-                options.solvedText              = "Ratkaistu!";
+                options.solvedText              = "⭐ Ratkaistu! ⭐";
                 options.waitText                = "Uusi tehtävä aukeaa\n{day}. joulukuuta!";
                 options.christmasText           = "🎄 Hyvää joulua! 🎄";
                 options.christmasLine           = "Kaikki {count} päivää ratkaistu.";
@@ -272,9 +272,9 @@ function parseOptions() {
             case "SWE":
                 options.language = languageOption;
                 elements.instructions.innerHTML = "Placera prickar i rutnätet så att varje rad, kolumn och område innehåller exakt det antal prickar som anges för den. Saknas siffra kan det finnas hur många prickar som helst eller inga alls. Lösningen är unik.";
-                options.gameOverText            = "Allt löst!";
+                options.gameOverText            = "🏆 Allt löst! 🏆";
                 options.gameOverLine            = "Du löste alla {count} pussel.";
-                options.solvedText              = "Löst!";
+                options.solvedText              = "⭐ Löst! ⭐";
                 options.waitText                = "En ny utmaning öppnas\nden {day} december!";
                 options.christmasText           = "🎄 God jul! 🎄";
                 options.christmasLine           = "Alla {count} dagar lösta.";

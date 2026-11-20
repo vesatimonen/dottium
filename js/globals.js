@@ -22,9 +22,9 @@ const options = {
     debug:         false,                                              /* Debug set from ?s=debug */
     manual:        false,                                              /* Manual challenges from ?c= */
     language:      "ENG",
-    gameOverText:  "All solved!",                                      /* Changed by language */
+    gameOverText:  "🏆 All solved! 🏆",                                /* Changed by language */
     gameOverLine:  "You solved all {count} puzzles.",                  /* Under game over, {count} = levels */
-    solvedText:    "Solved!",                                          /* Manual puzzle, game over text */
+    solvedText:    "⭐ Solved! ⭐",                                    /* Manual puzzle, game over text */
     waitText:      "A new challenge opens\non the {day} of December!", /* Advent, {day} = next open day */
     christmasText: "🎄 Merry Christmas! 🎄",                           /* Advent, game over text */
     christmasLine: "All {count} days solved.",                         /* Advent, under game over */

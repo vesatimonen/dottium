@@ -116,6 +116,8 @@ html {
     border-radius:      8px;
 
     white-space:        nowrap; /* Keep size, do not squeeze near edge */
+    width:              max-content; /* Not only half screen from left 50% */
+    max-width:          calc(100vw - 64px); /* Long text wraps, 16px gap + padding each side */
 
     line-height: 100%;
     margin: auto;
