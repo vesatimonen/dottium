@@ -130,6 +130,7 @@ html {
 #modal-title {
     white-space:        pre;
     line-height:        1.15; /* Room between two lines */
+    font-size:          min(1em, 6vw); /* Fits narrow phone */
 }
 
 /* Smaller title, long advent wait text */
@@ -140,7 +141,7 @@ html {
 
 /* Small second line, hidden when empty */
 #modal-text {
-    margin-top:         8px;
+    margin-top:         2px; /* Close to title */
     font-size:          16px;
     line-height:        1.25; /* Own spacing, not title 32px */
     font-weight:        normal;

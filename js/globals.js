@@ -26,7 +26,7 @@ const options = {
     gameOverLine:  "You solved all {count} puzzles.",                  /* Under game over, {count} = levels */
     solvedText:    "Solved!",                                          /* Manual puzzle, game over text */
     waitText:      "A new challenge opens\non the {day} of December!", /* Advent, {day} = next open day */
-    christmasText: "Merry Christmas!",                                 /* Advent, game over text */
+    christmasText: "🎄 Merry Christmas! 🎄",                           /* Advent, game over text */
     christmasLine: "All {count} days solved.",                         /* Advent, under game over */
     playable:      undefined,                                          /* Open challenge count, undefined = all */
     adventYear:    undefined,                                          /* Advent set year, undefined = not advent */

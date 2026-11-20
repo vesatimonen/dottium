@@ -266,7 +266,7 @@ function parseOptions() {
                 options.gameOverLine            = "Ratkaisit kaikki {count} tehtävää.";
                 options.solvedText              = "Ratkaistu!";
                 options.waitText                = "Uusi tehtävä aukeaa\n{day}. joulukuuta!";
-                options.christmasText           = "Hyvää joulua!";
+                options.christmasText           = "🎄 Hyvää joulua! 🎄";
                 options.christmasLine           = "Kaikki {count} päivää ratkaistu.";
                 break;
             case "SWE":
@@ -276,7 +276,7 @@ function parseOptions() {
                 options.gameOverLine            = "Du löste alla {count} pussel.";
                 options.solvedText              = "Löst!";
                 options.waitText                = "En ny utmaning öppnas\nden {day} december!";
-                options.christmasText           = "God jul!";
+                options.christmasText           = "🎄 God jul! 🎄";
                 options.christmasLine           = "Alla {count} dagar lösta.";
                 break;
         }
